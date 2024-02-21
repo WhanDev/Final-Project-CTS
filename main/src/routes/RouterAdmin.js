@@ -1,34 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FullLayoutAdmin from 'src/layouts/full/FullLayoutAdmin';
-import { currentAdmin } from '../function/auth';
+import { currentUser } from '../function/auth';
 
 const RouterAdmin = ({ children }) => {
-  const { user } = useSelector((state) => ({ ...state }));
+  const token = localStorage.getItem('token');
+  const navigate = useNavigate();
 
-  const [ok, setOk] = useState({});
+  const CheckUser = async () => {
+    try {
+      const res = await currentUser(token);
+      if (res.data.role !== 'แอดมิน') {
+        navigate('/AuthRole');
+      }
+    } catch (error) {
+      console.log(error);
+      navigate('/AuthRole');
+    }
+  };
 
   useEffect(() => {
-    if (user && user.user.token) {
-      currentAdmin(user.user.token)
-        .then((res) => {
-          setOk(true);
-        })
-        .catch((err) => {
-          console.log(err);
-          setOk(false);
-        });
-    }
-  }, [user]);
+    CheckUser();
+  }, []);
 
-  return ok ? (
+  return (
     <>
       <FullLayoutAdmin />
       {children}
     </>
-  ) : (
-    <Navigate to="/AuthRole" />
   );
 };
 

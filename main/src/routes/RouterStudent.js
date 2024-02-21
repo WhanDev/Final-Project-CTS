@@ -1,33 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
 import FullLayoutStudent from 'src/layouts/full/FullLayoutStudent';
-import { Navigate } from 'react-router-dom';
-import { currentStudent } from '../function/auth';
+import { useNavigate } from 'react-router-dom';
+import { currentUser } from '../function/auth';
 
 const RouterStudent = ({ children }) => {
-  const { user } = useSelector((state) => ({ ...state }));
+  const token = localStorage.getItem('token');
+  const navigate = useNavigate();
 
-  const [ok, setOk] = useState({});
+  const CheckUser = async () => {
+    try {
+      const res = await currentUser(token);
+      if (res.data.role !== 'นักศึกษา') {
+        navigate('/AuthRole');
+      }
+    } catch (error) {
+      console.log(error);
+      navigate('/AuthRole');
+    }
+  };
 
   useEffect(() => {
-    if (user && user.user.token) {
-      currentStudent(user.user.token)
-        .then((res) => {
-          setOk(true);
-        })
-        .catch((err) => {
-          console.log(err);
-          setOk(false);
-        });
-    }
-  }, [user]);
-  return ok ? (
+    CheckUser();
+  }, []);
+
+  return (
     <>
       <FullLayoutStudent />
       {children}
     </>
-  ) : (
-    <Navigate to="/AuthRole" />
   );
 };
 

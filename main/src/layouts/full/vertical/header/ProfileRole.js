@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Menu, Typography, Divider, Button, IconButton } from '@mui/material';
-import { IconUser, IconUserCircle } from '@tabler/icons';
+import { IconUserCircle } from '@tabler/icons';
 import { Stack } from '@mui/system';
 import Scrollbar from 'src/components/custom-scroll/Scrollbar';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../../../store/userSlice';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { currentUser } from '../../../../function/auth';
 
 const ProfileRole = () => {
-  const { user } = useSelector((state) => ({ ...state }));
+  const token = localStorage.getItem('token');
+  const [user, setUser] = useState({});
+
+  const checkUser = async () => {
+    try {
+      const res = await currentUser(token);
+      setUser(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+  }, []);
 
   const [anchorEl2, setAnchorEl2] = useState(null);
   const handleClick2 = (event) => {
@@ -42,9 +56,6 @@ const ProfileRole = () => {
       >
         <IconUserCircle size={30} />
       </IconButton>
-      {/* ------------------------------------------- */}
-      {/* Message Dropdown */}
-      {/* ------------------------------------------- */}
       <Menu
         id="msgs-menu"
         anchorEl={anchorEl2}
@@ -64,26 +75,25 @@ const ProfileRole = () => {
             <Typography variant="h5">ข้อมูลผู้ใช้</Typography>
             <Stack direction="row" py={3} spacing={2} alignItems="center">
               <Box>
-
                 <Typography variant="subtitle2" color="textSecondary" display="flex" gap={1}>
                   <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
-                  ชื่อนาม-สกุล
+                    ชื่อนาม-สกุล
                   </Typography>
-                  {user.user.fullname}
+                  {user.fullname}
                 </Typography>
 
                 <Typography variant="subtitle2" color="textSecondary" display="flex" gap={1}>
                   <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
-                  สิทธิ์ผู้ใช้
+                    สิทธิ์ผู้ใช้
                   </Typography>
-                  {user.user.role}
+                  {user.role}
                 </Typography>
 
                 <Typography variant="subtitle2" color="textSecondary" display="flex" gap={1}>
                   <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
                     รหัสประจำตัว
                   </Typography>
-                  {user.user._id}
+                  {user._id}
                 </Typography>
               </Box>
             </Stack>

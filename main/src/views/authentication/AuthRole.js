@@ -9,7 +9,6 @@ import BlankCard from '../../components/shared/BlankCard';
 import Student from 'src/assets/images/Student.png';
 import Admin from 'src/assets/images/Admin.png';
 
-
 const AuthRole = () => {
   return (
     <PageContainer title="เลือกกลุ่มผู้ใช้งาน" description="เลือกกลุ่มผู้ใช้งาน">
