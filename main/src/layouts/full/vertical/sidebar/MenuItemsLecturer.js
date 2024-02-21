@@ -1,0 +1,49 @@
+import {
+  IconListNumbers,
+  IconUserCircle,
+  IconAlbum,
+  IconLayoutDashboard,
+  IconUsers,
+} from '@tabler/icons';
+
+import { uniqueId } from 'lodash';
+
+const MenuItemsLecturer = [
+  {
+    id: uniqueId(),
+    title: 'แดชบอร์ด',
+    icon: IconLayoutDashboard,
+    href: '/Lecturer/Index',
+    chipColor: 'secondary',
+  },
+  {
+    navlabel: true,
+    subheader: 'จัดการข้อมูล',
+  },
+  {
+    id: uniqueId(),
+    title: 'อาจารย์',
+    icon: IconUserCircle,
+    href: '/manage/lecturer',
+  },
+  {
+    id: uniqueId(),
+    title: 'หลักสูตร',
+    icon: IconAlbum,
+    href: '/manage/curriculum',
+  },
+  {
+    id: uniqueId(),
+    title: 'นักศึกษา',
+    icon: IconUsers,
+    href: '/manage/student',
+  },
+  {
+    id: uniqueId(),
+    title: 'รายวิชานอกหลักสูตร',
+    icon: IconListNumbers,
+    href: '/manage/extrasubject',
+  },
+];
+
+export default MenuItemsLecturer;
