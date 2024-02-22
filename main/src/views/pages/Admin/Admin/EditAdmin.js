@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Grid, MenuItem, Button, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import Swal from 'sweetalert2';
 
@@ -104,7 +104,7 @@ const EditAdmin = () => {
         icon: 'success',
         title: 'แก้ไขข้อมูลสำเร็จ',
       });
-      navigate('/manage/admin');
+      navigate(-1)
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -113,6 +113,10 @@ const EditAdmin = () => {
       });
       console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูล:', error);
     }
+  };
+
+  const handleBack = () => {
+    navigate(-1)
   };
 
   return (
@@ -203,7 +207,7 @@ const EditAdmin = () => {
                   <Button type="submit" variant="contained" color="success">
                     บันทึก
                   </Button>
-                  <Button variant="outlined" color="warning" component={Link} to={'/manage/admin'}>
+                  <Button variant="outlined" color="warning" onClick={handleBack}>
                     ยกเลิก
                   </Button>
                 </Stack>

@@ -101,6 +101,10 @@ const AddMachSubject = () => {
     }
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <PageContainer title="จัดการคู่เทียบโอนรายวิชา" description="จัดการคู่เทียบโอนรายวิชา">
       <Breadcrumb title={'จัดการคู่เทียบโอนรายวิชา'} />
@@ -208,17 +212,7 @@ const AddMachSubject = () => {
                   <Button type="submit" variant="contained" color="success">
                     บันทึก
                   </Button>
-                  <Button
-                    variant="outlined"
-                    color="warning"
-                    component={Link}
-                    to={
-                      '/manage/machsubject/curriculum/' +
-                      params.curriculum +
-                      '/structure/CS-' +
-                      params.curriculum
-                    }
-                  >
+                  <Button variant="outlined" color="warning" onClick={handleBack}>
                     ยกเลิก
                   </Button>
                 </Stack>

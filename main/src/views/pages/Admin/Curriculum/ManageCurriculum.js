@@ -21,7 +21,7 @@ const ManageCurriculum = () => {
               color="primary"
               startIcon={<IconAlbum width={18} />}
               component={Link}
-              to={'/manage/curriculum/add'}
+              to={'/admin/manage/curriculum/add'}
             >
               เพิ่มหลักสูตร
             </Button>

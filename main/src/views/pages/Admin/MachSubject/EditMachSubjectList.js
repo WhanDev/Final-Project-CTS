@@ -105,12 +105,7 @@ const EditMachSubjectList = () => {
         title: 'แก้ไขข้อมูลสำเร็จ',
       });
 
-      navigate(
-        '/manage/machsubject/curriculum/' +
-          params.curriculum +
-          '/structure/CS-' +
-          params.curriculum,
-      );
+      navigate(-1);
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -119,6 +114,10 @@ const EditMachSubjectList = () => {
       });
       console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูล:', error);
     }
+  };
+
+  const handleBack = () => {
+    navigate(-1);
   };
 
   return (
@@ -213,13 +212,7 @@ const EditMachSubjectList = () => {
                   <Button
                     variant="outlined"
                     color="warning"
-                    component={Link}
-                    to={
-                      '/manage/machsubject/curriculum/' +
-                      params.curriculum +
-                      '/structure/CS-' +
-                      params.curriculum
-                    }
+                    onClick={handleBack}
                   >
                     ยกเลิก
                   </Button>

@@ -186,290 +186,165 @@ const EditMachSubjectList = Loadable(
   lazy(() => import('../views/pages/Admin/MachSubject/EditMachSubjectList')),
 );
 
-const ShowMachSubject = Loadable(
-  lazy(() => import('../views/pages/MachSubject/ShowMachSubject')),
-);
+const ShowMachSubject = Loadable(lazy(() => import('../views/pages/MachSubject/ShowMachSubject')));
 const ShowListMachSubject = Loadable(
   lazy(() => import('../views/pages/MachSubject/ShowListMachSubject')),
 );
 
-const TestTransfer = Loadable(
-  lazy(() => import('../views/pages/Tester/TestTransfer')),
-);
+const TestTransfer = Loadable(lazy(() => import('../views/pages/Tester/TestTransfer')));
 
 const Router = [
+  // {
+  //   element: <FullLayout />,
+  //   children: [
+  //     { path: '/', element: <Navigate to="/Index" /> },
+  //     // { path: '/dashboards/modern', exact: true, element: <ModernDash /> },
+  //     // { path: '/dashboards/ecommerce', exact: true, element: <EcommerceDash /> },
+  //     // { path: '/apps/chats', element: <Chats /> },
+  //     // { path: '/apps/notes', element: <Notes /> },
+  //     // { path: '/apps/calendar', element: <Calendar /> },
+  //     // { path: '/apps/email', element: <Email /> },
+  //     // { path: '/apps/tickets', element: <Tickets /> },
+  //     // { path: '/apps/contacts', element: <Contacts /> },
+  //     // { path: '/apps/ecommerce/shop', element: <Ecommerce /> },
+  //     // { path: '/apps/blog/posts', element: <Blog /> },
+  //     // { path: '/apps/blog/detail/:id', element: <BlogDetail /> },
+  //     // { path: '/apps/ecommerce/eco-product-list', element: <EcomProductList /> },
+  //     // { path: '/apps/ecommerce/eco-checkout', element: <EcomProductCheckout /> },
+  //     // { path: '/apps/ecommerce/detail/:id', element: <EcommerceDetail /> },
+  //     // { path: '/apps/followers', element: <Followers /> },
+  //     // { path: '/apps/friends', element: <Friends /> },
+  //     // { path: '/apps/gallery', element: <Gallery /> },
+  //     // { path: '/user-profile', element: <UserProfile /> },
+  //     // { path: '/pages/casl', element: <RollbaseCASL /> },
+  //     // { path: '/pages/treeview', element: <Treeview /> },
+  //     // { path: '/pages/pricing', element: <Pricing /> },
+  //     // { path: '/pages/account-settings', element: <AccountSetting /> },
+  //     // { path: '/pages/faq', element: <Faq /> },
+  //     // { path: '/forms/form-elements/autocomplete', element: <MuiAutoComplete /> },
+  //     // { path: '/forms/form-elements/button', element: <MuiButton /> },
+  //     // { path: '/forms/form-elements/checkbox', element: <MuiCheckbox /> },
+  //     // { path: '/forms/form-elements/radio', element: <MuiRadio /> },
+  //     // { path: '/forms/form-elements/slider', element: <MuiSlider /> },
+  //     // { path: '/forms/form-elements/date-time', element: <MuiDateTime /> },
+  //     // { path: '/forms/form-elements/switch', element: <MuiSwitch /> },
+  //     // { path: '/forms/form-elements/switch', element: <MuiSwitch /> },
+  //     // { path: '/forms/quill-editor', element: <QuillEditor /> },
+  //     // { path: '/forms/form-layouts', element: <FormLayouts /> },
+  //     // { path: '/forms/form-horizontal', element: <FormHorizontal /> },
+  //     // { path: '/forms/form-vertical', element: <FormVertical /> },
+  //     // { path: '/forms/form-custom', element: <FormCustom /> },
+  //     // { path: '/forms/form-wizard', element: <FormWizard /> },
+  //     // { path: '/forms/form-validation', element: <FormValidation /> },
+  //     // { path: '/tables/basic', element: <BasicTable /> },
+  //     // { path: '/tables/collapsible', element: <CollapsibleTable /> },
+  //     // { path: '/tables/enhanced', element: <EnhancedTable /> },
+  //     // { path: '/tables/fixed-header', element: <FixedHeaderTable /> },
+  //     // { path: '/tables/pagination', element: <PaginationTable /> },
+  //     // { path: '/tables/search', element: <SearchTable /> },
+  //     // { path: '/charts/line-chart', element: <LineChart /> },
+  //     // { path: '/charts/gredient-chart', element: <GredientChart /> },
+  //     // { path: '/charts/doughnut-pie-chart', element: <DoughnutChart /> },
+  //     // { path: '/charts/area-chart', element: <AreaChart /> },
+  //     // { path: '/charts/column-chart', element: <ColumnChart /> },
+  //     // { path: '/charts/candlestick-chart', element: <CandlestickChart /> },
+  //     // { path: '/charts/radialbar-chart', element: <RadialbarChart /> },
+  //     // { path: '/ui-components/alert', element: <MuiAlert /> },
+  //     // { path: '/ui-components/accordion', element: <MuiAccordion /> },
+  //     // { path: '/ui-components/avatar', element: <MuiAvatar /> },
+  //     // { path: '/ui-components/chip', element: <MuiChip /> },
+  //     // { path: '/ui-components/dialog', element: <MuiDialog /> },
+  //     // { path: '/ui-components/list', element: <MuiList /> },
+  //     // { path: '/ui-components/popover', element: <MuiPopover /> },
+  //     // { path: '/ui-components/rating', element: <MuiRating /> },
+  //     // { path: '/ui-components/tabs', element: <MuiTabs /> },
+  //     // { path: '/ui-components/tooltip', element: <MuiTooltip /> },
+  //     // { path: '/ui-components/transfer-list', element: <MuiTransferList /> },
+  //     // { path: '/ui-components/typography', element: <MuiTypography /> },
+  //     // { path: '/widgets/cards', element: <WidgetCards /> },
+  //     // { path: '/widgets/banners', element: <WidgetBanners /> },
+  //     // { path: '/widgets/charts', element: <WidgetCharts /> },
+  //     // { path: '*', element: <Navigate to="/auth/404" /> },
+  //   ],
+  // },
   {
-    element: <FullLayout />,
-    children: [
-      { path: '/', element: <Navigate to="/Index" /> },
-      // { path: '/dashboards/modern', exact: true, element: <ModernDash /> },
-      // { path: '/dashboards/ecommerce', exact: true, element: <EcommerceDash /> },
-      // { path: '/apps/chats', element: <Chats /> },
-      // { path: '/apps/notes', element: <Notes /> },
-      // { path: '/apps/calendar', element: <Calendar /> },
-      // { path: '/apps/email', element: <Email /> },
-      // { path: '/apps/tickets', element: <Tickets /> },
-      // { path: '/apps/contacts', element: <Contacts /> },
-      // { path: '/apps/ecommerce/shop', element: <Ecommerce /> },
-      // { path: '/apps/blog/posts', element: <Blog /> },
-      // { path: '/apps/blog/detail/:id', element: <BlogDetail /> },
-      // { path: '/apps/ecommerce/eco-product-list', element: <EcomProductList /> },
-      // { path: '/apps/ecommerce/eco-checkout', element: <EcomProductCheckout /> },
-      // { path: '/apps/ecommerce/detail/:id', element: <EcommerceDetail /> },
-      // { path: '/apps/followers', element: <Followers /> },
-      // { path: '/apps/friends', element: <Friends /> },
-      // { path: '/apps/gallery', element: <Gallery /> },
-      // { path: '/user-profile', element: <UserProfile /> },
-      // { path: '/pages/casl', element: <RollbaseCASL /> },
-      // { path: '/pages/treeview', element: <Treeview /> },
-      // { path: '/pages/pricing', element: <Pricing /> },
-      // { path: '/pages/account-settings', element: <AccountSetting /> },
-      // { path: '/pages/faq', element: <Faq /> },
-      // { path: '/forms/form-elements/autocomplete', element: <MuiAutoComplete /> },
-      // { path: '/forms/form-elements/button', element: <MuiButton /> },
-      // { path: '/forms/form-elements/checkbox', element: <MuiCheckbox /> },
-      // { path: '/forms/form-elements/radio', element: <MuiRadio /> },
-      // { path: '/forms/form-elements/slider', element: <MuiSlider /> },
-      // { path: '/forms/form-elements/date-time', element: <MuiDateTime /> },
-      // { path: '/forms/form-elements/switch', element: <MuiSwitch /> },
-      // { path: '/forms/form-elements/switch', element: <MuiSwitch /> },
-      // { path: '/forms/quill-editor', element: <QuillEditor /> },
-      // { path: '/forms/form-layouts', element: <FormLayouts /> },
-      // { path: '/forms/form-horizontal', element: <FormHorizontal /> },
-      // { path: '/forms/form-vertical', element: <FormVertical /> },
-      // { path: '/forms/form-custom', element: <FormCustom /> },
-      // { path: '/forms/form-wizard', element: <FormWizard /> },
-      // { path: '/forms/form-validation', element: <FormValidation /> },
-      // { path: '/tables/basic', element: <BasicTable /> },
-      // { path: '/tables/collapsible', element: <CollapsibleTable /> },
-      // { path: '/tables/enhanced', element: <EnhancedTable /> },
-      // { path: '/tables/fixed-header', element: <FixedHeaderTable /> },
-      // { path: '/tables/pagination', element: <PaginationTable /> },
-      // { path: '/tables/search', element: <SearchTable /> },
-      // { path: '/charts/line-chart', element: <LineChart /> },
-      // { path: '/charts/gredient-chart', element: <GredientChart /> },
-      // { path: '/charts/doughnut-pie-chart', element: <DoughnutChart /> },
-      // { path: '/charts/area-chart', element: <AreaChart /> },
-      // { path: '/charts/column-chart', element: <ColumnChart /> },
-      // { path: '/charts/candlestick-chart', element: <CandlestickChart /> },
-      // { path: '/charts/radialbar-chart', element: <RadialbarChart /> },
-      // { path: '/ui-components/alert', element: <MuiAlert /> },
-      // { path: '/ui-components/accordion', element: <MuiAccordion /> },
-      // { path: '/ui-components/avatar', element: <MuiAvatar /> },
-      // { path: '/ui-components/chip', element: <MuiChip /> },
-      // { path: '/ui-components/dialog', element: <MuiDialog /> },
-      // { path: '/ui-components/list', element: <MuiList /> },
-      // { path: '/ui-components/popover', element: <MuiPopover /> },
-      // { path: '/ui-components/rating', element: <MuiRating /> },
-      // { path: '/ui-components/tabs', element: <MuiTabs /> },
-      // { path: '/ui-components/tooltip', element: <MuiTooltip /> },
-      // { path: '/ui-components/transfer-list', element: <MuiTransferList /> },
-      // { path: '/ui-components/typography', element: <MuiTypography /> },
-      // { path: '/widgets/cards', element: <WidgetCards /> },
-      // { path: '/widgets/banners', element: <WidgetBanners /> },
-      // { path: '/widgets/charts', element: <WidgetCharts /> },
-
-      { path: '*', element: <Navigate to="/auth/404" /> },
-    ],
-  },
-  {
+    //แอดมิน
     element: <RouterAdmin />,
     children: [
-      { path: '/Admin/Index', element: <IndexAdmin /> },
+      //หน้าแรก
+      { path: '/admin/index', element: <IndexAdmin /> },
 
-      { path: '/manage/admin', element: <ManageAdmin /> },
-      { path: '/manage/admin/add', element: <AddAdmin /> },
-      { path: '/manage/admin/:_id', element: <EditAdmin /> },
+      //จัดการผู้ใช้ระบบ
+      { path: '/admin/manage/user', element: <ManageAdmin /> },
+      { path: '/admin/manage/user/add', element: <AddAdmin /> },
+      { path: '/admin/manage/user/:_id', element: <EditAdmin /> },
 
-      { path: '/manage/student', element: <ManageStudent /> },
-      { path: '/manage/student/add', element: <AddStudent /> },
-      { path: '/manage/student/edit/:_id', element: <EditStudent /> },
+      //จัดการข้อมูลหลักสูตร
+      { path: '/admin/manage/curriculum', element: <ManageCurriculum /> },
+      { path: '/admin/manage/curriculum/add', element: <AddCurriculum /> },
+      { path: '/admin/manage/curriculum/:_id/structure/edit/CS-:_id', element: <EditCurriculum /> },
 
-      { path: '/manage/curriculum', element: <ManageCurriculum /> },
-      { path: '/manage/curriculum/add', element: <AddCurriculum /> },
-      { path: '/manage/curriculum/:_id/structure/edit/CS-:_id', element: <EditCurriculum /> },
-      //http://localhost:3000/manage/curriculum/3424033/structure/edit/CS-3424033
-
+      //จัดการข้อมูลโครงสร้าง
       {
-        path: '/manage/curriculum/:curriculum/structure/:structure_id',
+        path: '/admin/manage/curriculum/:curriculum/structure/:structure_id',
         element: <ManageStructure />,
       },
-      //http://localhost:3000/manage/curriculum/3424033/structure/CS-3424033
       {
-        path: '/manage/curriculum/:curriculum/structure/:structure_id/add',
+        path: '/admin/manage/curriculum/:curriculum/structure/:structure_id/add',
         element: <AddStructure />,
       },
-      //http://localhost:3000/manage/curriculum/3424033/structure/CS-3424033/add
       {
-        path: '/manage/curriculum/:curriculum/structure/:structure_id/edit/:_id',
+        path: '/admin/manage/curriculum/:curriculum/structure/:structure_id/edit/:_id',
         element: <EditStructure />,
       },
-      //http://localhost:3000/manage/curriculum/3424033/structure/CS-3424033/edit/6572b2b4cce09e532f4b9604
 
+      //จัดการข้อมูลรายวิชา
       {
-        path: '/manage/curriculum/:curriculum/structure/:structure_id/group/:group_id/subject/add',
+        path: '/admin/manage/curriculum/:curriculum/structure/:structure_id/group/:group_id/subject/add',
         element: <AddSubject />,
       },
-      //http://localhost:3000/manage/curriculum/3424033/structure/CS-3424033/group/1.1/subject/add
       {
-        path: '/manage/curriculum/:curriculum/structure/:structure_id/group/:group_id/subject/edit/:_id',
+        path: '/admin/manage/curriculum/:curriculum/structure/:structure_id/group/:group_id/subject/edit/:_id',
         element: <EditSubject />,
       },
-      //http://localhost:3000/manage/curriculum/3424033/structure/CS-3424033/group/1.1/subject/edit/:_id
-      { path: '*', element: <Navigate to="/auth/404" /> },
 
-      { path: '/manage/extrasubject', element: <ManageExtraSubject /> },
-      { path: '/manage/extrasubject/add', element: <AddExtraSubject /> },
-      { path: '/manage/extrasubject/edit/:_id', element: <EditExtraSubject /> },
+      //จัดการข้อมูลนักศึกษา
+      { path: '/admin/manage/student', element: <ManageStudent /> },
+      { path: '/admin/manage/student/add', element: <AddStudent /> },
+      { path: '/admin/manage/student/edit/:_id', element: <EditStudent /> },
 
-      { path: '/manage/machsubject', element: <ManageMachSubject /> },
+      //จัดการข้อมูลรายวิชานอก
+      { path: '/admin/manage/extrasubject', element: <ManageExtraSubject /> },
+      { path: '/admin/manage/extrasubject/add', element: <AddExtraSubject /> },
+      { path: '/admin/manage/extrasubject/edit/:_id', element: <EditExtraSubject /> },
+
+      //จัดการข้อมูลคู่เทียบรายวิชา
+      { path: '/admin/manage/machsubject', element: <ManageMachSubject /> },
       {
-        path: '/manage/machsubject/curriculum/:curriculum/structure/:structure_id',
+        path: '/admin/manage/machsubject/curriculum/:curriculum/structure/:structure_id',
         element: <ListMachSubject />,
       },
       {
-        path: '/manage/machsubject/curriculum/:curriculum/structure/:structure_id/add',
+        path: '/admin/manage/machsubject/curriculum/:curriculum/structure/:structure_id/add',
         element: <AddMachSubject />,
       },
       {
-        path: '/manage/machsubject/curriculum/:curriculum/structure/:structure_id/:subject_id/add',
+        path: '/admin/manage/machsubject/curriculum/:curriculum/structure/:structure_id/:subject_id/add',
         element: <AddMachSubjectList />,
       },
       {
-        path: '/manage/machsubject/curriculum/:curriculum/structure/:structure_id/:subject_id/:_id/edit',
+        path: '/admin/manage/machsubject/curriculum/:curriculum/structure/:structure_id/:subject_id/:_id/edit',
         element: <EditMachSubjectList />,
       },
     ],
   },
   {
     element: <RouterOfficer />,
-    children: [
-      { path: '/Officer/Index', element: <IndexOfficer /> },
-
-      { path: '/manage/student', element: <ManageStudent /> },
-      { path: '/manage/student/add', element: <AddStudent /> },
-      { path: '/manage/student/edit/:_id', element: <EditStudent /> },
-
-      { path: '/manage/curriculum', element: <ManageCurriculum /> },
-      { path: '/manage/curriculum/add', element: <AddCurriculum /> },
-      { path: '/manage/curriculum/:_id/structure/edit/CS-:_id', element: <EditCurriculum /> },
-      //http://localhost:3000/manage/curriculum/3424033/structure/edit/CS-3424033
-
-      {
-        path: '/manage/curriculum/:curriculum/structure/:structure_id',
-        element: <ManageStructure />,
-      },
-      //http://localhost:3000/manage/curriculum/3424033/structure/CS-3424033
-      {
-        path: '/manage/curriculum/:curriculum/structure/:structure_id/add',
-        element: <AddStructure />,
-      },
-      //http://localhost:3000/manage/curriculum/3424033/structure/CS-3424033/add
-      {
-        path: '/manage/curriculum/:curriculum/structure/:structure_id/edit/:_id',
-        element: <EditStructure />,
-      },
-      //http://localhost:3000/manage/curriculum/3424033/structure/CS-3424033/edit/6572b2b4cce09e532f4b9604
-
-      {
-        path: '/manage/curriculum/:curriculum/structure/:structure_id/group/:group_id/subject/add',
-        element: <AddSubject />,
-      },
-      //http://localhost:3000/manage/curriculum/3424033/structure/CS-3424033/group/1.1/subject/add
-      {
-        path: '/manage/curriculum/:curriculum/structure/:structure_id/group/:group_id/subject/edit/:_id',
-        element: <EditSubject />,
-      },
-      //http://localhost:3000/manage/curriculum/3424033/structure/CS-3424033/group/1.1/subject/edit/:_id
-      { path: '*', element: <Navigate to="/auth/404" /> },
-
-      { path: '/manage/extrasubject', element: <ManageExtraSubject /> },
-      { path: '/manage/extrasubject/add', element: <AddExtraSubject /> },
-      { path: '/manage/extrasubject/edit/:_id', element: <EditExtraSubject /> },
-
-      { path: '/manage/machsubject', element: <ManageMachSubject /> },
-      {
-        path: '/manage/machsubject/curriculum/:curriculum/structure/:structure_id',
-        element: <ListMachSubject />,
-      },
-      {
-        path: '/manage/machsubject/curriculum/:curriculum/structure/:structure_id/add',
-        element: <AddMachSubject />,
-      },
-      {
-        path: '/manage/machsubject/curriculum/:curriculum/structure/:structure_id/:subject_id/add',
-        element: <AddMachSubjectList />,
-      },
-      {
-        path: '/manage/machsubject/curriculum/:curriculum/structure/:structure_id/:subject_id/:_id/edit',
-        element: <EditMachSubjectList />,
-      },
-    ],
+    children: [{ path: '/officer/index', element: <IndexOfficer /> }],
   },
   {
     element: <RouterLecturer />,
-    children: [
-      { path: '/Lecturer/Index', element: <IndexLecturer /> },
-
-      { path: '/manage/student', element: <ManageStudent /> },
-      { path: '/manage/student/add', element: <AddStudent /> },
-      { path: '/manage/student/edit/:_id', element: <EditStudent /> },
-
-      { path: '/manage/curriculum', element: <ManageCurriculum /> },
-      { path: '/manage/curriculum/add', element: <AddCurriculum /> },
-      { path: '/manage/curriculum/:_id/structure/edit/CS-:_id', element: <EditCurriculum /> },
-      //http://localhost:3000/manage/curriculum/3424033/structure/edit/CS-3424033
-
-      {
-        path: '/manage/curriculum/:curriculum/structure/:structure_id',
-        element: <ManageStructure />,
-      },
-      //http://localhost:3000/manage/curriculum/3424033/structure/CS-3424033
-      {
-        path: '/manage/curriculum/:curriculum/structure/:structure_id/add',
-        element: <AddStructure />,
-      },
-      //http://localhost:3000/manage/curriculum/3424033/structure/CS-3424033/add
-      {
-        path: '/manage/curriculum/:curriculum/structure/:structure_id/edit/:_id',
-        element: <EditStructure />,
-      },
-      //http://localhost:3000/manage/curriculum/3424033/structure/CS-3424033/edit/6572b2b4cce09e532f4b9604
-
-      {
-        path: '/manage/curriculum/:curriculum/structure/:structure_id/group/:group_id/subject/add',
-        element: <AddSubject />,
-      },
-      //http://localhost:3000/manage/curriculum/3424033/structure/CS-3424033/group/1.1/subject/add
-      {
-        path: '/manage/curriculum/:curriculum/structure/:structure_id/group/:group_id/subject/edit/:_id',
-        element: <EditSubject />,
-      },
-      //http://localhost:3000/manage/curriculum/3424033/structure/CS-3424033/group/1.1/subject/edit/:_id
-      { path: '*', element: <Navigate to="/auth/404" /> },
-
-      { path: '/manage/extrasubject', element: <ManageExtraSubject /> },
-      { path: '/manage/extrasubject/add', element: <AddExtraSubject /> },
-      { path: '/manage/extrasubject/edit/:_id', element: <EditExtraSubject /> },
-
-      { path: '/manage/machsubject', element: <ManageMachSubject /> },
-      {
-        path: '/manage/machsubject/curriculum/:curriculum/structure/:structure_id',
-        element: <ListMachSubject />,
-      },
-      {
-        path: '/manage/machsubject/curriculum/:curriculum/structure/:structure_id/add',
-        element: <AddMachSubject />,
-      },
-      {
-        path: '/manage/machsubject/curriculum/:curriculum/structure/:structure_id/:subject_id/add',
-        element: <AddMachSubjectList />,
-      },
-      {
-        path: '/manage/machsubject/curriculum/:curriculum/structure/:structure_id/:subject_id/:_id/edit',
-        element: <EditMachSubjectList />,
-      },
-    ],
+    children: [{ path: '/Lecturer/Index', element: <IndexLecturer /> }],
   },
   {
     element: <RouterStudent />,
@@ -487,7 +362,10 @@ const Router = [
       { path: '/Login/Student', element: <LoginStudent /> },
       { path: '/Login/Admin', element: <LoginAdmin /> },
       { path: '/machsubject', element: <ShowMachSubject /> },
-      { path: '/machsubject/curriculum/:curriculum/structure/:structure_id', element: <ShowListMachSubject /> },
+      {
+        path: '/machsubject/curriculum/:curriculum/structure/:structure_id',
+        element: <ShowListMachSubject />,
+      },
       { path: '/test', element: <TestTransfer /> },
       // { path: '/auth/login', element: <Login /> },
       // { path: '/auth/login2', element: <Login2 /> },
@@ -498,7 +376,7 @@ const Router = [
       // { path: '/auth/two-steps', element: <TwoSteps /> },
       // { path: '/auth/two-steps2', element: <TwoSteps2 /> },
       // { path: '/auth/maintenance', element: <Maintenance /> },
-      { path: '/Index', element: <IndexPage /> },
+      { path: '/', element: <IndexPage /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },

@@ -21,7 +21,7 @@ const ManageExtraSubject = () => {
               color="primary"
               startIcon={<IconCirclePlus width={18} />}
               component={Link}
-              to={'/manage/extrasubject/add'}
+              to={'/admin/manage/extrasubject/add'}
             >
               เพิ่มรายวิชานอกหลักสูตร
             </Button>

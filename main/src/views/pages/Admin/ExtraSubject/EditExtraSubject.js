@@ -62,7 +62,7 @@ const ExtraSubject = () => {
         icon: 'success',
         title: 'แก้ไขข้อมูลสำเร็จ',
       });
-      navigate('/manage/extrasubject/');
+      navigate(-1);
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -70,6 +70,10 @@ const ExtraSubject = () => {
       });
       console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูล:', error);
     }
+  };
+
+  const handleBack = () => {
+    navigate(-1);
   };
 
   return (
@@ -165,8 +169,7 @@ const ExtraSubject = () => {
                   <Button
                     variant="outlined"
                     color="warning"
-                    component={Link}
-                    to={'/manage/extrasubject/'}
+                    onClick={handleBack}
                   >
                     ยกเลิก
                   </Button>

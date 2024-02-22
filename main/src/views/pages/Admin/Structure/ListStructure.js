@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   Box,
   Table,
@@ -19,6 +19,7 @@ import {
   IconSquarePlus,
   IconEditCircle,
   IconCircleMinus,
+  IconArrowBackUp
 } from '@tabler/icons';
 import Swal from 'sweetalert2';
 
@@ -112,20 +113,34 @@ const ListStructure = () => {
     });
   };
 
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <>
       <Grid container spacing={3}>
         <Grid item sm={12}>
           <ParentCard
             title={
-              <Stack spacing={1} direction={{ xs: 'column', sm: 'row' }} justifyContent="end">
+              <Stack spacing={1} direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between">
+                <Button
+                  variant="outlined"
+                  color="error"
+                  startIcon={<IconArrowBackUp width={18} />}
+                  onClick={handleBack}
+                >
+                  ย้อนกลับ
+                </Button>
                 <Button
                   variant="outlined"
                   color="primary"
                   startIcon={<IconSquarePlus width={18} />}
                   component={Link}
                   to={
-                    '/manage/curriculum/' +
+                    '/admin/manage/curriculum/' +
                     params.curriculum +
                     '/structure/' +
                     params.structure_id +
@@ -170,7 +185,7 @@ const ListStructure = () => {
                                 <IconButton
                                   component={Link}
                                   to={
-                                    '/manage/curriculum/' +
+                                    '/admin/manage/curriculum/' +
                                     item.curriculum +
                                     '/structure/' +
                                     item.structure_id +
@@ -207,7 +222,7 @@ const ListStructure = () => {
                                   <IconButton
                                     component={Link}
                                     to={
-                                      '/manage/curriculum/' +
+                                      '/admin/manage/curriculum/' +
                                       item.curriculum +
                                       '/structure/' +
                                       item.structure_id +
@@ -251,7 +266,7 @@ const ListStructure = () => {
                                         <IconButton
                                           component={Link}
                                           to={
-                                            '/manage/curriculum/' +
+                                            '/admin/manage/curriculum/' +
                                             item.curriculum +
                                             '/structure/' +
                                             item.structure_id +

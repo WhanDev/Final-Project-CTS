@@ -41,7 +41,7 @@ const AddCurriculum = () => {
         icon: 'success',
         title: 'บันทึกข้อมูลสำเร็จ',
       });
-      navigate('/manage/curriculum');
+      navigate(-1);
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -50,6 +50,10 @@ const AddCurriculum = () => {
       });
       console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);
     }
+  };
+
+  const handleBank = () => {
+    navigate(-1);
   };
 
   return (
@@ -113,8 +117,7 @@ const AddCurriculum = () => {
                   <Button
                     variant="outlined"
                     color="warning"
-                    component={Link}
-                    to={'/manage/curriculum'}
+                    onClick={handleBank}
                   >
                     ยกเลิก
                   </Button>

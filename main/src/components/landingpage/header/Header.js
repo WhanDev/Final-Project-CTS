@@ -82,7 +82,7 @@ const LpHeader = () => {
                 color="inherit"
                 sx={{ color: (theme) => theme.palette.text.primary }}
                 variant="text"
-                to="/index"
+                to="/"
                 component={Link}
               >
                 หน้าแรก

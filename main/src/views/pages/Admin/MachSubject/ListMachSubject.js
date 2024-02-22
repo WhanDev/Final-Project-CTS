@@ -173,7 +173,19 @@ const CollapsibleRow = ({ row }) => {
                       </Typography>
                     </TableCell>
                     <TableCell align="center" width={'20%'}>
-                      <IconButton color="info">
+                      <IconButton
+                        color="info"
+                        component={Link}
+                        to={
+                          '/admin/manage/machsubject/curriculum/' +
+                          params.curriculum +
+                          '/structure/' +
+                          params.structure_id +
+                          '/' +
+                          row.subject_id +
+                          '/add'
+                        }
+                      >
                         <IconCirclePlus size="18" />
                         <Typography variant="h6" fontWeight={400} marginLeft={1}>
                           เพิ่มรายการคู่เทียบโอน
@@ -224,7 +236,7 @@ const CollapsibleRow = ({ row }) => {
                                       color="info"
                                       component={Link}
                                       to={
-                                        '/manage/machsubject/curriculum/' +
+                                        '/admin/manage/machsubject/curriculum/' +
                                         params.curriculum +
                                         '/structure/' +
                                         params.structure_id +
@@ -239,9 +251,7 @@ const CollapsibleRow = ({ row }) => {
                                     </IconButton>
                                     <IconButton
                                       color="error"
-                                      onClick={() =>
-                                        handleRemoveMachSubjectList(machtList._id)
-                                      }
+                                      onClick={() => handleRemoveMachSubjectList(machtList._id)}
                                     >
                                       <IconCircleMinus size="18" />
                                     </IconButton>
@@ -337,7 +347,7 @@ const ListMachSubject = () => {
                     color="info"
                     component={Link}
                     to={
-                      '/manage/machsubject/curriculum/' +
+                      '/admin/manage/machsubject/curriculum/' +
                       params.curriculum +
                       '/structure/' +
                       params.structure_id +

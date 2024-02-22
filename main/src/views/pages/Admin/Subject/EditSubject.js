@@ -87,7 +87,7 @@ const EditSubject = () => {
         icon: 'success',
         title: 'แก้ไขข้อมูลสำเร็จ',
       });
-      navigate('/manage/curriculum/' + params.curriculum + '/structure/' + params.structure_id);
+      navigate(-1);
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -98,12 +98,22 @@ const EditSubject = () => {
     }
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <PageContainer
       title="แก้ไขข้อมูลรายวิชา | จัดการข้อมูลรายวิชา"
       description="จัดการข้อมูลรายวิชา"
     >
-      <Breadcrumb title={<>วิชา {data.subject_id} {data.subject_nameTh}</>} />
+      <Breadcrumb
+        title={
+          <>
+            วิชา {data.subject_id} {data.subject_nameTh}
+          </>
+        }
+      />
 
       <ParentCard
         title={
@@ -193,13 +203,9 @@ const EditSubject = () => {
                   <Button
                     variant="outlined"
                     color="warning"
-                    component={Link}
-                    to={
-                      '/manage/curriculum/' +
-                      params.curriculum +
-                      '/structure/' +
-                      params.structure_id
-                    }
+                    onClick={() => {
+                      handleBack();
+                    }}
                   >
                     ยกเลิก
                   </Button>

@@ -143,7 +143,7 @@ const ListExtraSubject = () => {
                     <DialogExtraSubject _id={item._id} />
                     <IconButton
                       component={Link}
-                      to={`/manage/extrasubject/edit/${item._id}`}
+                      to={`/admin/manage/extrasubject/edit/${item._id}`}
                       color="warning"
                     >
                       <IconEditCircle size="18" />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Grid, MenuItem, Button, Radio, RadioGroup, FormControlLabel } from '@mui/material';
 import Swal from 'sweetalert2';
 
@@ -88,7 +88,7 @@ const AddAdmin = () => {
         icon: 'success',
         title: 'บันทึกข้อมูลสำเร็จ',
       });
-      navigate('/manage/admin');
+      navigate(-1);
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -97,6 +97,10 @@ const AddAdmin = () => {
       });
       console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);
     }
+  };
+
+  const handleBack = () => {
+    navigate(-1);
   };
 
   return (
@@ -191,7 +195,7 @@ const AddAdmin = () => {
                   <Button type="submit" variant="contained" color="success">
                     บันทึก
                   </Button>
-                  <Button variant="outlined" color="warning" component={Link} to={'/manage/admin'}>
+                  <Button variant="outlined" color="warning" onClick={handleBack}>
                     ยกเลิก
                   </Button>
                 </Stack>

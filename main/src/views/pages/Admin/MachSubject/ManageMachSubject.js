@@ -78,7 +78,7 @@ const ManageMachSubject = () => {
                         <IconButton
                           component={Link}
                           to={
-                            '/manage/machsubject/curriculum/' +
+                            '/admin/manage/machsubject/curriculum/' +
                             item._id +
                             '/structure/CS-' +
                             item._id

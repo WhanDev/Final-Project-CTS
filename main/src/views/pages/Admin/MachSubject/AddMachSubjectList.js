@@ -86,12 +86,7 @@ const AddMachSubjectList = () => {
         title: 'บันทึกข้อมูลสำเร็จ',
       });
 
-      navigate(
-        '/manage/machsubject/curriculum/' +
-          params.curriculum +
-          '/structure/CS-' +
-          params.curriculum,
-      );
+      navigate(-1);
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -100,6 +95,10 @@ const AddMachSubjectList = () => {
       });
       console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);
     }
+  };
+
+  const handleBack = () => {
+    navigate(-1);
   };
 
   return (
@@ -192,13 +191,7 @@ const AddMachSubjectList = () => {
                   <Button
                     variant="outlined"
                     color="warning"
-                    component={Link}
-                    to={
-                      '/manage/machsubject/curriculum/' +
-                      params.curriculum +
-                      '/structure/CS-' +
-                      params.curriculum
-                    }
+                    onClick={() => handleBack()}
                   >
                     ยกเลิก
                   </Button>

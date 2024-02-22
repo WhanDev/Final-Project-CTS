@@ -43,7 +43,7 @@ const ExtraSubject = () => {
         icon: 'success',
         title: 'บันทึกข้อมูลสำเร็จ',
       });
-      navigate('/manage/extrasubject/');
+      navigate(-1);
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -51,6 +51,10 @@ const ExtraSubject = () => {
       });
       console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);
     }
+  };
+
+  const handleBack = () => {
+    navigate(-1);
   };
 
   return (
@@ -135,12 +139,7 @@ const ExtraSubject = () => {
                   <Button type="submit" variant="contained" color="success">
                     บันทึก
                   </Button>
-                  <Button
-                    variant="outlined"
-                    color="warning"
-                    component={Link}
-                    to={'/manage/extrasubject/'}
-                  >
+                  <Button variant="outlined" color="warning" onClick={handleBack}>
                     ยกเลิก
                   </Button>
                 </Stack>

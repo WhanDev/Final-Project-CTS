@@ -15,11 +15,9 @@ import Swal from 'sweetalert2';
 import { IconTrash, IconEdit } from '@tabler/icons';
 import { list as listAdmin, remove as removeAdmin } from '../../../../function/admin';
 import { read as readCurriculum } from '../../../../function/curriculum';
-import { useSelector } from 'react-redux';
+import { currentUser } from '../../../../function/auth';
 
 const ListAdmin = () => {
-  const { user } = useSelector((state) => ({ ...state }));
-
   const [admin, setDataAdmin] = useState([]);
 
   const loadDataAdmin = async () => {
@@ -62,12 +60,28 @@ const ListAdmin = () => {
       if (result.isConfirmed) {
         Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
         removeAdmin(_id).then((res) => {
-          console.log(res);
           loadDataAdmin();
         });
       }
     });
   };
+
+  const token = localStorage.getItem('token');
+  const [user, setUser] = useState([]);
+
+  const CheckUser = async () => {
+    try {
+      const res = await currentUser(token);
+      setUser(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  useEffect(() => {
+    CheckUser();
+  }, []);
 
   return (
     <Box mt={2}>
@@ -76,19 +90,19 @@ const ListAdmin = () => {
           <TableHead>
             <TableRow>
               <TableCell align="center">
-                <Typography variant="h6">รหัสประจำตัว</Typography>
+                <Typography variant="h5">รหัสประจำตัว</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h6">ชื่อ-นามสกุล</Typography>
+                <Typography variant="h5">ชื่อ-นามสกุล</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h6">สิทธิ์ผู้ดูแล</Typography>
+                <Typography variant="h5">สิทธิ์ผู้ดูแล</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h6">หลักสูตร</Typography>
+                <Typography variant="h5">หลักสูตร</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h6">จัดการข้อมูล</Typography>
+                <Typography variant="h5">จัดการข้อมูล</Typography>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -96,18 +110,18 @@ const ListAdmin = () => {
             {admin.length > 0 ? (
               admin.map(
                 (item, index) =>
-                  user.user._id !== item._id && (
+                  user._id !== item._id && (
                     <TableRow key={index} hover>
                       <TableCell align="center">{item._id}</TableCell>
                       <TableCell align="center">{item.fullname}</TableCell>
                       <TableCell align="center">{item.role}</TableCell>
                       <TableCell align="center">
-                        {curriculum[item.curriculum]?.name || 'Loading...'}
+                        {curriculum[item.curriculum]?.name}
                       </TableCell>
                       <TableCell align="center">
                         <IconButton
                           component={Link}
-                          to={'/manage/admin/' + item._id}
+                          to={'/admin/manage/user/' + item._id}
                           color="warning"
                         >
                           <IconEdit size="18" />

@@ -260,7 +260,7 @@ const ListStudent = () => {
             variant="outlined"
             color="primary"
             component={Link}
-            to={'/manage/student/add'}
+            to={'/admin/manage/student/add'}
             startIcon={<IconCirclePlus width={18} />}
           >
             เพิ่มข้อมูลนักศึกษา
@@ -354,7 +354,7 @@ const ListStudent = () => {
                     <TableCell width={'10%'} align="center">
                       <IconButton
                         component={Link}
-                        to={'/manage/student/edit/' + item._id}
+                        to={'/admin/manage/student/edit/' + item._id}
                         color="warning"
                       >
                         <IconEditCircle size="18" />

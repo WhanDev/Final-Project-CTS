@@ -59,7 +59,7 @@ const EditCurriculum = () => {
         icon: 'success',
         title: 'แก้ไขข้อมูลสำเร็จ',
       });
-      navigate('/manage/curriculum');
+      navigate(-1);
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -68,6 +68,10 @@ const EditCurriculum = () => {
       });
       console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูล:', error);
     }
+  };
+
+  const handleBank = () => {
+    navigate(-1);
   };
 
   return (
@@ -125,12 +129,7 @@ const EditCurriculum = () => {
                   <Button type="submit" variant="contained" color="success">
                     บันทึก
                   </Button>
-                  <Button
-                    variant="outlined"
-                    color="warning"
-                    component={Link}
-                    to={'/manage/curriculum'}
-                  >
+                  <Button variant="outlined" color="warning" onClick={handleBank}>
                     ยกเลิก
                   </Button>
                 </Stack>

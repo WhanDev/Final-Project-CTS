@@ -14,16 +14,16 @@ const BlankLayout = () => {
       if (res.data.role) {
         switch (res.data.role) {
           case 'แอดมิน':
-            navigate('/Admin/Index');
+            navigate('/admin/index');
             break;
           case 'เจ้าหน้าที่':
-            navigate('/Officer/Index');
+            navigate('/officer/index');
             break;
           case 'อาจารย์':
-            navigate('/Lecturer/Index');
+            navigate('/lecturer/index');
             break;
           case 'นักศึกษา':
-            navigate('/Student/Index');
+            navigate('/student/index');
             break;
           default:
             navigate('/');

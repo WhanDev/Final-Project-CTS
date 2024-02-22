@@ -21,7 +21,7 @@ const ManageAdmin = () => {
               color="primary"
               startIcon={<IconUserPlus width={18} />}
               component={Link}
-              to={'/manage/admin/add'}
+              to={'/admin/manage/user/add'}
             >
               เพิ่มข้อมูลผู้ใช้ระบบ
             </Button>

@@ -63,25 +63,25 @@ const ListCurriculum = () => {
           <TableHead>
             <TableRow>
               <TableCell>
-                <Typography variant="h6" align='center'>ลำดับ</Typography>
+                <Typography variant="h5" align='center'>ลำดับ</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6" align='center'>รหัสหลักสูตร</Typography>
+                <Typography variant="h5" align='center'>รหัสหลักสูตร</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6" align='left'>ชื่อหลักสูตร</Typography>
+                <Typography variant="h5" align='left'>ชื่อหลักสูตร</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6" align='center'>ระดับการศึกษา</Typography>
+                <Typography variant="h5" align='center'>ระดับการศึกษา</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6" align='center'>หลักสูตรปี พ.ศ</Typography>
+                <Typography variant="h5" align='center'>หลักสูตรปี พ.ศ</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6" align='center'>ระยะเวลาการศึกษา</Typography>
+                <Typography variant="h5" align='center'>ระยะเวลาการศึกษา</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h6" align='center'>จัดการข้อมูล</Typography>
+                <Typography variant="h5" align='center'>จัดการข้อมูล</Typography>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -98,14 +98,14 @@ const ListCurriculum = () => {
                   <TableCell align="center">
                     <IconButton
                       component={Link}
-                      to={'/manage/curriculum/' + item._id + '/structure/CS-' + item._id}
+                      to={'/admin/manage/curriculum/' + item._id + '/structure/CS-' + item._id}
                       color="info"
                     >
                       <IconListSearch size="18" />
                     </IconButton>
                     <IconButton
                       component={Link}
-                      to={'/manage/curriculum/' + item._id + '/structure/edit/CS-' + item._id}
+                      to={'/admin/manage/curriculum/' + item._id + '/structure/edit/CS-' + item._id}
                       color="warning"
                     >
                       <IconEdit size="18" />

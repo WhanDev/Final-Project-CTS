@@ -81,7 +81,7 @@ const EditStructure = () => {
         icon: 'success',
         title: 'แก้ไขข้อมูลสำเร็จ',
       });
-      navigate('/manage/curriculum/' + params.curriculum + '/structure/' + params.structure_id);
+      navigate(-1);
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -90,6 +90,10 @@ const EditStructure = () => {
       });
       console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูล:', error);
     }
+  };
+
+  const handleBack = () => {
+    navigate(-1);
   };
 
   return (
@@ -147,13 +151,7 @@ const EditStructure = () => {
                   <Button
                     variant="outlined"
                     color="warning"
-                    component={Link}
-                    to={
-                      '/manage/curriculum/' +
-                      params.curriculum +
-                      '/structure/' +
-                      params.structure_id
-                    }
+                    onClick={handleBack}
                   >
                     ยกเลิก
                   </Button>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Grid, MenuItem, Button } from '@mui/material';
 import Swal from 'sweetalert2';
 
@@ -104,7 +104,7 @@ const EditStudent = () => {
         icon: 'success',
         title: 'แก้ไขข้อมูลสำเร็จ',
       });
-      navigate('/manage/student');
+      navigate(-1);
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -113,6 +113,10 @@ const EditStudent = () => {
       });
       console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูล:', error);
     }
+  };
+
+  const handleBack = () => {
+    navigate(-1);
   };
 
   return (
@@ -214,8 +218,7 @@ const EditStudent = () => {
                   <Button
                     variant="outlined"
                     color="warning"
-                    component={Link}
-                    to={'/manage/student'}
+                    onClick={handleBack}
                   >
                     ยกเลิก
                   </Button>
