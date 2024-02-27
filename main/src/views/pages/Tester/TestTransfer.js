@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   IconButton,
   Container,
@@ -23,8 +24,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { IconCirclePlus, IconCircleMinus } from '@tabler/icons';
 import { list as AllExtraSubject } from '../../../function/extar-subject';
-import { setExtraSubjects } from '../../../store/extraSubjectTester';
-
+import { setExtraSubjects } from '../../../store/extraSubjectSlice';
 
 const TestTransfer = () => {
   const [ExtraSubject, setExtraSubject] = useState([]);
@@ -63,6 +63,7 @@ const TestTransfer = () => {
   const [transferList, setTransferList] = useState([]);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -87,6 +88,8 @@ const TestTransfer = () => {
     setTransferList(filteredTransferData);
 
     console.log(transferList);
+
+    navigate('/test/check');
 
     dispatch(setExtraSubjects(filteredTransferData));
   };
@@ -189,6 +192,7 @@ const TestTransfer = () => {
                                     <TableCell align="center" width="10%">
                                       <TextField
                                         name={`grade-${index}`}
+                                        type="number"
                                         variant="outlined"
                                         required
                                       />
