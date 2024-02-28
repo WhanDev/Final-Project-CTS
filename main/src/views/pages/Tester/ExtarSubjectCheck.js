@@ -52,11 +52,10 @@ const ExtarSubjectCheck = () => {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
-    console.log('handleSubmit');
+    navigate('/test/mach');
   };
 
   const handleBack = () => {
-    console.log('handleBack');
     navigate(-1);
   };
 

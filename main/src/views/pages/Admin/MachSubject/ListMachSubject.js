@@ -129,143 +129,145 @@ const CollapsibleRow = ({ row }) => {
         )}
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
+        <TableCell style={{ padding: 0, margin: 0 }}  colSpan={7}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box margin={1}>
-              <Typography
-                gutterBottom
-                variant="h6"
-                sx={{
-                  mt: 2,
-                  backgroundColor: (theme) => theme.palette.grey.A200,
-                  p: '5px 15px',
-                  color: (theme) =>
-                    `${
-                      theme.palette.mode === 'dark'
-                        ? theme.palette.grey.A200
-                        : 'rgba(0, 0, 0, 0.87)'
-                    }`,
-                }}
-              >
-                รายวิชาที่นำมาเทียบได้
-              </Typography>
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="center" width={'10%'}>
-                      <Typography variant="h6" fontWeight={400}>
-                        ลำดับ
+            <Typography
+              gutterBottom
+              variant="h6"
+              sx={{
+                mt: 2,
+                backgroundColor: (theme) => theme.palette.grey.A200,
+                p: '5px 15px',
+                color: (theme) =>
+                  `${
+                    theme.palette.mode === 'dark' ? theme.palette.grey.A200 : 'rgba(0, 0, 0, 0.87)'
+                  }`,
+              }}
+            >
+              รายวิชาที่นำมาเทียบได้
+            </Typography>
+            <Table size="small" aria-label="purchases">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center" width={'5%'} sx={{ px: 0, mx: 0 }}></TableCell>
+                  <TableCell align="center" width={'10%'} sx={{ px: 0, mx: 0 }}>
+                    <Typography variant="h6" fontWeight={400}>
+                      รหัสวิชา
+                    </Typography>
+                  </TableCell>
+                  <TableCell width={'50%'} sx={{ px: 0, mx: 0 }}>
+                    <Typography variant="h6" fontWeight={400}>
+                      ชื่อวิชา
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="center" width={'10%'} sx={{ px: 0, mx: 0 }}>
+                    <Typography variant="h6" fontWeight={400}>
+                      หน่วยกิต
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="center" width={'20%'} sx={{ px: 0, mx: 0 }}>
+                    <IconButton
+                      color="info"
+                      component={Link}
+                      to={
+                        '/admin/manage/machsubject/curriculum/' +
+                        params.curriculum +
+                        '/structure/' +
+                        params.structure_id +
+                        '/' +
+                        row.subject_id +
+                        '/add'
+                      }
+                    >
+                      <IconCirclePlus size="18" />
+                      <Typography variant="h6" fontWeight={400} marginLeft={1}>
+                        เพิ่มรายการคู่เทียบโอน
                       </Typography>
-                    </TableCell>
-                    <TableCell align="center" width={'10%'}>
-                      <Typography variant="h6" fontWeight={400}>
-                        รหัสวิชา
-                      </Typography>
-                    </TableCell>
-                    <TableCell width={'50%'}>
-                      <Typography variant="h6" fontWeight={400}>
-                        ชื่อวิชา
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="center" width={'10%'}>
-                      <Typography variant="h6" fontWeight={400}>
-                        หน่วยกิตรวม
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="center" width={'20%'}>
-                      <IconButton
-                        color="info"
-                        component={Link}
-                        to={
-                          '/admin/manage/machsubject/curriculum/' +
-                          params.curriculum +
-                          '/structure/' +
-                          params.structure_id +
-                          '/' +
-                          row.subject_id +
-                          '/add'
-                        }
-                      >
-                        <IconCirclePlus size="18" />
-                        <Typography variant="h6" fontWeight={400} marginLeft={1}>
-                          เพิ่มรายการคู่เทียบโอน
-                        </Typography>
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell colSpan={5} width={'100%'}>
-                      {MachSubjectList.map(
-                        (machtList, index) =>
-                          machtList.machSubject_id === row._id && (
-                            <React.Fragment key={machtList._id}>
-                              <TableRow
-                                style={{ backgroundColor: index % 2 === 0 ? 'white' : '#f5f5f5' }}
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {MachSubjectList.map(
+                  (machtList, index) =>
+                    machtList.machSubject_id === row._id && (
+                      <React.Fragment key={machtList._id}>
+                        <TableRow
+                          style={{ backgroundColor: index % 2 === 0 ? 'white' : '#f5f5f5' }}
+                        >
+                          <TableCell align="center" width={'5%'} sx={{ px: 0, mx: 0 }}>
+                            <IconButton color="info">
+                              <IconCircleMinus size="18" />
+                            </IconButton>
+                          </TableCell>
+                          <TableCell width={'70%'} colSpan={3} sx={{ px: 0, mx: 0 }}>
+                            {machtList.extraSubject_id.map((extraId) => (
+                              <React.Fragment key={extraId}>
+                                <TableRow>
+                                  {ExtraSubject.map(
+                                    (extra) =>
+                                      extra.extraSubject_id === extraId && (
+                                        <React.Fragment key={extra._id}>
+                                          <TableCell
+                                            align="center"
+                                            width={'10%'}
+                                            sx={{ px: 0, mx: 0 }}
+                                          >
+                                            {extra.extraSubject_id}
+                                          </TableCell>
+                                          <TableCell width={'50%'} sx={{ px: 0, mx: 0 }}>
+                                            {extra.extraSubject_nameTh}
+                                            <Typography color={'primary'}>
+                                              ({extra.extraSubject_nameEn})
+                                            </Typography>
+                                          </TableCell>
+                                          <TableCell
+                                            align="center"
+                                            width={'10%'}
+                                            sx={{ px: 0, mx: 0 }}
+                                          >
+                                            {extra.total_credits}
+                                          </TableCell>
+                                        </React.Fragment>
+                                      ),
+                                  )}
+                                </TableRow>
+                              </React.Fragment>
+                            ))}
+                          </TableCell>
+                          <TableCell align="center" width={'20%'} sx={{ px: 0, mx: 0 }}>
+                            <Typography>
+                              <IconButton
+                                color="info"
+                                component={Link}
+                                to={
+                                  '/admin/manage/machsubject/curriculum/' +
+                                  params.curriculum +
+                                  '/structure/' +
+                                  params.structure_id +
+                                  '/' +
+                                  row.subject_id +
+                                  '/' +
+                                  machtList._id +
+                                  '/edit'
+                                }
                               >
-                                <TableCell>
-                                  <Typography>{index + 1}</Typography>
-                                </TableCell>
-                                <TableCell>
-                                  {machtList.extraSubject_id.map((extraId) => (
-                                    <React.Fragment key={extraId}>
-                                      <TableRow>
-                                        {ExtraSubject.map(
-                                          (extra) =>
-                                            extra.extraSubject_id === extraId && (
-                                              <React.Fragment key={extra._id}>
-                                                <TableCell>{extra.extraSubject_id}</TableCell>
-                                                <TableCell>
-                                                  {extra.extraSubject_nameTh}
-                                                  <Typography color={'primary'}>
-                                                    ({extra.extraSubject_nameEn})
-                                                  </Typography>
-                                                </TableCell>
-                                                <TableCell>{extra.total_credits}</TableCell>
-                                              </React.Fragment>
-                                            ),
-                                        )}
-                                      </TableRow>
-                                    </React.Fragment>
-                                  ))}
-                                </TableCell>
-                                <TableCell>
-                                  <Typography>
-                                    <IconButton
-                                      color="info"
-                                      component={Link}
-                                      to={
-                                        '/admin/manage/machsubject/curriculum/' +
-                                        params.curriculum +
-                                        '/structure/' +
-                                        params.structure_id +
-                                        '/' +
-                                        row.subject_id +
-                                        '/' +
-                                        machtList._id +
-                                        '/edit'
-                                      }
-                                    >
-                                      <IconEditCircle size="18" />
-                                    </IconButton>
-                                    <IconButton
-                                      color="error"
-                                      onClick={() => handleRemoveMachSubjectList(machtList._id)}
-                                    >
-                                      <IconCircleMinus size="18" />
-                                    </IconButton>
-                                  </Typography>
-                                </TableCell>
-                              </TableRow>
-                            </React.Fragment>
-                          ),
-                      )}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Box>
+                                <IconEditCircle size="18" />
+                              </IconButton>
+                              <IconButton
+                                color="error"
+                                onClick={() => handleRemoveMachSubjectList(machtList._id)}
+                              >
+                                <IconCircleMinus size="18" />
+                              </IconButton>
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      </React.Fragment>
+                    ),
+                )}
+              </TableBody>
+            </Table>
           </Collapse>
         </TableCell>
       </TableRow>

@@ -1,78 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import {
+  Typography,
   Box,
+  Grid,
+  Button,
+  Paper,
+  Collapse,
+  IconButton,
   Table,
+  TableBody,
+  TableCell,
+  TableContainer,
   TableHead,
   TableRow,
-  TableCell,
-  Typography,
-  TableBody,
-  TableContainer,
-  Container
+  Container,
 } from '@mui/material';
-
+import { Stack } from '@mui/system';
+import { IconEditCircle, IconCirclePlus, IconCircleMinus } from '@tabler/icons';
+import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from '../../../components/container/PageContainer';
-import ChildCard from 'src/components/shared/ChildCard';
-import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
+
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 import { read as ReadCurriculum } from '../../../function/curriculum';
-import { listByCurriculum as AllMachsubject } from '../../../function/machsubject';
-import { list as AllMachsubjectList } from '../../../function/machsubjectlist';
+import {
+  listByCurriculum as AllMachsubject,
+  remove as RemoveMachSubject,
+} from '../../../function/machsubject';
 import { listByStructure as AllSubject } from '../../../function/subject';
+import {
+  list as AllMachsubjectList,
+  remove as RemoveMachSubjectList,
+} from '../../../function/machsubjectlist';
 import { list as AllExtraSubject } from '../../../function/extar-subject';
+import Swal from 'sweetalert2';
 
-const ShowListMachSubject = () => {
+import ChildCard from 'src/components/shared/ChildCard';
+
+const CollapsibleRow = ({ row }) => {
+  const [open, setOpen] = useState(false);
+
   const params = useParams();
 
-  const [Curriculum, setCurriculum] = useState({
-    _id: '',
-    name: '',
-    level: '',
-    year: '',
-    time: '',
-  });
-
-  useEffect(() => {
-    loadCurriculum(params.curriculum);
-  }, [params.curriculum]);
-
-  const loadCurriculum = async (_id) => {
-    ReadCurriculum(_id).then((res) => {
-      setCurriculum(res.data);
-    });
-  };
-
-  const [MachSubject, setMachSubject] = useState([]);
-
-  useEffect(() => {
-    loadDataAllMachsubject(params.curriculum);
-  }, [params.curriculum]);
-
-  const loadDataAllMachsubject = async (_id) => {
-    AllMachsubject(_id)
-      .then((res) => setMachSubject(res.data))
-      .catch((err) => console.log(err));
-  };
-
-  const [MachSubjectList, setMachSubjectList] = useState([]);
-
-  useEffect(() => {
-    loadDataAllMachsubjectList();
-  }, []);
-
-  const loadDataAllMachsubjectList = async () => {
-    AllMachsubjectList()
-      .then((res) => setMachSubjectList(res.data))
-      .catch((err) => console.log(err));
-  };
-
   const [Subject, setSubject] = useState([]);
-
-  useEffect(() => {
-    loadDataAllSubject(params.structure_id);
-  }, [params.structure_id]);
-
   const loadDataAllSubject = async (structure_id) => {
     try {
       const res = await AllSubject(structure_id);
@@ -83,11 +55,15 @@ const ShowListMachSubject = () => {
     }
   };
 
-  const [ExtraSubject, setExtraSubject] = useState([]);
+  const [MachSubjectList, setMachSubjectList] = useState([]);
 
-  useEffect(() => {
-    loadDataAllExtraSubject();
-  }, []);
+  const loadDataAllMachsubjectList = async () => {
+    AllMachsubjectList()
+      .then((res) => setMachSubjectList(res.data))
+      .catch((err) => console.log(err));
+  };
+
+  const [ExtraSubject, setExtraSubject] = useState([]);
 
   const loadDataAllExtraSubject = async () => {
     AllExtraSubject()
@@ -95,193 +71,236 @@ const ShowListMachSubject = () => {
       .catch((err) => console.log(err));
   };
 
+  useEffect(
+    () => {
+      loadDataAllSubject(params.structure_id);
+      loadDataAllMachsubjectList();
+      loadDataAllExtraSubject();
+    },
+    [params.structure_id],
+    [],
+  );
+
+  const handleRemoveMachSubjectList = async (_id) => {
+    Swal.fire({
+      title: 'ต้องการลบข้อมูลนี้ใช่หรือไม่?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ยืนยัน',
+      cancelButtonText: 'ยกเลิก',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
+        RemoveMachSubjectList(_id).then((res) => {
+          console.log(res);
+          loadDataAllMachsubjectList();
+          loadDataAllExtraSubject();
+        });
+      }
+    });
+  };
+
   return (
-    <PageContainer title="จัดการคู่เทียบโอนรายวิชา" description="จัดการคู่เทียบโอนรายวิชา">
-      <Container maxWidth="lg">
-      <Breadcrumb
-        title={
-          <>
-            คู่เทียบโอน หลักสูตร {Curriculum.name} ({Curriculum.year}) {Curriculum.level}{' '}
-            {Curriculum.time} ปี
-          </>
-        }
-      />
-      <ChildCard>
-        <Box mt={2}>
-          <TableContainer>
-            <Table>
+    <>
+      <TableRow>
+        <TableCell>
+          <IconButton size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        {Subject.map(
+          (subject) =>
+            subject.subject_id === row.subject_id && (
+              <React.Fragment key={subject._id}>
+                <TableCell align="center">{subject.subject_id}</TableCell>
+                <TableCell>
+                  {subject.subject_nameTh}
+                  <Typography color={'primary'}>({subject.subject_nameEn})</Typography>
+                </TableCell>
+                <TableCell align="center">{subject.total_credits}</TableCell>
+              </React.Fragment>
+            ),
+        )}
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ padding: 0, margin: 0 }} colSpan={7}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Typography
+              gutterBottom
+              variant="h6"
+              sx={{
+                mt: 2,
+                backgroundColor: (theme) => theme.palette.grey.A200,
+                p: '5px 15px',
+                color: (theme) =>
+                  `${
+                    theme.palette.mode === 'dark' ? theme.palette.grey.A200 : 'rgba(0, 0, 0, 0.87)'
+                  }`,
+              }}
+            >
+              รายวิชาที่นำมาเทียบได้
+            </Typography>
+            <Table size="small" aria-label="purchases">
               <TableHead>
                 <TableRow>
-                  {/* คอลัม 1 รายวิชาในหลักสูตร */}
-                  <TableCell width={'50%'} sx={{ px: 0, mx: 0 }} align="center">
-                    <Typography variant="h5">รายวิชาในหลักสูตร</Typography>
-                    <TableRow>
-                      <TableCell width={'15%'} sx={{ px: 0, mx: 0 }} align="center">
-                        <Typography variant="h6">รหัสวิชา</Typography>
-                      </TableCell>
-                      <TableCell width={'25%'} sx={{ px: 0, mx: 0 }} align="left">
-                        <Typography variant="h6">ชื่อวิชา</Typography>
-                      </TableCell>
-                      <TableCell width={'10%'} sx={{ px: 0, mx: 0 }} align="center">
-                        <Typography variant="h6">หน่วยกิต</Typography>
-                      </TableCell>
-                    </TableRow>
+                  <TableCell align="center" width={'10%'} sx={{ px: 0, mx: 0 }}/>
+                  <TableCell align="center" width={'10%'} sx={{ px: 0, mx: 0 }}>
+                    <Typography variant="h6" fontWeight={400}>
+                      รหัสวิชา
+                    </Typography>
                   </TableCell>
-                  {/* คอลัม 2 รายวิชาที่นำมาเทียบ*/}
-                  <TableCell width={'50%'} sx={{ px: 0, mx: 0 }} align="center">
-                    <Typography variant="h5">รายวิชาที่นำมาเทียบ</Typography>
-                    <TableRow>
-                      <TableCell width={'15%'} sx={{ px: 0, mx: 0 }} align="center">
-                        <Typography variant="h6">รหัสวิชา</Typography>
-                      </TableCell>
-                      <TableCell width={'25%'} sx={{ px: 0, mx: 0 }} align="left">
-                        <Typography variant="h6">ชื่อวิชา</Typography>
-                      </TableCell>
-                      <TableCell width={'10%'} sx={{ px: 0, mx: 0 }} align="center">
-                        <Typography variant="h6">หน่วยกิต</Typography>
-                      </TableCell>
-                      <TableCell width={'10%'} sx={{ px: 0, mx: 0 }} align="center">
-                        <Typography variant="h6" hidden>
-                          จัดการข้อมูล
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
+                  <TableCell width={'60%'} sx={{ px: 0, mx: 0 }}>
+                    <Typography variant="h6" fontWeight={400}>
+                      ชื่อวิชา
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="center" width={'10%'} sx={{ px: 0, mx: 0 }}>
+                    <Typography variant="h6" fontWeight={400}>
+                      หน่วยกิต
+                    </Typography>
                   </TableCell>
                 </TableRow>
               </TableHead>
-
               <TableBody>
-                {MachSubject.length > 0 ? (
-                  MachSubject.map((item) => (
-                    <>
-                      <TableRow>
-                        {/* คอลัม 1 */}
-                        <TableCell
-                          width={'50%'}
-                          sx={{ px: 0, mx: 0, border: '1px solid #ddd', verticalAlign: 'top' }}
+                {MachSubjectList.map(
+                  (machtList, index) =>
+                    machtList.machSubject_id === row._id && (
+                      <React.Fragment key={machtList._id}>
+                        <TableRow
+                          style={{ backgroundColor: index % 2 === 0 ? 'white' : '#f5f5f5' }}
                         >
-                          {Subject.map((subject) => {
-                            if (subject.subject_id === item.subject_id) {
-                              return (
-                                <>
-                                  <TableCell width={'15%'} sx={{ px: 0, mx: 0 }} align="center">
-                                    <Typography>{subject.subject_id}</Typography>
-                                  </TableCell>
-                                  <TableCell width={'25%'} sx={{ px: 0, mx: 0 }} align="left">
-                                    <Typography>
-                                      {subject.subject_nameTh}
-                                      <Typography color={'primary'}>
-                                        ({subject.subject_nameEn})
-                                      </Typography>
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell width={'10%'} sx={{ px: 0, mx: 0 }} align="center">
-                                    <Typography>{subject.total_credits}</Typography>
-                                  </TableCell>
-                                </>
-                              );
-                            }
-                          })}
-                        </TableCell>
-                        {/* คอลัม 2 */}
-                        <TableCell width={'50%'} sx={{ px: 0, mx: 0, border: '1px solid #ddd' }}>
-                          {MachSubjectList.length > 0 ? (
-                            MachSubjectList.map((MachSubjectListItem, index) => {
-                              if (MachSubjectListItem.machSubject_id === item._id) {
-                                return (
-                                  <>
-                                    <TableRow
-                                      key={MachSubjectListItem._id}
-                                      sx={{
-                                        backgroundColor: index % 2 === 0 ? 'white' : '#f0f0f0',
-                                      }}
-                                    >
-                                      <TableCell width={'45%'} sx={{ px: 0, mx: 0 }}>
-                                        {MachSubjectListItem.extraSubject_id.map((extraSubject) => (
-                                          <React.Fragment key={extraSubject}>
-                                            {ExtraSubject.map((extra) => {
-                                              if (extra.extraSubject_id === extraSubject) {
-                                                return (
-                                                  <TableRow>
-                                                    {/* คอลัม 2 */}
-                                                    <TableCell width={'45%'} sx={{ px: 0, mx: 0 }}>
-                                                      <TableCell
-                                                        width={'15%'}
-                                                        sx={{ px: 0, mx: 0 }}
-                                                        align="center"
-                                                      >
-                                                        <Typography>
-                                                          {extra.extraSubject_id}
-                                                        </Typography>
-                                                      </TableCell>
-                                                      <TableCell
-                                                        width={'25%'}
-                                                        sx={{ px: 0, mx: 0 }}
-                                                        align="left"
-                                                      >
-                                                        <Typography>
-                                                          {extra.extraSubject_nameTh}
-                                                          <Typography color={'primary'}>
-                                                            ({extra.extraSubject_nameEn})
-                                                          </Typography>
-                                                        </Typography>
-                                                      </TableCell>
-                                                      <TableCell
-                                                        width={'10%'}
-                                                        sx={{ px: 0, mx: 0 }}
-                                                        align="center"
-                                                      >
-                                                        <Typography>
-                                                          {extra.total_credits}
-                                                        </Typography>
-                                                      </TableCell>
-                                                    </TableCell>
-                                                  </TableRow>
-                                                );
-                                              }
-                                            })}
-                                          </React.Fragment>
-                                        ))}
-                                      </TableCell>
-                                    </TableRow>
-                                  </>
-                                );
-                              }
-                              return (
+                          <TableCell align="center" width={'10%'} sx={{ px: 0, mx: 0 }}>
+                            <IconButton color="info">
+                              <IconCircleMinus size="18" />
+                            </IconButton>
+                          </TableCell>
+                          <TableCell width={'80%'} colSpan={3} sx={{ px: 0, mx: 0 }}>
+                            {machtList.extraSubject_id.map((extraId) => (
+                              <React.Fragment key={extraId}>
                                 <TableRow>
-                                  <TableCell colSpan={3}>
-                                    <Typography align="center">
-                                      ไม่มีข้อมูลรายวิชาที่นำมาเทียบ 2
-                                    </Typography>
-                                  </TableCell>
+                                  {ExtraSubject.map(
+                                    (extra) =>
+                                      extra.extraSubject_id === extraId && (
+                                        <React.Fragment key={extra._id}>
+                                          <TableCell
+                                            align="center"
+                                            width={'10%'}
+                                            sx={{ px: 0, mx: 0 }}
+                                          >
+                                            {extra.extraSubject_id}
+                                          </TableCell>
+                                          <TableCell width={'60%'} sx={{ px: 0, mx: 0 }}>
+                                            {extra.extraSubject_nameTh}
+                                            <Typography color={'primary'}>
+                                              ({extra.extraSubject_nameEn})
+                                            </Typography>
+                                          </TableCell>
+                                          <TableCell
+                                            align="center"
+                                            width={'10%'}
+                                            sx={{ px: 0, mx: 0 }}
+                                          >
+                                            {extra.total_credits}
+                                          </TableCell>
+                                        </React.Fragment>
+                                      ),
+                                  )}
                                 </TableRow>
-                              );
-                            })
-                          ) : (
-                            <TableRow>
-                              <TableCell colSpan={3}>
-                                <Typography align="center">
-                                  ไม่มีข้อมูลรายวิชาที่นำมาเทียบ 1
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    </>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4}>
-                      <Typography align="center">ไม่มีข้อมูลรายวิชาที่นำมาเทียบ</Typography>
-                    </TableCell>
-                  </TableRow>
+                              </React.Fragment>
+                            ))}
+                          </TableCell>
+                        </TableRow>
+                      </React.Fragment>
+                    ),
                 )}
               </TableBody>
             </Table>
-          </TableContainer>
-        </Box>
-      </ChildCard>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </>
+  );
+};
+
+const ShowListMachSubject = () => {
+  const params = useParams();
+  const [MachSubject, setMachSubject] = useState([]);
+
+  const loadDataAllMachsubject = async (_id) => {
+    AllMachsubject(_id)
+      .then((res) => setMachSubject(res.data))
+      .catch((err) => console.log(err));
+  };
+
+  const [Curriculum, setCurriculum] = useState({
+    _id: '',
+    name: '',
+    level: '',
+    year: '',
+    time: '',
+  });
+
+  const loadCurriculum = async (_id) => {
+    ReadCurriculum(_id).then((res) => {
+      setCurriculum(res.data);
+    });
+  };
+
+  useEffect(() => {
+    loadDataAllMachsubject(params.curriculum);
+    loadCurriculum(params.curriculum);
+  }, [params.curriculum]);
+
+  return (
+    <PageContainer title="จัดการคู่เทียบโอนรายวิชา" description="จัดการคู่เทียบโอนรายวิชา">
+      <Container maxWidth="lg">
+        <Breadcrumb
+          title={
+            <>
+              คู่เทียบโอน หลักสูตร {Curriculum.name} ({Curriculum.year}) {Curriculum.level}{' '}
+              {Curriculum.time} ปี
+            </>
+          }
+        />
+        <ChildCard>
+          <Box mt={2}>
+            <Paper variant="outlined">
+              <TableContainer component={Paper}>
+                <Table
+                  aria-label="collapsible table"
+                  sx={{
+                    whiteSpace: {
+                      xs: 'nowrap',
+                      sm: 'unset',
+                    },
+                  }}
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell width={'5%'} />
+                      <TableCell align="center">
+                        <Typography variant="h6">รหัสวิชา</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="h5">ชื่อวิชา</Typography>
+                      </TableCell>
+                      <TableCell align="center">
+                        <Typography variant="h5">หน่วยกิตรวม</Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {MachSubject.map((row) => (
+                      <CollapsibleRow key={row._id} row={row} />
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          </Box>
+        </ChildCard>
       </Container>
     </PageContainer>
   );

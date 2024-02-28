@@ -193,6 +193,7 @@ const ShowListMachSubject = Loadable(
 
 const TestTransfer = Loadable(lazy(() => import('../views/pages/Tester/TestTransfer')));
 const ExtarSubjectCheck = Loadable(lazy(() => import('../views/pages/Tester/ExtarSubjectCheck')));
+const MachTestTransfer = Loadable(lazy(() => import('../views/pages/Tester/MachTestTransfer')));
 
 const Router = [
   // {
@@ -369,6 +370,7 @@ const Router = [
       },
       { path: '/test', element: <TestTransfer /> },
       { path: '/test/check', element: <ExtarSubjectCheck/> },
+      { path: '/test/mach', element: <MachTestTransfer /> },
       // { path: '/auth/login', element: <Login /> },
       // { path: '/auth/login2', element: <Login2 /> },
       // { path: '/auth/register', element: <Register /> },

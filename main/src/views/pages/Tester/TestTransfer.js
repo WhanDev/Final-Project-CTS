@@ -139,10 +139,17 @@ const TestTransfer = () => {
                   )}
                   onChange={handleSubjectChange}
                   value={selectedExtarSubject}
+                  sx={{mr: 1}}
                 />
-                <IconButton color="primary" onClick={handleAddSubjectToList}>
-                  <IconCirclePlus size="20" />
-                </IconButton>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  sx={{height: '100%'}}
+                  onClick={handleAddSubjectToList}
+                  startIcon={<IconCirclePlus width={18} />}
+                >
+                  <Typography variant="none">เพิ่ม</Typography>
+                </Button>
               </Stack>
               <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <Stack>
