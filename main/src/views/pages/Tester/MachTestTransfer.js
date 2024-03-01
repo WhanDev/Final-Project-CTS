@@ -1,41 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
-  IconButton,
   Container,
   Grid,
-  Stack,
-  Box,
-  Button,
-  Table,
-  TableHead,
-  TableContainer,
-  TableRow,
-  TableCell,
-  TableBody,
-  Typography,
 } from '@mui/material';
 
 import PageContainer from '../../../components/container/PageContainer';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
-import TextField from '@mui/material/TextField';
-import { IconCircleMinus } from '@tabler/icons';
-import { list as AllExtraSubject } from '../../../function/extar-subject';
+import { useSelector } from 'react-redux';
 
 const MachTestTransfer = () => {
-  const [ExtraSubject, setExtraSubject] = useState([]);
 
-  const loadDataExtraSubject = async () => {
-    AllExtraSubject()
-      .then((res) => setExtraSubject(res.data))
-      .catch((err) => console.log(err));
-  };
+  const getSelected = useSelector((state) => state.extraSubject.extraSubjects);
 
-  const [selectedExtarSubjectList, setSelectedExtarSubjectList] = useState([]);
+  console.log(getSelected);
 
-  useEffect(() => {
-    loadDataExtraSubject();
-  }, []);
 
   return (
     <PageContainer
@@ -47,7 +26,6 @@ const MachTestTransfer = () => {
         <ParentCard title="รายวิชาที่สามารถเทียบโอนได้">
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} lg={12}>
-
             </Grid>
           </Grid>
         </ParentCard>

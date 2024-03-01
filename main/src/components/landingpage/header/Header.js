@@ -91,10 +91,10 @@ const LpHeader = () => {
                 color="inherit"
                 sx={{ color: (theme) => theme.palette.text.primary }}
                 variant="text"
-                to="/machsubject"
+                to="/curriculum"
                 component={Link}
               >
-                คู่เทียบโอน
+                หลักสูตร
               </Button>
               <Button
                 color="inherit"
@@ -103,7 +103,7 @@ const LpHeader = () => {
                 to="/test"
                 component={Link}
               >
-                เทียบโอน
+                ทดลองเทียบโอน
               </Button>
             </Stack>
           ) : null}

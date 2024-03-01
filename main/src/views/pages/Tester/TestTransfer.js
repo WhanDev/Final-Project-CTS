@@ -25,6 +25,8 @@ import TextField from '@mui/material/TextField';
 import { IconCirclePlus, IconCircleMinus } from '@tabler/icons';
 import { list as AllExtraSubject } from '../../../function/extar-subject';
 import { setExtraSubjects } from '../../../store/extraSubjectSlice';
+import { setCurriculums } from '../../../store/curriculumSlice';
+import { list as listCurriculum } from '../../../function/curriculum';
 
 const TestTransfer = () => {
   const [ExtraSubject, setExtraSubject] = useState([]);
@@ -35,10 +37,22 @@ const TestTransfer = () => {
       .catch((err) => console.log(err));
   };
 
+  const [Curriculum, setCurriculum] = useState([]);
+
+  const loadDataCurriculum = async () => {
+    listCurriculum()
+      .then((res) => setCurriculum(res.data))
+      .catch((err) => console.log(err));
+  };
+
+  const [selectedCurriculum, setSelectedCurriculum] = useState([]);
+  const handleCurriculumChange = (event, value) => {
+    setSelectedCurriculum(value);
+  };
+
   const [selectedExtarSubject, setSelectedExtarSubject] = useState([]);
   const handleSubjectChange = (event, value) => {
     setSelectedExtarSubject(value);
-    console.log(selectedExtarSubject);
   };
 
   const [selectedExtarSubjectList, setSelectedExtarSubjectList] = useState([]);
@@ -59,8 +73,6 @@ const TestTransfer = () => {
       return updatedSubjectList;
     });
   };
-
-  const [transferList, setTransferList] = useState([]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -85,30 +97,58 @@ const TestTransfer = () => {
 
     const filteredTransferData = transferData.filter((data) => data !== null);
 
-    setTransferList(filteredTransferData);
-
-    console.log(transferList);
+    dispatch(setExtraSubjects(filteredTransferData));
+    dispatch(setCurriculums(Curriculum));
 
     navigate('/test/check');
-
-    dispatch(setExtraSubjects(filteredTransferData));
   };
 
   const handleCancel = () => {
     setSelectedExtarSubject('');
     setSelectedExtarSubjectList('');
-    setTransferList('');
+    navigate(-1);
   };
 
   useEffect(() => {
     loadDataExtraSubject();
+    loadDataCurriculum();
   }, []);
 
   return (
     <PageContainer title="จัดการคู่เทียบโอนรายวิชา" description="จัดการคู่เทียบโอนรายวิชา">
       <Container maxWidth="lg">
         <Breadcrumb title={<>ทดสอบเทียบโอน</>} />
-        <ParentCard title="เพิ่มรายวิชา (รายวิชาในใบ รบ.)">
+        <ParentCard title="หลักสูตร">
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12} lg={12}>
+              <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+                <Autocomplete
+                  fullWidth
+                  id="subject_id"
+                  name="subject_id"
+                  disableClearable
+                  options={Curriculum.map((option) => ({
+                    label: option._id + ' | ' + option.name,
+                    value: option._id,
+                  }))}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      placeholder="กรอกรหัสหลักสูตร/ชื่อหลักสูตร"
+                      variant="outlined"
+                      fullWidth
+                    />
+                  )}
+                  onChange={handleCurriculumChange}
+                  value={selectedCurriculum}
+                  sx={{ mr: 1 }}
+                />
+              </Stack>
+            </Grid>
+          </Grid>
+        </ParentCard>
+        <hr color="white" style={{ marginTop: '10px', marginBottom: '10px' }} />
+        <ParentCard title="รายวิชา (รายวิชาในใบ รบ.)">
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} lg={12}>
               <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
@@ -139,12 +179,12 @@ const TestTransfer = () => {
                   )}
                   onChange={handleSubjectChange}
                   value={selectedExtarSubject}
-                  sx={{mr: 1}}
+                  sx={{ mr: 1 }}
                 />
                 <Button
                   variant="outlined"
                   color="primary"
-                  sx={{height: '100%'}}
+                  sx={{ height: '100%' }}
                   onClick={handleAddSubjectToList}
                   startIcon={<IconCirclePlus width={18} />}
                 >

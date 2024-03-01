@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate} from 'react-router-dom';
 import { Grid, Button, IconButton, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { IconCircleMinus } from '@tabler/icons';

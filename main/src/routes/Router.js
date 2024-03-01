@@ -194,6 +194,10 @@ const ShowListMachSubject = Loadable(
 const TestTransfer = Loadable(lazy(() => import('../views/pages/Tester/TestTransfer')));
 const ExtarSubjectCheck = Loadable(lazy(() => import('../views/pages/Tester/ExtarSubjectCheck')));
 const MachTestTransfer = Loadable(lazy(() => import('../views/pages/Tester/MachTestTransfer')));
+const Curriculum = Loadable(lazy(() => import('../views/pages/Curriculum/ManageCurriculum')));
+const ShowCurriculum = Loadable(lazy(() => import('../views/pages/Curriculum/ListCurriculum')));
+const Structure = Loadable(lazy(() => import('../views/pages/Curriculum/ManageStructure')));
+const ShowStructure = Loadable(lazy(() => import('../views/pages/Curriculum/ListStructure')));
 
 const Router = [
   // {
@@ -371,6 +375,8 @@ const Router = [
       { path: '/test', element: <TestTransfer /> },
       { path: '/test/check', element: <ExtarSubjectCheck/> },
       { path: '/test/mach', element: <MachTestTransfer /> },
+      { path: '/curriculum', element: <Curriculum /> },
+      { path: '/curriculum/:curriculum/structure/:structure_id', element: <Structure /> },
       // { path: '/auth/login', element: <Login /> },
       // { path: '/auth/login2', element: <Login2 /> },
       // { path: '/auth/register', element: <Register /> },

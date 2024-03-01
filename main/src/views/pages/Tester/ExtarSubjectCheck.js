@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Container,
-  IconButton,
   Grid,
   Stack,
   Box,
@@ -15,7 +14,6 @@ import {
   TableBody,
   Typography,
 } from '@mui/material';
-import { IconCircleCheck, IconXboxX } from '@tabler/icons';
 import PageContainer from '../../../components/container/PageContainer';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
@@ -32,22 +30,10 @@ const ExtarSubjectCheck = () => {
   };
 
   const getSelected = useSelector((state) => state.extraSubject.extraSubjects);
-  const [trueSelected, setTrueSelected] = useState([]);
-  const [falseSelected, setFalseSelected] = useState([]);
+  const getCurriculum = useSelector((state) => state.curriculum.curriculums);
 
-  const Check = () => {
-    try {
-      getSelected.forEach((selected) => {
-        {
-          selected.grade > 2.5
-            ? setTrueSelected((prev) => [...prev, selected])
-            : setFalseSelected((prev) => [...prev, selected]);
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  console.log(getSelected);
+  console.log(getCurriculum);
 
   const navigate = useNavigate();
 
@@ -61,14 +47,13 @@ const ExtarSubjectCheck = () => {
 
   useEffect(() => {
     loadDataExtraSubject();
-    Check();
   }, []);
 
   return (
     <PageContainer title="ตรวจสอบรายวิชาที่นำมาเทียบ" description="ตรวจสอบรายวิชาที่นำมาเทียบ">
       <Container maxWidth="lg">
         <Breadcrumb title={<>รายวิชาที่นำมาเทียบ</>} />
-        <ParentCard title="รายวิชาที่สามารถนำมาเทียบได้">
+        <ParentCard title="รายวิชาที่สามารถนำมาเทียบ">
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} lg={12}>
               <Stack>
@@ -83,20 +68,17 @@ const ExtarSubjectCheck = () => {
                           <TableCell align="center" width={'15%'}>
                             <Typography variant="h5">รหัสวิชา</Typography>
                           </TableCell>
-                          <TableCell width={'60%'}>
+                          <TableCell width={'70%'}>
                             <Typography variant="h5">ชื่อวิชา</Typography>
                           </TableCell>
                           <TableCell align="center" width={'10%'}>
                             <Typography variant="h5">เกรด</Typography>
                           </TableCell>
-                          <TableCell align="center" width={'10%'}>
-                            <Typography variant="h5">สถานะ</Typography>
-                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {trueSelected.length > 0 ? (
-                          trueSelected.map((item, index) => {
+                        {getSelected.length > 0 ? (
+                          getSelected.map((item, index) => {
                             const subject = ExtraSubject.find(
                               (option) => option.extraSubject_id === item.extraSubject_id,
                             );
@@ -109,7 +91,7 @@ const ExtarSubjectCheck = () => {
                                   <TableCell align="center" width="15%">
                                     {subject.extraSubject_id}
                                   </TableCell>
-                                  <TableCell width="60%">
+                                  <TableCell width="70%">
                                     {subject.extraSubject_nameTh}
                                     <Typography color="primary">
                                       {subject.extraSubject_nameEn}
@@ -117,95 +99,11 @@ const ExtarSubjectCheck = () => {
                                   </TableCell>
                                   <TableCell align="center" width="10%">
                                     {item.grade}
-                                  </TableCell>
-                                  <TableCell align="center" width="10%">
-                                    <IconButton color="success">
-                                      <IconCircleCheck size="18" />
-                                    </IconButton>
                                   </TableCell>
                                 </TableRow>
                               );
                             } else {
                               return null; // Handle case when the selected subject is not found
-                            }
-                          })
-                        ) : (
-                          <TableRow>
-                            <TableCell colSpan={5} align="center">
-                              <Box>
-                                <Typography align="center">ไม่มีข้อมูลรายวิชาที่เรียนมา</Typography>
-                              </Box>
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Box>
-              </Stack>
-            </Grid>
-          </Grid>
-        </ParentCard>
-        <hr style={{ margin: '40px' }} />
-        <ParentCard title="รายวิชาที่ไม่สามารถนำมาเทียบได้">
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={12} lg={12}>
-              <Stack>
-                <Box mt={2}>
-                  <TableContainer>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell align="center" width={'5%'}>
-                            <Typography variant="h5">ลำดับ</Typography>
-                          </TableCell>
-                          <TableCell align="center" width={'15%'}>
-                            <Typography variant="h5">รหัสวิชา</Typography>
-                          </TableCell>
-                          <TableCell width={'60%'}>
-                            <Typography variant="h5">ชื่อวิชา</Typography>
-                          </TableCell>
-                          <TableCell align="center" width={'10%'}>
-                            <Typography variant="h5">เกรด</Typography>
-                          </TableCell>
-                          <TableCell align="center" width={'10%'}>
-                            <Typography variant="h5">สถานะ</Typography>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {falseSelected.length > 0 ? (
-                          falseSelected.map((item, index) => {
-                            const subject = ExtraSubject.find(
-                              (option) => option.extraSubject_id === item.extraSubject_id,
-                            );
-                            if (subject) {
-                              return (
-                                <TableRow key={index} hover>
-                                  <TableCell align="center" width="5%">
-                                    {index + 1}
-                                  </TableCell>
-                                  <TableCell align="center" width="15%">
-                                    {subject.extraSubject_id}
-                                  </TableCell>
-                                  <TableCell width="60%">
-                                    {subject.extraSubject_nameTh}
-                                    <Typography color="primary">
-                                      {subject.extraSubject_nameEn}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="center" width="10%">
-                                    {item.grade}
-                                  </TableCell>
-                                  <TableCell align="center" width="10%">
-                                    <IconButton color="error">
-                                      <IconXboxX size="18" />
-                                    </IconButton>
-                                  </TableCell>
-                                </TableRow>
-                              );
-                            } else {
-                              return null;
                             }
                           })
                         ) : (
