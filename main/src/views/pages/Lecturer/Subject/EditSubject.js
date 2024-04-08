@@ -10,34 +10,55 @@ import CustomFormLabel from '../../../../components/forms/theme-elements/CustomF
 import ParentCard from '../../../../components/shared/ParentCard';
 import { Stack } from '@mui/system';
 
-import { read as readExtraSubject, update as updateExtraSubject } from '../../../../function/extar-subject';
+import { read, update } from '../../../../function/subject';
+import { listByGroup } from '../../../../function/structure';
 
-const ExtraSubject = () => {
+const EditSubject = () => {
   const params = useParams();
   const navigate = useNavigate();
 
-  const [extraSubject, setDataExtraSubject] = useState({
-    extraSubject_id: '',
-    extraSubject_nameTh: '',
-    extraSubject_nameEn: '',
+  const [dataByGroup, setDataByGroup] = useState({});
+
+  const loadByGroup = async (group_id) => {
+    try {
+      const res = await listByGroup(group_id);
+      const data = res.data;
+      setDataByGroup(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    loadByGroup(params.group_id);
+  }, [params.group_id]);
+
+  console.log(dataByGroup);
+
+  const [data, setData] = useState({
+    structure_id: '',
+    group_id: '',
+    subject_id: '',
+    subject_nameTh: '',
+    subject_nameEn: '',
     description: '',
     theory_credits: '',
     practical_credits: '',
   });
 
-  const loadDataExtraSubject = async (_id) => {
-    readExtraSubject(_id).then((res) => {
-      setDataExtraSubject(res.data);
+  const loadData = async (_id) => {
+    read(_id).then((res) => {
+      setData(res.data);
     });
   };
 
   useEffect(() => {
-    loadDataExtraSubject(params._id);
+    loadData(params._id);
   }, [params._id]);
 
   const handleDataChange = (e) => {
-    setDataExtraSubject({
-      ...extraSubject,
+    setData({
+      ...data,
       [e.target.name]: e.target.value,
     });
   };
@@ -46,19 +67,22 @@ const ExtraSubject = () => {
     e.preventDefault();
 
     const updatedData = {
-      extraSubject_id: extraSubject.extraSubject_id,
-      extraSubject_nameTh: extraSubject.extraSubject_nameTh,
-      extraSubject_nameEn: extraSubject.extraSubject_nameEn,
-      description: extraSubject.description,
-      theory_credits: Math.floor(parseInt(extraSubject.theory_credits, 10)),
-      practical_credits: Math.floor(parseInt(extraSubject.practical_credits, 10)),
+      structure_id: params.structure_id,
+      group_id: params.group_id,
+      subject_id: data.subject_id,
+      subject_nameTh: data.subject_nameTh,
+      subject_nameEn: data.subject_nameEn,
+      description: data.description,
+      theory_credits: Math.floor(parseInt(data.theory_credits, 10)),
+      practical_credits: Math.floor(parseInt(data.practical_credits, 10)),
       total_credits:
-        Math.floor(parseInt(extraSubject.theory_credits, 10)) +
-        Math.floor(parseInt(extraSubject.practical_credits, 10)),
+        Math.floor(parseInt(data.theory_credits, 10)) +
+        Math.floor(parseInt(data.practical_credits, 10)),
     };
 
     try {
-      await updateExtraSubject(params._id, updatedData);
+      // console.log(updatedData);
+      await update(params._id, updatedData);
       Swal.fire({
         icon: 'success',
         title: 'แก้ไขข้อมูลสำเร็จ',
@@ -68,6 +92,7 @@ const ExtraSubject = () => {
       Swal.fire({
         icon: 'error',
         title: 'แก้ไขข้อมูลไม่สำเร็จ',
+        text: error.response.data,
       });
       console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูล:', error);
     }
@@ -79,15 +104,23 @@ const ExtraSubject = () => {
 
   return (
     <PageContainer
-      title="จัดการข้อมูลรายวิชานอกหลักสูตร"
-      description="จัดการข้อมูลรายวิชานอกหลักสูตร"
+      title="แก้ไขข้อมูลรายวิชา | จัดการข้อมูลรายวิชา"
+      description="จัดการข้อมูลรายวิชา"
     >
-      <Breadcrumb title={'จัดการข้อมูลรายวิชานอกหลักสูตร '} />
+      <Breadcrumb
+        title={
+          <>
+            วิชา {data.subject_id} {data.subject_nameTh}
+          </>
+        }
+      />
 
       <ParentCard
         title={
           <>
-            แก้ไขรายวิชานอกหลักสูตร | {extraSubject.extraSubject_id} {extraSubject.extraSubject_nameTh}
+            {dataByGroup.sort} <br /> {dataByGroup.group_id} {dataByGroup.group_name} (
+            {dataByGroup.credit} หน่วยกิต)
+            <br />
           </>
         }
       >
@@ -97,9 +130,9 @@ const ExtraSubject = () => {
 
               <CustomFormLabel>ชื่อวิชาภาษาไทย (TH)</CustomFormLabel>
               <CustomTextField
-                id="extraSubject_nameTh"
-                name="extraSubject_nameTh"
-                value={extraSubject.extraSubject_nameTh}
+                id="subject_name"
+                name="subject_name"
+                value={data.subject_nameTh}
                 variant="outlined"
                 onChange={handleDataChange}
                 fullWidth
@@ -107,9 +140,9 @@ const ExtraSubject = () => {
 
               <CustomFormLabel>ชื่อวิชาอังกฤษ (EN)</CustomFormLabel>
               <CustomTextField
-                id="extraSubject_nameEn"
-                name="extraSubject_nameEn"
-                value={extraSubject.extraSubject_nameEn}
+                id="subject_nameEn"
+                name="subject_nameEn"
+                value={data.subject_nameEn}
                 variant="outlined"
                 onChange={handleDataChange}
                 fullWidth
@@ -120,7 +153,7 @@ const ExtraSubject = () => {
                 id="description"
                 name="description"
                 variant="outlined"
-                value={extraSubject.description}
+                value={data.description}
                 onChange={handleDataChange}
                 rows={2}
                 multiline
@@ -131,7 +164,7 @@ const ExtraSubject = () => {
               <CustomTextField
                 id="theory_credits"
                 name="theory_credits"
-                value={extraSubject.theory_credits}
+                value={data.theory_credits}
                 variant="outlined"
                 onChange={handleDataChange}
                 fullWidth
@@ -141,7 +174,7 @@ const ExtraSubject = () => {
               <CustomTextField
                 id="practical_credits"
                 name="practical_credits"
-                value={extraSubject.practical_credits}
+                value={data.practical_credits}
                 variant="outlined"
                 onChange={handleDataChange}
                 fullWidth
@@ -161,7 +194,9 @@ const ExtraSubject = () => {
                   <Button
                     variant="outlined"
                     color="warning"
-                    onClick={handleBack}
+                    onClick={() => {
+                      handleBack();
+                    }}
                   >
                     ยกเลิก
                   </Button>
@@ -175,4 +210,4 @@ const ExtraSubject = () => {
   );
 };
 
-export default ExtraSubject;
+export default EditSubject;

@@ -8,6 +8,7 @@ const ExtraSubjectSchema = mongoose.Schema({
   theory_credits: Number,
   practical_credits: Number,
   total_credits: Number,
+  createBy: String,
 });
 
 module.exports = mongoose.model("ExtraSubject", ExtraSubjectSchema);

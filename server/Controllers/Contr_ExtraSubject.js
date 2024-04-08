@@ -10,6 +10,7 @@ exports.create = async (req, res) => {
       description,
       theory_credits,
       practical_credits,
+      createBy
     } = req.body;
 
     if (
@@ -17,7 +18,8 @@ exports.create = async (req, res) => {
       !extraSubject_nameTh ||
       !extraSubject_nameEn ||
       (isNaN(theory_credits) && theory_credits !== "") ||
-      (isNaN(practical_credits) && practical_credits !== "")
+      (isNaN(practical_credits) && practical_credits !== "")||
+      !createBy
     ) {
       return res.status(400).send("กรุณากรอกข้อมูลให้ครบ");
     }
@@ -32,6 +34,7 @@ exports.create = async (req, res) => {
       theory_credits,
       practical_credits,
       total_credits,
+      createBy
     }).save();
     res
       .status(201)
@@ -106,6 +109,7 @@ exports.remove = async (req, res) => {
   try {
     // code
     const _id = req.params._id;
+    
     const removedExtraSubject = await ExtraSubject.findOneAndDelete({
       _id: _id,
     }).exec();

@@ -85,12 +85,7 @@ const AddMachSubject = () => {
         title: 'บันทึกข้อมูลสำเร็จ',
       });
 
-      navigate(
-        '/manage/machsubject/curriculum/' +
-          params.curriculum +
-          '/structure/CS-' +
-          params.curriculum,
-      );
+      navigate(-1);
     } catch (error) {
       Swal.fire({
         icon: 'error',

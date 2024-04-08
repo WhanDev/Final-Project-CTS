@@ -1,66 +1,158 @@
 const MatchSubject = require("../Models/Model_MatchSubject");
 const MatchSubjectList = require("../Models/Model_MachSubjectList");
+const Subject = require("../Models/Model_Subject");
 
 exports.TestTransfer = async (req, res) => {
   try {
-    const curriculum = req.body.curriculum;
-    let extraSubjects = req.body.extraSubjects;
+    const structure_id = req.body.structure_id;
 
-    if (!Array.isArray(extraSubjects)) {
-      return res
-        .status(400)
-        .json({ message: "extraSubjects ต้องเป็นอาร์เรย์" });
+    const SubjectByCurriculum = await Subject.find({
+      structure_id: structure_id,
+    });
+
+    let AllSubjectByCurriculum = [];
+
+    if (SubjectByCurriculum.length > 0) {
+      SubjectByCurriculum.forEach((subject) => {
+        AllSubjectByCurriculum.push({
+          subject_id: subject.subject_id,
+          subject_nameTh: subject.subject_nameTh,
+          subject_nameEn: subject.subject_nameEn,
+        });
+      });
+    } else {
+      return res.status(404).json({ message: "ไม่พบรายวิชาในหลักสูตร" });
     }
 
-    const matchSubjectAll = await MatchSubject.find({
-      curriculum: curriculum,
-    }).exec();
+    const [, structureIdNumber] = structure_id.split("-");
 
-    const matchesListAll = await MatchSubjectList.find({}).exec();
-    const matchesList = matchesListAll
-      .slice()
-      .sort((a, b) => a.extraSubject_id.length - b.extraSubject_id.length);
+    let AllMatchSubject = [];
 
-    let dataList = [];
+    for (let i = 0; i < AllSubjectByCurriculum.length; i++) {
+      const MatchSubjectBySubjectId = await MatchSubject.find({
+        _id:
+          "MS" + structureIdNumber + "-" + AllSubjectByCurriculum[i].subject_id,
+      });
 
-    for (const match of matchesList) {
-      const { machSubject_id } = match;
+      if (MatchSubjectBySubjectId.length > 0) {
+        const MachSubjectList = await MatchSubjectList.find({
+          machSubject_id: MatchSubjectBySubjectId[0]._id,
+        });
 
-      const matchSubject = matchSubjectAll.find(
-        (subject) => subject._id.toString() === machSubject_id
-      );
+        const extraSubjectIds = MachSubjectList.map((listItem) => {
+          return {
+            id: listItem._id,
+            count: listItem.extraSubject_id.length,
+            list: listItem.extraSubject_id,
+          };
+        });
 
-      if (matchSubject) {
-        const matchListId = await MatchSubjectList.findOne({
-          machSubject_id: matchSubject._id,
-        }).exec();
-
-        dataList.push({
-          subject_id: matchSubject.subject_id,
-          extraSubject: matchListId.extraSubject_id,
+        AllMatchSubject.push({
+          subject_id: MatchSubjectBySubjectId[0].subject_id,
+          machSubject_id: MatchSubjectBySubjectId[0]._id,
+          extraSubject_id: extraSubjectIds,
         });
       }
     }
 
-    let results = [];
+    if (AllMatchSubject.length === 0) {
+      return res.status(404).json({ message: "ไม่พบคู่เทียบโอนในหลักสูตรนี้" });
+    }
 
-    for (const extraSubject of extraSubjects) {
-      let { extraSubject_id, grade } = extraSubject;
+    let extraSubjects = req.body.extraSubjects;
 
-      if (grade >= 2.5) {
-        result = "เกรดผ่าน";
+    let gradeFail = [];
+    let notFound = [];
+    let ResultFound = [];
+
+    extraSubjects.forEach((extraSubject) => {
+      if (extraSubject.grade >= 2.5) {
+        const extraSubjectId = extraSubject.id;
+        let found = false;
+
+        AllMatchSubject.forEach((matchSubject) => {
+          matchSubject.extraSubject_id.forEach((extraSubjectItem) => {
+            if (extraSubjectItem.list.includes(extraSubjectId)) {
+              ResultFound.push({
+                id: extraSubject.id,
+                grade: extraSubject.grade,
+                machSubject_id: extraSubjectItem.id,
+                subject_id: matchSubject.subject_id,
+                result: "พบในรายการคู่เทียบโอน",
+              });
+              found = true;
+            }
+          });
+        });
+
+        if (!found) {
+          notFound.push({
+            id: extraSubject.id,
+            note: "ไม่พบในคู่เทียบโอน ไม่สามารถนำมาเทียบโอนได้",
+          });
+        }
       } else {
-        result = "เกรดไม่ผ่าน";
+        gradeFail.push({
+          id: extraSubject.id,
+          note: "เกรดน้อยกว่า 2.5 ไม่สามารถนำมาเทียบโอนได้",
+        });
+      }
+    });
+
+    let machSubjectCount = {};
+    const machSubjectIdsInResultFound = [];
+
+    ResultFound.forEach((result) => {
+      const { id, machSubject_id,subject_id } = result;
+      if (machSubjectCount[machSubject_id]) {
+        machSubjectCount[machSubject_id]++;
+      } else {
+        machSubjectCount[machSubject_id] = 1;
       }
 
-      results.push({ extraSubject_id, grade, result });
-    }
+      machSubjectIdsInResultFound.push({ id, machSubject_id, subject_id });
+    });
+
+    const success = [];
+    const countFail = [];
+
+    AllMatchSubject.forEach((matchSubject) => {
+      matchSubject.extraSubject_id.forEach((extraSubjectItem) => {
+        const machSubjectId = extraSubjectItem.id;
+        const foundMatch = machSubjectIdsInResultFound.find(
+          (item) => item.machSubject_id === machSubjectId
+        );
+        if (foundMatch) {
+          const machSubjectCountInResultFound =
+            machSubjectCount[machSubjectId] || 0;
+          if (machSubjectCountInResultFound === extraSubjectItem.count) {
+            console.log(`ครบคู่ ${machSubjectId}`);
+            success.push({
+              id: foundMatch.id,
+              subject_id: foundMatch.subject_id,
+              note: "สามารถนำมาเทียบโอนได้",
+            });
+          } else {
+            console.log(`ไม่ครบคู่ ${machSubjectId}`);
+            countFail.push({
+              id: foundMatch.id,
+              note: "พบในคู่เทียบโอน แต่ไม่ตรงถามเงื่อนไข ไม่สามารถนำมาเทียบโอนได้",
+            });
+          }
+        }
+      });
+    });
 
     res.status(200).json({
       message: "ผ่าน",
-      curriculum: curriculum,
-      data: dataList,
-      results: results,
+      //res เกรดน้อยกว่า 2.5 ไม่สามารถนำมาเทียบโอนได้
+      gradeFail,
+      //res ไม่พบในคู่เทียบโอน ไม่สามารถนำมาเทียบโอนได้
+      notFound,
+      //res พบในคู่เทียบโอน แต่ไม่ตรงถามเงื่อนไข ไม่สามารถนำมาเทียบโอนได้
+      countFail,
+      //res สามารถนำมาเทียบโอนได้
+      success,
     });
   } catch (err) {
     console.error(err);

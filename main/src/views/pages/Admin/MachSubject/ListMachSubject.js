@@ -12,7 +12,12 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import { IconEditCircle, IconCirclePlus, IconCircleMinus } from '@tabler/icons';
+import {
+  IconEditCircle,
+  IconCirclePlus,
+  IconCircleMinus,
+  IconArrowRightCircle,
+} from '@tabler/icons';
 import Breadcrumb from '../../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from '../../../../components/container/PageContainer';
 
@@ -121,7 +126,7 @@ const CollapsibleRow = ({ row }) => {
     <>
       <TableRow>
         <TableCell>
-          <IconButton size="small" onClick={() => setOpen(!open)}>
+          <IconButton size="small" color="primary" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
@@ -167,23 +172,23 @@ const CollapsibleRow = ({ row }) => {
             <Table size="small" aria-label="purchases">
               <TableHead>
                 <TableRow>
-                  <TableCell align="center" width={'5%'} sx={{ px: 0, mx: 0 }}></TableCell>
-                  <TableCell align="center" width={'10%'} sx={{ px: 0, mx: 0 }}>
+                  <TableCell width={'5%'} />
+                  <TableCell width={'15%'}>
                     <Typography variant="h6" fontWeight={400}>
                       รหัสวิชา
                     </Typography>
                   </TableCell>
-                  <TableCell width={'50%'} sx={{ px: 0, mx: 0 }}>
+                  <TableCell width={'50%'}>
                     <Typography variant="h6" fontWeight={400}>
                       ชื่อวิชา
                     </Typography>
                   </TableCell>
-                  <TableCell align="center" width={'10%'} sx={{ px: 0, mx: 0 }}>
+                  <TableCell width={'10%'}>
                     <Typography variant="h6" fontWeight={400}>
                       หน่วยกิต
                     </Typography>
                   </TableCell>
-                  <TableCell align="center" width={'20%'} sx={{ px: 0, mx: 0 }}>
+                  <TableCell width={'20%'}>
                     <IconButton
                       color="info"
                       component={Link}
@@ -211,41 +216,31 @@ const CollapsibleRow = ({ row }) => {
                     machtList.machSubject_id === row._id && (
                       <React.Fragment key={machtList._id}>
                         <TableRow
-                          style={{ backgroundColor: index % 2 === 0 ? 'white' : '#f5f5f5' }}
+                          style={{ backgroundColor: index % 2 === 0 ? '#f5f5f5' : 'white' }}
                         >
-                          <TableCell align="center" width={'5%'} sx={{ px: 0, mx: 0 }}>
+                          <TableCell width={'5%'}>
                             <IconButton color="info">
-                              <IconCircleMinus size="18" />
+                              <IconArrowRightCircle size="18" />
                             </IconButton>
                           </TableCell>
-                          <TableCell width={'70%'} colSpan={3} sx={{ px: 0, mx: 0 }}>
+                          <TableCell colSpan={3} sx={{ px: 0 }} width={'100%'}>
                             {machtList.extraSubject_id.map((extraId) => (
                               <React.Fragment key={extraId}>
-                                <TableRow>
+                                <TableRow
+                                  style={{ display: 'grid', gridTemplateColumns: '15% 50% 10%' }}
+                                >
                                   {ExtraSubject.map(
                                     (extra) =>
                                       extra.extraSubject_id === extraId && (
                                         <React.Fragment key={extra._id}>
-                                          <TableCell
-                                            align="center"
-                                            width={'10%'}
-                                            sx={{ px: 0, mx: 0 }}
-                                          >
-                                            {extra.extraSubject_id}
-                                          </TableCell>
-                                          <TableCell width={'50%'} sx={{ px: 0, mx: 0 }}>
+                                          <TableCell>{extra.extraSubject_id}</TableCell>
+                                          <TableCell>
                                             {extra.extraSubject_nameTh}
                                             <Typography color={'primary'}>
                                               ({extra.extraSubject_nameEn})
                                             </Typography>
                                           </TableCell>
-                                          <TableCell
-                                            align="center"
-                                            width={'10%'}
-                                            sx={{ px: 0, mx: 0 }}
-                                          >
-                                            {extra.total_credits}
-                                          </TableCell>
+                                          <TableCell>{extra.total_credits}</TableCell>
                                         </React.Fragment>
                                       ),
                                   )}
@@ -253,7 +248,8 @@ const CollapsibleRow = ({ row }) => {
                               </React.Fragment>
                             ))}
                           </TableCell>
-                          <TableCell align="center" width={'20%'} sx={{ px: 0, mx: 0 }}>
+
+                          <TableCell width={'20%'}>
                             <Typography>
                               <IconButton
                                 color="info"
@@ -384,7 +380,7 @@ const ListMachSubject = () => {
             </TableHead>
             <TableBody>
               {MachSubject.length === 0 ? (
-                <TableCell align='center' colSpan={7}>ไม่มีข้อมูล</TableCell>
+                <TableCell colSpan={7}>ไม่มีข้อมูล</TableCell>
               ) : (
                 MachSubject.map((row) => <CollapsibleRow key={row._id} row={row} />)
               )}

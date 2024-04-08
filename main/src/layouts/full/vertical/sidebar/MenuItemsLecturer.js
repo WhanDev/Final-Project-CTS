@@ -13,7 +13,7 @@ const MenuItemsLecturer = [
     id: uniqueId(),
     title: 'แดชบอร์ด',
     icon: IconLayoutDashboard,
-    href: '/Lecturer/Index',
+    href: '/lecturer/index',
     chipColor: 'secondary',
   },
   {
@@ -22,27 +22,21 @@ const MenuItemsLecturer = [
   },
   {
     id: uniqueId(),
-    title: 'อาจารย์',
-    icon: IconUserCircle,
-    href: '/manage/lecturer',
-  },
-  {
-    id: uniqueId(),
     title: 'หลักสูตร',
     icon: IconAlbum,
-    href: '/manage/curriculum',
+    href: '/lecturer/manage/curriculum',
   },
   {
     id: uniqueId(),
     title: 'นักศึกษา',
     icon: IconUsers,
-    href: '/manage/student',
+    href: '/lecturer/manage/student',
   },
   {
     id: uniqueId(),
     title: 'รายวิชานอกหลักสูตร',
     icon: IconListNumbers,
-    href: '/manage/extrasubject',
+    href: '/lecturer/manage/extrasubject',
   },
 ];
 

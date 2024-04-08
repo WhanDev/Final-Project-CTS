@@ -11,44 +11,30 @@ import {
 } from '@mui/material';
 import { IconFileDescription } from '@tabler/icons';
 
-import { read as readExtraSubject } from '../../../../function/extar-subject';
-import { read as readCurriculum } from '../../../../function/curriculum';
+import { read } from '../../../../function/subject';
 
-const DialogExtraSubject = ({ _id }) => {
-  const [extraSubject, setDataExtraSubject] = useState({
-    extraSubject_id: '',
-    extraSubject_nameTh: '',
-    extraSubject_nameEn: '',
+const DialogSubject = ({ _id }) => {
+  const [data, setData] = useState({
+    structure_id: '',
+    group_id: '',
+    subject_id: '',
+    subject_nameTh: '',
+    subject_nameEn: '',
     description: '',
     theory_credits: '',
     practical_credits: '',
     total_credits: '',
-    createBy: '',
-  });
-  const curriculumId = extraSubject.createBy;
-
-  const loadDataExtraSubject = async (_id) => {
-    readExtraSubject(_id).then((res) => {
-      setDataExtraSubject(res.data);
-    });
-  };
-
-  const [curriculum, setDataCurriculum] = useState({
-    name: '',
-    level: '',
-    year: '',
   });
 
-  const loadDataCurriculum = async (curriculumId) => {
-    readCurriculum(curriculumId).then((res) => {
-      setDataCurriculum(res.data);
+  const loadData = async (_id) => {
+    read(_id).then((res) => {
+      setData(res.data);
     });
   };
 
   useEffect(() => {
-    loadDataExtraSubject(_id);
-    loadDataCurriculum(curriculumId);
-  }, [_id, curriculumId]);
+    loadData(_id);
+  }, [_id]);
 
   const [open, setOpen] = React.useState(false);
   const [scroll, setScroll] = React.useState('paper');
@@ -86,7 +72,7 @@ const DialogExtraSubject = ({ _id }) => {
         fullWidth
       >
         <DialogTitle id="scroll-dialog-title" align="center" color={'primary'}>
-          รายละเอียดรายวิชานอกหลักสูตร
+          รายละเอียดรายวิชา
         </DialogTitle>
         <DialogContent dividers={scroll === 'paper'}>
           <DialogContentText
@@ -96,42 +82,37 @@ const DialogExtraSubject = ({ _id }) => {
           >
             <Typography variant="h5">รหัสวิชา</Typography>
             <Typography variant="body1" mb={1}>
-              {extraSubject.extraSubject_id}
+              {data.subject_id}
             </Typography>
 
             <Typography variant="h5">ชื่อวิชาภาษาไทย</Typography>
             <Typography variant="body1" mb={1}>
-              {extraSubject.extraSubject_nameTh}
+              {data.subject_nameTh}
             </Typography>
 
             <Typography variant="h5">ชื่อวิชาภาษาอังกฤษ</Typography>
             <Typography variant="body1" mb={1}>
-              {extraSubject.extraSubject_nameEn}
+              {data.subject_nameEn}
             </Typography>
 
             <Typography variant="h5">คำอธิบายรายวิชา</Typography>
             <Typography variant="body1" mb={1}>
-              {extraSubject.description}
+              {data.description}
             </Typography>
 
             <Typography variant="h5">หน่วยกิตทฤษฎี</Typography>
             <Typography variant="body1" mb={1}>
-              {extraSubject.theory_credits}
+              {data.theory_credits}
             </Typography>
 
             <Typography variant="h5">หน่วยกิตปฏิบัติ</Typography>
             <Typography variant="body1" mb={1}>
-              {extraSubject.practical_credits}
+              {data.practical_credits}
             </Typography>
 
             <Typography variant="h5">หน่วยกิตรวม</Typography>
             <Typography variant="body1" mb={1}>
-              {extraSubject.total_credits}
-            </Typography>
-
-            <Typography variant="h5">สร้างโดยหลักสูตร</Typography>
-            <Typography variant="body1" mb={1}>
-              {curriculum.name} ({curriculum.level}) {curriculum.year}
+              {data.total_credits}
             </Typography>
           </DialogContentText>
         </DialogContent>
@@ -145,4 +126,4 @@ const DialogExtraSubject = ({ _id }) => {
   );
 };
 
-export default DialogExtraSubject;
+export default DialogSubject;

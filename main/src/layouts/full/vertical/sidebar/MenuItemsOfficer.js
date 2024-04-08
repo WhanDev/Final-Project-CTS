@@ -13,7 +13,7 @@ const MenuItemsAdmin = [
     id: uniqueId(),
     title: 'แดชบอร์ด',
     icon: IconLayoutDashboard,
-    href: '/Officer/Index',
+    href: '/officer/index',
     chipColor: 'secondary',
   },
   {
@@ -22,27 +22,21 @@ const MenuItemsAdmin = [
   },
   {
     id: uniqueId(),
-    title: 'เจ้าหน้าที่',
-    icon: IconUserCircle,
-    href: '/manage/officer',
-  },
-  {
-    id: uniqueId(),
     title: 'หลักสูตร',
     icon: IconAlbum,
-    href: '/manage/curriculum',
+    href: '/officer/manage/curriculum',
   },
   {
     id: uniqueId(),
     title: 'นักศึกษา',
     icon: IconUsers,
-    href: '/manage/student',
+    href: '/officer/manage/student',
   },
   {
     id: uniqueId(),
     title: 'รายวิชานอกหลักสูตร',
     icon: IconListNumbers,
-    href: '/manage/extrasubject',
+    href: '/officer/manage/extrasubject',
   },
 ];
 
