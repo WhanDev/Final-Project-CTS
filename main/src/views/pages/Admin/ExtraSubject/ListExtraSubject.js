@@ -71,6 +71,10 @@ const ListExtraSubject = () => {
           await removeExtraSubject(_id);
           Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
           loadDataExtraSubjects();
+        } else if (user.curriculum === '0000000') {
+          await removeExtraSubject(_id);
+          Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
+          loadDataExtraSubjects();
         } else {
           Swal.fire({
             icon: 'error',
@@ -83,8 +87,6 @@ const ListExtraSubject = () => {
       console.error(error);
     }
   };
-
-  
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);

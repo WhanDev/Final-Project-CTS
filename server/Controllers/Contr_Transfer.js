@@ -60,18 +60,18 @@ exports.TestTransfer = async (req, res) => {
     }
 
     let extraSubjects = req.body.extraSubjects;
-
-    let gradeFail = [];
-    let notFound = [];
+    
+    let unsuccess = []
     let ResultFound = [];
+    const success = [];
 
-    extraSubjects.forEach((extraSubject) => {
+    for (const extraSubject of extraSubjects) {
       if (extraSubject.grade >= 2.5) {
         const extraSubjectId = extraSubject.id;
         let found = false;
 
-        AllMatchSubject.forEach((matchSubject) => {
-          matchSubject.extraSubject_id.forEach((extraSubjectItem) => {
+        for (const matchSubject of AllMatchSubject) {
+          for (const extraSubjectItem of matchSubject.extraSubject_id) {
             if (extraSubjectItem.list.includes(extraSubjectId)) {
               ResultFound.push({
                 id: extraSubject.id,
@@ -82,28 +82,28 @@ exports.TestTransfer = async (req, res) => {
               });
               found = true;
             }
-          });
-        });
+          }
+        }
 
         if (!found) {
-          notFound.push({
-            id: extraSubject.id,
+          unsuccess.push({
+            extra_id: extraSubject.id,
             note: "ไม่พบในคู่เทียบโอน ไม่สามารถนำมาเทียบโอนได้",
           });
         }
       } else {
-        gradeFail.push({
-          id: extraSubject.id,
+        unsuccess.push({
+          extra_id: extraSubject.id,
           note: "เกรดน้อยกว่า 2.5 ไม่สามารถนำมาเทียบโอนได้",
         });
       }
-    });
+    }
 
     let machSubjectCount = {};
     const machSubjectIdsInResultFound = [];
 
     ResultFound.forEach((result) => {
-      const { id, machSubject_id,subject_id } = result;
+      const { id, machSubject_id, subject_id } = result;
       if (machSubjectCount[machSubject_id]) {
         machSubjectCount[machSubject_id]++;
       } else {
@@ -113,45 +113,52 @@ exports.TestTransfer = async (req, res) => {
       machSubjectIdsInResultFound.push({ id, machSubject_id, subject_id });
     });
 
-    const success = [];
-    const countFail = [];
+    
 
-    AllMatchSubject.forEach((matchSubject) => {
-      matchSubject.extraSubject_id.forEach((extraSubjectItem) => {
-        const machSubjectId = extraSubjectItem.id;
-        const foundMatch = machSubjectIdsInResultFound.find(
-          (item) => item.machSubject_id === machSubjectId
+    await Promise.all(
+      AllMatchSubject.map(async (matchSubject) => {
+        await Promise.all(
+          matchSubject.extraSubject_id.map(async (extraSubjectItem) => {
+            const machSubjectId = extraSubjectItem.id;
+            const foundMatch = machSubjectIdsInResultFound.find(
+              (item) => item.machSubject_id === machSubjectId
+            );
+            if (foundMatch) {
+              const machSubjectCountInResultFound =
+                machSubjectCount[machSubjectId] || 0;
+              if (machSubjectCountInResultFound === extraSubjectItem.count) {
+                const extraSubjectId = await MatchSubjectList.findOne({
+                  _id: machSubjectId,
+                });
+                success.push({
+                  id: machSubjectId,
+                  extra_id: extraSubjectId.extraSubject_id,
+                  subject_id: foundMatch.subject_id,
+                  note: "สามารถนำมาเทียบโอนได้",
+                });
+              } else {
+                unsuccess.push({
+                  extra_id: foundMatch.id,
+                  note: "พบในคู่เทียบโอน แต่ไม่ตรงถามเงื่อนไข ไม่สามารถนำมาเทียบโอนได้",
+                });
+              }
+            }
+          })
         );
-        if (foundMatch) {
-          const machSubjectCountInResultFound =
-            machSubjectCount[machSubjectId] || 0;
-          if (machSubjectCountInResultFound === extraSubjectItem.count) {
-            console.log(`ครบคู่ ${machSubjectId}`);
-            success.push({
-              id: foundMatch.id,
-              subject_id: foundMatch.subject_id,
-              note: "สามารถนำมาเทียบโอนได้",
-            });
-          } else {
-            console.log(`ไม่ครบคู่ ${machSubjectId}`);
-            countFail.push({
-              id: foundMatch.id,
-              note: "พบในคู่เทียบโอน แต่ไม่ตรงถามเงื่อนไข ไม่สามารถนำมาเทียบโอนได้",
-            });
-          }
-        }
-      });
-    });
+      })
+    );
+    
 
     res.status(200).json({
       message: "ผ่าน",
       //res เกรดน้อยกว่า 2.5 ไม่สามารถนำมาเทียบโอนได้
-      gradeFail,
+      // gradeFail,
       //res ไม่พบในคู่เทียบโอน ไม่สามารถนำมาเทียบโอนได้
-      notFound,
-      //res พบในคู่เทียบโอน แต่ไม่ตรงถามเงื่อนไข ไม่สามารถนำมาเทียบโอนได้
-      countFail,
+      // notFound,
+      //res พบในคู่เทียบโอน แต่ไม่ตรงถ9ามเงื่อนไข ไม่สามารถนำมาเทียบโอนได้
+      // countFail,
       //res สามารถนำมาเทียบโอนได้
+      unsuccess,
       success,
     });
   } catch (err) {

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import {
@@ -10,26 +10,23 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  TableSortLabel,
   Toolbar,
   Paper,
   IconButton,
   Tooltip,
-  FormControlLabel,
   Typography,
-  Avatar,
-  AvatarGroup,
-  Badge,
+  Container,
+  Stack,
+  Grid,
+  TextField,
+  Button,
 } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
 import CustomCheckbox from '../../components/forms/theme-elements/CustomCheckbox';
-import CustomSwitch from '../../components/forms/theme-elements/CustomSwitch';
 import Breadcrumb from '../../layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from '../../components/container/PageContainer';
 import ParentCard from '../../components/shared/ParentCard';
-import { IconTrash, IconFilter } from '@tabler/icons';
-import { Stack } from '@mui/system';
-import { EnhancedTableData } from './tableData';
+import { IconTrash } from '@tabler/icons';
+import { list } from '../../function/extar-subject';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -40,7 +37,7 @@ function descendingComparator(a, b, orderBy) {
   }
   return 0;
 }
-const rows = EnhancedTableData;
+
 function getComparator(order, orderBy) {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
@@ -59,48 +56,33 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: 'name',
+    id: 'extraSubject_id',
     numeric: false,
     disablePadding: false,
-    label: 'Team Lead',
+    label: 'รหัสวิชา',
   },
   {
-    id: 'pname',
+    id: 'extraSubject_nameTh',
     numeric: false,
     disablePadding: false,
-    label: 'Project Name',
+    label: 'ชื่อรายวิชา',
   },
   {
-    id: 'team',
+    id: 'description',
     numeric: false,
     disablePadding: false,
-    label: 'Team',
+    label: 'คำอธิบาย',
   },
   {
-    id: 'status',
+    id: 'total_credits',
     numeric: false,
     disablePadding: false,
-    label: 'Status',
-  },
-  {
-    id: 'weeks',
-    numeric: false,
-    disablePadding: false,
-    label: 'Weeks',
-  },
-  {
-    id: 'budget',
-    numeric: false,
-    disablePadding: false,
-    label: 'Budget',
+    label: 'หน่วยกิต',
   },
 ];
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount } = props;
 
   return (
     <TableHead>
@@ -110,7 +92,7 @@ function EnhancedTableHead(props) {
             color="primary"
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
-            inputprops={{
+            inputProps={{
               'aria-label': 'select all desserts',
             }}
           />
@@ -122,20 +104,9 @@ function EnhancedTableHead(props) {
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              <Typography variant="subtitle1" fontWeight="500">
-                {headCell.label}
-              </Typography>
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            <Typography variant="h5" align="center">
+              {headCell.label}
+            </Typography>
           </TableCell>
         ))}
       </TableRow>
@@ -153,7 +124,7 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected } = props;
+  const { numSelected, setSelected, setExtraSelect, selected } = props; // เพิ่ม selected และ setExtraSelect ในการรับ props
 
   return (
     <Toolbar
@@ -168,52 +139,54 @@ const EnhancedTableToolbar = (props) => {
     >
       {numSelected > 0 ? (
         <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle2" component="div">
-          {numSelected} selected
+          เลือก {numSelected} รายการ
         </Typography>
-      ) : (
-        <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
-          Filter
-        </Typography>
-      )}
+      ) : null}
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton
+            onClick={() => {
+              setExtraSelect([]);
+              setSelected([]);
+            }}
+            disabled={selected.length === 0}
+          >
             <IconTrash width={18} />
           </IconButton>
         </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <IconFilter width={18} />
-          </IconButton>
-        </Tooltip>
-      )}
+      ) : null}
     </Toolbar>
   );
 };
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
+  setSelected: PropTypes.func.isRequired, // เพิ่ม PropTypes สำหรับ setSelected
+  setExtraSelect: PropTypes.func.isRequired, // เพิ่ม PropTypes สำหรับ setExtraSelect
+  selected: PropTypes.array.isRequired, // เพิ่ม PropTypes สำหรับ selected
 };
 
-const BCrumb = [
-  {
-    to: '/',
-    title: 'Home',
-  },
-  {
-    title: 'Enhanced Table',
-  },
-];
-
 const EnhancedTable = () => {
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('extraSubject_id');
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [rows, setRows] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      const response = await list();
+      setRows(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -221,21 +194,25 @@ const EnhancedTable = () => {
     setOrderBy(property);
   };
 
+  const [extraSelect, setExtraSelect] = useState([]);
+
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = rows.map((n) => n.extraSubject_id);
       setSelected(newSelecteds);
+      setExtraSelect(newSelecteds); // เพิ่มบรรทัดนี้เพื่อเก็บรายการที่เลือกไว้ใน extraSelect
       return;
     }
     setSelected([]);
+    setExtraSelect([]); // เพิ่มบรรทัดนี้เพื่อล้างรายการที่เลือกทั้งหมดใน extraSelect เมื่อยกเลิกการเลือกทั้งหมด
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -248,6 +225,7 @@ const EnhancedTable = () => {
     }
 
     setSelected(newSelected);
+    setExtraSelect(newSelected); // เพิ่มบรรทัดนี้เพื่อเก็บรายการที่เลือกไว้ใน extraSelect
   };
 
   const handleChangePage = (event, newPage) => {
@@ -259,168 +237,148 @@ const EnhancedTable = () => {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
+  const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
-
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  return (
-    <PageContainer title="Enhanced Table" description="this is Enhanced Table page">
-      {/* breadcrumb */}
-      <Breadcrumb title="Enhanced Table" items={BCrumb} />
-      {/* end breadcrumb */}
-      <ParentCard title="Enhanced">
-        <Paper variant="outlined">
-          <Box mb={2} sx={{ mb: 2 }}>
-            <EnhancedTableToolbar numSelected={selected.length} />
-            <TableContainer >
-              <Table
-                sx={{ minWidth: 750 }}
-                aria-labelledby="tableTitle"
-                size={dense ? 'small' : 'medium'}
-              >
-                <EnhancedTableHead
-                  numSelected={selected.length}
-                  order={order}
-                  orderBy={orderBy}
-                  onSelectAllClick={handleSelectAllClick}
-                  onRequestSort={handleRequestSort}
-                  rowCount={rows.length}
-                />
-                <TableBody>
-                  {stableSort(rows, getComparator(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) => {
-                      const isItemSelected = isSelected(row.name);
-                      const labelId = `enhanced-table-checkbox-${index}`;
+  const [searchTerm, setSearchTerm] = useState('');
 
-                      return (
-                        <TableRow
-                          hover
-                          onClick={(event) => handleClick(event, row.name)}
-                          role="checkbox"
-                          aria-checked={isItemSelected}
-                          tabIndex={-1}
-                          key={row.id}
-                          selected={isItemSelected}
-                        >
-                          <TableCell padding="checkbox">
-                            <CustomCheckbox
-                              color="primary"
-                              checked={isItemSelected}
-                              inputprops={{
-                                'aria-labelledby': labelId,
-                              }}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Stack spacing={2} direction="row">
-                              <Avatar
-                                src={row.imgsrc}
-                                alt={row.imgsrc}
-                                width="35"
-                                sx={{
-                                  borderRadius: '100%',
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredExtraSubjects = rows.filter(
+    (item) =>
+      item.extraSubject_id.includes(searchTerm) ||
+      item.extraSubject_nameTh.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.extraSubject_nameEn.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const handleSubmit = (event) => {
+    console.log(extraSelect);
+  };
+
+  return (
+    <PageContainer title="ทดสอบเทียบโอน" description="this is Enhanced Table page">
+      <Container maxWidth="lg">
+        <Breadcrumb title="ทดสอบเทียบโอน" />
+        <ParentCard title="รายวิชา (รายวิชาในใบ รบ.)">
+          <Paper variant="outlined">
+            <Typography variant="h6" mx={2} mt={3}>
+              ค้นหารายวิชา
+            </Typography>
+            <Stack
+              spacing={1}
+              direction={{ sm: 'row' }}
+              justifyContent="center"
+              alignItems="center"
+              mx={2}
+            >
+              <TextField
+                variant="outlined"
+                size="small"
+                fullWidth
+                margin="normal"
+                onChange={handleSearch}
+                value={searchTerm}
+                placeholder="กรอกรหัสวิชา/ชื่อวิชา"
+              />
+            </Stack>
+            <Box mb={2} sx={{ mb: 2 }}>
+              <EnhancedTableToolbar
+                numSelected={selected.length}
+                setSelected={setSelected}
+                setExtraSelect={setExtraSelect}
+                selected={selected}
+              />
+
+              <TableContainer>
+                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                  <EnhancedTableHead
+                    numSelected={selected.length}
+                    order={order}
+                    orderBy={orderBy}
+                    onSelectAllClick={handleSelectAllClick}
+                    onRequestSort={handleRequestSort}
+                    rowCount={rows.length}
+                  />
+                  <TableBody>
+                    {stableSort(filteredExtraSubjects, getComparator(order, orderBy))
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row, index) => {
+                        const isItemSelected = isSelected(row.extraSubject_id);
+                        const labelId = `enhanced-table-checkbox-${index}`;
+
+                        return (
+                          <TableRow
+                            hover
+                            onClick={(event) => handleClick(event, row.extraSubject_id)}
+                            role="checkbox"
+                            aria-checked={isItemSelected}
+                            tabIndex={-1}
+                            key={row.extraSubject_id}
+                            selected={isItemSelected}
+                          >
+                            <TableCell padding="checkbox">
+                              <CustomCheckbox
+                                color="primary"
+                                checked={isItemSelected}
+                                onClick={(event) => handleClick(event, row.extraSubject_id)}
+                                inputProps={{
+                                  'aria-labelledby': labelId,
                                 }}
                               />
-                              <Box>
-                                <Typography variant="h6" fontWeight="600">
-                                  {row.name}
-                                </Typography>
-                                <Typography color="textSecondary" variant="h6" fontWeight="400">
-                                  {row.email}
-                                </Typography>
-                              </Box>
-                            </Stack>
-                          </TableCell>
-                          <TableCell>
-                            <Typography color="textSecondary" variant="h6" fontWeight="400">
-                              {row.pname}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Stack direction="row">
-                              <AvatarGroup>
-                                {row.teams.map((team) => (
-                                  <Avatar
-                                    key={team.id}
-                                    width="35"
-                                    sx={{
-                                      bgcolor: team.color,
-                                    }}
-                                  >
-                                    {team.text}
-                                  </Avatar>
-                                ))}
-                              </AvatarGroup>
-                            </Stack>
-                          </TableCell>
-                          <TableCell>
-                            <Stack spacing={1} direction="row" alignItems="center">
-                              <Badge
-                                color={
-                                  row.status === 'Active'
-                                    ? 'success'
-                                    : row.status === 'Pending'
-                                    ? 'warning'
-                                    : row.status === 'Completed'
-                                    ? 'primary'
-                                    : row.status === 'Cancel'
-                                    ? 'error'
-                                    : 'secondary'
-                                }
-                                variant="dot"
-                              ></Badge>
-                              <Typography color="textSecondary" variant="body1">
-                                {row.status}
+                            </TableCell>
+                            <TableCell width={'15%'}>
+                              <Typography align="center" color="textSecondary">
+                                {row.extraSubject_id}
                               </Typography>
-                            </Stack>
-                          </TableCell>
-                          <TableCell>
-                            <Typography color="textSecondary" variant="body1">
-                              {row.weeks}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography variant="h6">${row.budget}k</Typography>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  {emptyRows > 0 && (
-                    <TableRow
-                      style={{
-                        height: (dense ? 33 : 53) * emptyRows,
-                      }}
-                    >
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Box>
-          <Box p={2}>
-            <FormControlLabel
-              control={<CustomSwitch checked={dense} onChange={handleChangeDense} />}
-              label="Dense padding"
-            />
-          </Box>
-        </Paper>
-      </ParentCard>
+                            </TableCell>
+                            <TableCell width={'30%'}>
+                              <Typography>
+                                {row.extraSubject_nameTh}
+                                <Typography color="primary">({row.extraSubject_nameEn})</Typography>
+                              </Typography>
+                            </TableCell>
+                            <TableCell width={'50%'}>
+                              <Typography align="center">{row.description}</Typography>
+                            </TableCell>
+                            <TableCell width={'5%'}>
+                              <Typography align="center">{row.total_credits}</Typography>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[25, 50, 100]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Box>
+            <Grid item xs={12} sm={12} lg={12}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="end" m={2}>
+                <Stack spacing={1} direction="row">
+                  <Button variant="contained" color="success" onClick={handleSubmit}>
+                    ถัดไป
+                  </Button>
+                </Stack>
+              </Stack>
+            </Grid>
+          </Paper>
+        </ParentCard>
+      </Container>
     </PageContainer>
   );
 };

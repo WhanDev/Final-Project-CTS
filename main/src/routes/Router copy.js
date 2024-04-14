@@ -192,7 +192,7 @@ const ShowListMachSubject = Loadable(
 );
 
 const TestTransfer = Loadable(lazy(() => import('../views/pages/Tester/TestTransfer')));
-const ExtarSubjectCheck = Loadable(lazy(() => import('../views/pages/Tester/ExtarSubjectCheck')));
+const ExtarSubjectCheck = Loadable(lazy(() => import('../views/pages/Tester/TestCheck')));
 const MachTestTransfer = Loadable(lazy(() => import('../views/pages/Tester/MachTestTransfer')));
 const Curriculum = Loadable(lazy(() => import('../views/pages/Curriculum/ManageCurriculum')));
 const ShowCurriculum = Loadable(lazy(() => import('../views/pages/Curriculum/ListCurriculum')));

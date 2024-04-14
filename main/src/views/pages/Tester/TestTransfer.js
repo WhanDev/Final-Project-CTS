@@ -1,41 +1,264 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { alpha } from '@mui/material/styles';
 import {
-  IconButton,
-  Container,
-  Grid,
-  Stack,
   Box,
-  Button,
   Table,
-  TableHead,
-  TableContainer,
-  TableRow,
-  TableCell,
   TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Toolbar,
+  Paper,
+  IconButton,
+  Tooltip,
   Typography,
+  Container,
+  Stack,
+  Grid,
+  TextField,
+  Button,
+  Autocomplete,
 } from '@mui/material';
-import { useDispatch } from 'react-redux';
-
+import CustomCheckbox from '../../../components/forms/theme-elements/CustomCheckbox';
+import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from '../../../components/container/PageContainer';
-import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-import { IconCirclePlus, IconCircleMinus } from '@tabler/icons';
-import { list as AllExtraSubject } from '../../../function/extar-subject';
-import { setExtraSubjects } from '../../../store/extraSubjectSlice';
-import { setCurriculums } from '../../../store/curriculumSlice';
+import { IconTrash } from '@tabler/icons';
+import { list } from '../../../function/extar-subject';
+import { useNavigate } from 'react-router-dom';
 import { list as listCurriculum } from '../../../function/curriculum';
+import { useDispatch } from 'react-redux';
+import { setTestTransfer } from '../../../store/testTransfer';
+import Swal from 'sweetalert2';
 
-const TestTransfer = () => {
-  const [ExtraSubject, setExtraSubject] = useState([]);
+function descendingComparator(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
 
-  const loadDataExtraSubject = async () => {
-    AllExtraSubject()
-      .then((res) => setExtraSubject(res.data))
-      .catch((err) => console.log(err));
+function getComparator(order, orderBy) {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function stableSort(array, comparator) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
+
+const headCells = [
+  {
+    id: 'extraSubject_id',
+    numeric: false,
+    disablePadding: false,
+    label: 'รหัสวิชา',
+  },
+  {
+    id: 'extraSubject_nameTh',
+    numeric: false,
+    disablePadding: false,
+    label: 'ชื่อรายวิชา',
+  },
+  {
+    id: 'description',
+    numeric: false,
+    disablePadding: false,
+    label: 'คำอธิบาย',
+  },
+  {
+    id: 'total_credits',
+    numeric: false,
+    disablePadding: false,
+    label: 'หน่วยกิต',
+  },
+];
+
+function EnhancedTableHead(props) {
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount } = props;
+
+  return (
+    <TableHead>
+      <TableRow>
+        <TableCell padding="checkbox">
+          <CustomCheckbox
+            color="primary"
+            checked={rowCount > 0 && numSelected === rowCount}
+            onChange={onSelectAllClick}
+            inputProps={{
+              'aria-label': 'select all desserts',
+            }}
+          />
+        </TableCell>
+        {headCells.map((headCell) => (
+          <TableCell
+            key={headCell.id}
+            align={headCell.numeric ? 'right' : 'left'}
+            padding={headCell.disablePadding ? 'none' : 'normal'}
+            sortDirection={orderBy === headCell.id ? order : false}
+          >
+            <Typography variant="h5" align="center">
+              {headCell.label}
+            </Typography>
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  );
+}
+
+EnhancedTableHead.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
+  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired,
+};
+
+const EnhancedTableToolbar = (props) => {
+  const { numSelected, setSelected, setExtraSelect, selected } = props; // เพิ่ม selected และ setExtraSelect ในการรับ props
+
+  return (
+    <Toolbar
+      sx={{
+        pl: { sm: 2 },
+        pr: { xs: 1, sm: 1 },
+        ...(numSelected > 0 && {
+          bgcolor: (theme) =>
+            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+        }),
+      }}
+    >
+      {numSelected > 0 ? (
+        <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle2" component="div">
+          เลือก {numSelected} รายการ
+        </Typography>
+      ) : null}
+
+      {numSelected > 0 ? (
+        <Tooltip title="Delete">
+          <IconButton
+            onClick={() => {
+              setExtraSelect([]);
+              setSelected([]);
+            }}
+            disabled={selected.length === 0}
+          >
+            <IconTrash width={18} />
+          </IconButton>
+        </Tooltip>
+      ) : null}
+    </Toolbar>
+  );
+};
+
+EnhancedTableToolbar.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+  setSelected: PropTypes.func.isRequired, // เพิ่ม PropTypes สำหรับ setSelected
+  setExtraSelect: PropTypes.func.isRequired, // เพิ่ม PropTypes สำหรับ setExtraSelect
+  selected: PropTypes.array.isRequired, // เพิ่ม PropTypes สำหรับ selected
+};
+
+const EnhancedTable = () => {
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('extraSubject_id');
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rows, setRows] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      const response = await list();
+      setRows(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  const [extraSelect, setExtraSelect] = useState([]);
+
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelecteds = rows.map((n) => n.extraSubject_id);
+      setSelected(newSelecteds);
+      setExtraSelect(newSelecteds);
+      return;
+    }
+    setSelected([]);
+    setExtraSelect([]);
+  };
+
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+
+    setSelected(newSelected);
+    setExtraSelect(newSelected);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const isSelected = (id) => selected.indexOf(id) !== -1;
+
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredExtraSubjects = rows.filter(
+    (item) =>
+      item.extraSubject_id.includes(searchTerm) ||
+      item.extraSubject_nameTh.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.extraSubject_nameEn.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   const [Curriculum, setCurriculum] = useState([]);
 
@@ -50,75 +273,35 @@ const TestTransfer = () => {
     setSelectedCurriculum(value);
   };
 
-  const [selectedExtarSubject, setSelectedExtarSubject] = useState([]);
-  const handleSubjectChange = (event, value) => {
-    setSelectedExtarSubject(value);
-  };
-
-  const [selectedExtarSubjectList, setSelectedExtarSubjectList] = useState([]);
-  const handleAddSubjectToList = () => {
-    if (selectedExtarSubject) {
-      setSelectedExtarSubjectList((prevSubjectList) => [
-        ...prevSubjectList,
-        selectedExtarSubject.value,
-      ]);
-      setSelectedExtarSubject('');
-    }
-  };
-
-  const handleRemoveSubjectToList = (index) => {
-    setSelectedExtarSubjectList((prevSubjectList) => {
-      const updatedSubjectList = [...prevSubjectList];
-      updatedSubjectList.splice(index, 1);
-      return updatedSubjectList;
-    });
-  };
+  useEffect(() => {
+    loadDataCurriculum();
+  }, []);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const transferData = selectedExtarSubjectList.map((item, index) => {
-      const subject = ExtraSubject.find((option) => option.extraSubject_id === item);
-
-      if (subject) {
-        const grade = e.target[`grade-${index}`].value;
-
-        return {
-          extraSubject_id: subject.extraSubject_id,
-          grade: grade,
-        };
-      } else {
-        return null;
-      }
-    });
-
-    const filteredTransferData = transferData.filter((data) => data !== null);
-
-    dispatch(setExtraSubjects(filteredTransferData));
-    dispatch(setCurriculums(Curriculum));
-
-    navigate('/test/check');
+  const handleSubmit = (event) => {
+    if (selectedCurriculum.value !== null && extraSelect.length !== 0) {
+      dispatch(
+        setTestTransfer({
+          curriculum: selectedCurriculum.value,
+          extraSubject: extraSelect,
+        }),
+      );
+      navigate('/test/check');
+    }else{
+      Swal.fire({
+        icon: 'warning',
+        title: 'กรุณาเลือกหลักสูตรและรายวิชา',
+      });
+    }
   };
-
-  const handleCancel = () => {
-    setSelectedExtarSubject('');
-    setSelectedExtarSubjectList('');
-    navigate(-1);
-  };
-
-  useEffect(() => {
-    loadDataExtraSubject();
-    loadDataCurriculum();
-  }, []);
 
   return (
-    <PageContainer title="จัดการคู่เทียบโอนรายวิชา" description="จัดการคู่เทียบโอนรายวิชา">
+    <PageContainer title="ทดสอบเทียบโอน" description="this is Enhanced Table page">
       <Container maxWidth="lg">
-        <Breadcrumb title={<>ทดสอบเทียบโอน</>} />
-        <ParentCard title="หลักสูตร">
+        <Breadcrumb title="ทดสอบเทียบโอน" />
+        <ParentCard title="เลือกหลักสูตร">
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} lg={12}>
               <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
@@ -147,155 +330,126 @@ const TestTransfer = () => {
             </Grid>
           </Grid>
         </ParentCard>
-        <hr color="white" style={{ marginTop: '10px', marginBottom: '10px' }} />
-        <ParentCard title="รายวิชา (รายวิชาในใบ รบ.)">
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={12} lg={12}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-                <Autocomplete
-                  fullWidth
-                  id="subject_id"
-                  name="subject_id"
-                  disableClearable
-                  options={ExtraSubject.map((option) => ({
-                    label:
-                      option.extraSubject_id +
-                      ' | ' +
-                      option.extraSubject_nameTh +
-                      ' (' +
-                      option.extraSubject_nameEn +
-                      ') ' +
-                      option.total_credits +
-                      ' หน่วยกิต',
-                    value: option.extraSubject_id,
-                  }))}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      placeholder="กรอกรหัสวิชา/ชื่อวิชา"
-                      variant="outlined"
-                      fullWidth
-                    />
-                  )}
-                  onChange={handleSubjectChange}
-                  value={selectedExtarSubject}
-                  sx={{ mr: 1 }}
-                />
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  sx={{ height: '100%' }}
-                  onClick={handleAddSubjectToList}
-                  startIcon={<IconCirclePlus width={18} />}
-                >
-                  <Typography variant="none">เพิ่ม</Typography>
-                </Button>
-              </Stack>
-              <form onSubmit={handleSubmit} encType="multipart/form-data">
-                <Stack>
-                  <Box mt={2}>
-                    <TableContainer>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell align="center" width={'5%'}>
-                              <Typography variant="h5">ลำดับ</Typography>
+        <Box m={3} />
+        <ParentCard title="เลือกรายวิชา (รายวิชาในใบ รบ.)">
+          <Paper variant="outlined">
+            <Typography variant="h6" mx={2} mt={3}>
+              ค้นหารายวิชา
+            </Typography>
+            <Stack
+              spacing={1}
+              direction={{ sm: 'row' }}
+              justifyContent="center"
+              alignItems="center"
+              mx={2}
+            >
+              <TextField
+                variant="outlined"
+                size="small"
+                fullWidth
+                margin="normal"
+                onChange={handleSearch}
+                value={searchTerm}
+                placeholder="กรอกรหัสวิชา/ชื่อวิชา"
+              />
+            </Stack>
+            <Box mb={2} sx={{ mb: 2 }}>
+              <EnhancedTableToolbar
+                numSelected={selected.length}
+                setSelected={setSelected}
+                setExtraSelect={setExtraSelect}
+                selected={selected}
+              />
+
+              <TableContainer>
+                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                  <EnhancedTableHead
+                    numSelected={selected.length}
+                    order={order}
+                    orderBy={orderBy}
+                    onSelectAllClick={handleSelectAllClick}
+                    onRequestSort={handleRequestSort}
+                    rowCount={rows.length}
+                  />
+                  <TableBody>
+                    {stableSort(filteredExtraSubjects, getComparator(order, orderBy))
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row, index) => {
+                        const isItemSelected = isSelected(row.extraSubject_id);
+                        const labelId = `enhanced-table-checkbox-${index}`;
+
+                        return (
+                          <TableRow
+                            hover
+                            onClick={(event) => handleClick(event, row.extraSubject_id)}
+                            role="checkbox"
+                            aria-checked={isItemSelected}
+                            tabIndex={-1}
+                            key={row.extraSubject_id}
+                            selected={isItemSelected}
+                          >
+                            <TableCell padding="checkbox">
+                              <CustomCheckbox
+                                color="primary"
+                                checked={isItemSelected}
+                                onClick={(event) => handleClick(event, row.extraSubject_id)}
+                                inputProps={{
+                                  'aria-labelledby': labelId,
+                                }}
+                              />
                             </TableCell>
-                            <TableCell align="center" width={'15%'}>
-                              <Typography variant="h5">รหัสวิชา</Typography>
+                            <TableCell width={'15%'}>
+                              <Typography align="center" color="textSecondary">
+                                {row.extraSubject_id}
+                              </Typography>
                             </TableCell>
-                            <TableCell width={'60%'}>
-                              <Typography variant="h5">ชื่อวิชา</Typography>
+                            <TableCell width={'30%'}>
+                              <Typography>
+                                {row.extraSubject_nameTh}
+                                <Typography color="primary">({row.extraSubject_nameEn})</Typography>
+                              </Typography>
                             </TableCell>
-                            <TableCell align="center" width={'10%'}>
-                              <Typography variant="h5">เกรด</Typography>
+                            <TableCell width={'50%'}>
+                              <Typography align="center">{row.description}</Typography>
                             </TableCell>
-                            <TableCell align="center" width={'10%'}>
-                              <Typography variant="h5">ลบ</Typography>
+                            <TableCell width={'5%'}>
+                              <Typography align="center">{row.total_credits}</Typography>
                             </TableCell>
                           </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {selectedExtarSubjectList.length > 0 ? (
-                            selectedExtarSubjectList.map((item, index) => {
-                              const subject = ExtraSubject.find(
-                                (option) => option.extraSubject_id === item,
-                              );
-                              if (subject) {
-                                return (
-                                  <TableRow key={index} hover>
-                                    <TableCell align="center" width="5%">
-                                      {index + 1}
-                                    </TableCell>
-                                    <TableCell align="center" width="15%">
-                                      {subject.extraSubject_id}
-                                    </TableCell>
-                                    <TableCell width="60%">
-                                      {subject.extraSubject_nameTh}
-                                      <Typography color="primary">
-                                        ({subject.extraSubject_nameEn})
-                                      </Typography>
-                                    </TableCell>
-                                    <TableCell align="center" width="10%">
-                                      <TextField
-                                        name={`grade-${index}`}
-                                        type="number"
-                                        variant="outlined"
-                                        required
-                                      />
-                                    </TableCell>
-                                    <TableCell align="center" width="10%">
-                                      <IconButton
-                                        color="error"
-                                        onClick={() => handleRemoveSubjectToList(index)}
-                                      >
-                                        <IconCircleMinus size="18" />
-                                      </IconButton>
-                                    </TableCell>
-                                  </TableRow>
-                                );
-                              } else {
-                                return null; // Handle case when the selected subject is not found
-                              }
-                            })
-                          ) : (
-                            <TableRow>
-                              <TableCell colSpan={5} align="center">
-                                <Box>
-                                  <Typography align="center">
-                                    ไม่มีข้อมูลรายวิชาที่เรียนมา
-                                  </Typography>
-                                </Box>
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Box>
+                        );
+                      })}
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 50]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Box>
+            <Grid item xs={12} sm={12} lg={12}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="end" m={2}>
+                <Stack spacing={1} direction="row">
+                  <Button variant="contained" color="success" onClick={handleSubmit}>
+                    ถัดไป
+                  </Button>
                 </Stack>
-                <Stack
-                  direction={{ xs: 'column', sm: 'row' }}
-                  spacing={2}
-                  justifyContent="end"
-                  mt={2}
-                >
-                  <Stack spacing={1} direction="row">
-                    <Button type="submit" variant="contained" color="success">
-                      บันทึก
-                    </Button>
-                    <Button variant="outlined" color="warning" onClick={handleCancel}>
-                      ยกเลิก
-                    </Button>
-                  </Stack>
-                </Stack>
-              </form>
+              </Stack>
             </Grid>
-          </Grid>
+          </Paper>
         </ParentCard>
       </Container>
     </PageContainer>
   );
 };
 
-export default TestTransfer;
+export default EnhancedTable;

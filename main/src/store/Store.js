@@ -9,8 +9,7 @@ import EcommerceReducer from './apps/eCommerce/EcommerceSlice';
 import UserProfileReducer from './apps/userProfile/UserProfileSlice';
 import BlogReducer from './apps/blog/BlogSlice';
 import userSlice from './userSlice';
-import extraSubjectSlice from './extraSubjectSlice';
-import curriculumSlice from './curriculumSlice';
+import testTransfer from './testTransfer';
 
 export const store = configureStore({
   reducer: {
@@ -24,8 +23,7 @@ export const store = configureStore({
     userpostsReducer: UserProfileReducer,
     blogReducer: BlogReducer,
     user: userSlice,
-    extraSubject: extraSubjectSlice,
-    curriculum: curriculumSlice,
+    tester:testTransfer
   },
 });
 
