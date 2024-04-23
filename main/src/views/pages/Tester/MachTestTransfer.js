@@ -22,7 +22,6 @@ import ParentCard from '../../../components/shared/ParentCard';
 
 import { useSelector } from 'react-redux';
 
-import { testTransfer,testTransferPDF } from '../../../function/mach';
 import { listByStructure } from '../../../function/subject';
 import { list } from '../../../function/extar-subject';
 
@@ -30,25 +29,20 @@ import { IconCircleX, IconCircleCheck } from '@tabler/icons';
 
 const MachTestTransfer = () => {
   const curriculumRedux = useSelector((state) => state.tester.testTransfer.curriculum);
-  const extraSubjectRedux = useSelector((state) => state.tester.testTransfer.extraSubject);
 
-  const [success, setSuccess] = React.useState({});
-  const [unsuccess, setUnsuccess] = React.useState({});
+  const success = useSelector((state) => state.tester.testResultTransfer.success);
+  const unsuccess = useSelector((state) => state.tester.testResultTransfer.unsuccess);
+
 
   const [allSubject, setAllSubject] = React.useState([]);
+  const [total_credits, setTotalCredits] = React.useState(0);
   const [allExtra, setAllExtra] = React.useState([]);
 
   const fetchData = async () => {
     try {
       const DataTransfer = {
         structure_id: 'CS-' + curriculumRedux,
-        extraSubjects: extraSubjectRedux,
       };
-
-      const responseTransfer = await testTransfer(DataTransfer);
-      setSuccess(responseTransfer.data.success);
-      setUnsuccess(responseTransfer.data.unsuccess);
-      console.log(unsuccess);
 
       const responseSubject = await listByStructure(DataTransfer.structure_id);
       setAllSubject(responseSubject.data);
@@ -62,7 +56,20 @@ const MachTestTransfer = () => {
 
   useEffect(() => {
     fetchData();
-  }, [curriculumRedux, extraSubjectRedux]);
+  }, [curriculumRedux]);
+
+  useEffect(() => {
+    let totalCredits = 0;
+
+    success.forEach((item) => {
+      const subject = allSubject.find((option) => option.subject_id === item.subject_id);
+      if (subject) {
+        totalCredits += subject.total_credits;
+      }
+    });
+
+    setTotalCredits(totalCredits);
+  }, [success, allSubject]);
 
   const handleSubmit = (e) => {
     console.log('submit');
@@ -155,7 +162,7 @@ const MachTestTransfer = () => {
                                 </TableCell>
                               </TableCell>
                               <TableCell align="center" width="50%" colSpan={1}>
-                                {item.extra_id.map((extra_id, index) => {
+                                {item.extra_id.map((extra_id) => {
                                   const extra = allExtra.find(
                                     (option) => option.extraSubject_id === extra_id,
                                   );
@@ -199,6 +206,20 @@ const MachTestTransfer = () => {
               </TableContainer>
             </Grid>
           </Grid>
+          <Grid item xs={12} sm={12} lg={12}>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={2}
+            justifyContent="end"
+            mt={2}
+          >
+            <Stack spacing={1} direction="row">
+              <Typography variant='h6' fontWeight={400} color="green">
+                จำนวนหน่วยกิตที่เทียบโอนได้ {total_credits} หน่วยกิต
+              </Typography>
+            </Stack>
+          </Stack>
+        </Grid>
         </ParentCard>
         <Box m={3} />
         <ParentCard
@@ -266,7 +287,9 @@ const MachTestTransfer = () => {
                     ) : (
                       <TableRow>
                         <TableCell colSpan={4} align="center">
-                          <Typography align="center">ไม่มีรายวิชาที่ไม่สามารถนำมาเทียบโอนได้</Typography>
+                          <Typography align="center">
+                            ไม่มีรายวิชาที่ไม่สามารถนำมาเทียบโอนได้
+                          </Typography>
                         </TableCell>
                       </TableRow>
                     )}

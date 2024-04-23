@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Container,
   Grid,
   Stack,
   Box,
@@ -19,16 +18,16 @@ import {
 import Swal from 'sweetalert2';
 import { IconCircleMinus } from '@tabler/icons';
 
-import PageContainer from '../../../components/container/PageContainer';
+import PageContainer from '../../../../components/container/PageContainer';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
-import ParentCard from '../../../components/shared/ParentCard';
+import ParentCard from '../../../../components/shared/ParentCard';
 import { useSelector, useDispatch } from 'react-redux';
-import { list as AllExtraSubject } from '../../../function/extar-subject';
-import { read as AllCurriculum } from '../../../function/curriculum';
+import { list as AllExtraSubject } from '../../../../function/extar-subject';
+import { read as AllCurriculum } from '../../../../function/curriculum';
 import {
   setTestResultTransfer,
-} from '../../../store/testTransfer';
-import { testTransfer } from '../../../function/transfer';
+} from '../../../../store/testTransfer';
+import { testTransfer } from '../../../../function/transfer';
 
 const ExtarSubjectCheck = () => {
   const curriculumRedux = useSelector((state) => state.tester.testTransfer.curriculum);
@@ -85,7 +84,7 @@ const ExtarSubjectCheck = () => {
 
   const handleSubmit = (e) => {
     Swal.fire({
-      title: 'ยืนยันการทดสอบเทียบโอน?',
+      title: 'ยืนยันการเทียบโอน?',
       icon: 'info',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -116,7 +115,7 @@ const ExtarSubjectCheck = () => {
               );
 
               Swal.close();
-              navigate('/test/mach');
+              navigate('/student/mach');
             })
             .catch((error) => {
               console.error(error);
@@ -137,9 +136,8 @@ const ExtarSubjectCheck = () => {
 
   return (
     <PageContainer title="ตรวจสอบรายวิชาที่นำมาเทียบ" description="ตรวจสอบรายวิชาที่นำมาเทียบ">
-      <Container maxWidth="lg">
         <Breadcrumb title={<>รายวิชาที่นำมาเทียบ</>} />
-        <ParentCard title="เลือกหลักสูตร">
+        <ParentCard title="หลักสูตร">
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} lg={12}>
               <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
@@ -268,7 +266,6 @@ const ExtarSubjectCheck = () => {
           </Stack>
         </Grid>
         ;
-      </Container>
     </PageContainer>
   );
 };

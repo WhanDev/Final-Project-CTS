@@ -111,15 +111,6 @@ const EditExtraSubjectOfficer = Loadable(
 
 //Lecturer
 const IndexLecturer = Loadable(lazy(() => import('../views/pages/Lecturer/IndexLecturer')));
-const ManageCurriculumLecturer = Loadable(
-  lazy(() => import('../views/pages/Lecturer/Curriculum/ManageCurriculum')),
-);
-const AddCurriculumLecturer = Loadable(
-  lazy(() => import('../views/pages/Lecturer/Curriculum/AddCurriculum')),
-);
-const EditCurriculumLecturer = Loadable(
-  lazy(() => import('../views/pages/Lecturer/Curriculum/EditCurriculum')),
-);
 const ManageStructureLecturer = Loadable(
   lazy(() => import('../views/pages/Lecturer/Structure/ManageStructure')),
 );
@@ -156,6 +147,11 @@ const EditExtraSubjectLecturer = Loadable(
 
 //Student
 const IndexStudent = Loadable(lazy(() => import('../views/pages/Student/IndexStudent')));
+const CurriculumStudent = Loadable(lazy(() => import('../views/pages/Student/Structure/ManageStructure')));
+const TransferStudent = Loadable(lazy(() => import('../views/pages/Student/Transfer/Transfer')));
+const TransferCheckStudent = Loadable(lazy(() => import('../views/pages/Student/Transfer/Check')));
+const TransferMachStudent = Loadable(lazy(() => import('../views/pages/Student/Transfer/Mach')));
+const StudentProfile = Loadable(lazy(() => import('../views/pages/Student/StudentProfile')));
 
 const ShowMachSubject = Loadable(lazy(() => import('../views/pages/MachSubject/ShowMachSubject')));
 const ShowListMachSubject = Loadable(
@@ -293,15 +289,9 @@ const Router = [
     children: [
       { path: '/lecturer/index', element: <IndexLecturer /> },
       //จัดการข้อมูลหลักสูตร
-      { path: '/lecturer/manage/curriculum', element: <ManageCurriculumLecturer /> },
-      { path: '/lecturer/manage/curriculum/add', element: <AddCurriculumLecturer /> },
-      {
-        path: '/lecturer/manage/curriculum/:_id/structure/edit/CS-:_id',
-        element: <EditCurriculumLecturer />,
-      },
       //จัดการข้อมูลโครงสร้าง
       {
-        path: '/lecturer/manage/curriculum/:curriculum/structure/:structure_id',
+        path: '/lecturer/manage/curriculum/',
         element: <ManageStructureLecturer />,
       },
       {
@@ -335,7 +325,12 @@ const Router = [
   {
     element: <RouterStudent />,
     children: [
-      { path: '/Student/Index', element: <IndexStudent /> },
+      { path: '/student/Index', element: <IndexStudent /> },
+      { path: '/student/curriculum', element: <CurriculumStudent /> },
+      { path: '/student/transfer', element: <TransferStudent /> },
+      { path: '/student/check', element: <TransferCheckStudent /> },
+      { path: '/student/mach', element: <TransferMachStudent /> },
+      { path: '/student/profile', element: <StudentProfile /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },

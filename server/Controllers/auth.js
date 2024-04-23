@@ -9,7 +9,6 @@ exports.loginStudent = async (req, res) => {
   try {
     const { _id, password } = req.body;
     var user = await Student.findOneAndUpdate({ _id }, { new: true });
-    console.log(user);
 
     if (user) {
       const isMatch = await bcrypt.compare(password, user.password);
@@ -34,7 +33,6 @@ exports.loginStudent = async (req, res) => {
       return res.status(400).send("ไม่มีรหัสนักศึกษานี้อยู่ในระบบ!");
     }
   } catch (err) {
-    //code
     console.log(err);
     res.status(500).send("Server Error");
   }
@@ -45,7 +43,6 @@ exports.loginAdmin = async (req, res) => {
   try {
     const { _id, password } = req.body;
     var user = await Admin.findOneAndUpdate({ _id }, { new: true });
-    console.log(user);
     if (user) {
       const isMatch = await bcrypt.compare(password, user.password);
 
@@ -77,7 +74,6 @@ exports.loginAdmin = async (req, res) => {
 //ตรวจสอบ role ผู้ใช้ทั้งหมด
 exports.currentUser = async (req, res) => {
   try {
-    console.log("currentUser", req.user);
     if (req.user.role === "นักศึกษา") {
       const user = await Student.findOne({ _id: req.user._id })
         .select("-password")
@@ -98,7 +94,6 @@ exports.currentUser = async (req, res) => {
 //ตรวจสอบ role เฉพาะของผู้ดูแล
 exports.currentAdmin = async (req, res) => {
   try {
-    console.log("currentAdmin", req.user);
     const user = await Admin.findOne({ _id: req.user._id })
       .select("-password")
       .exec();

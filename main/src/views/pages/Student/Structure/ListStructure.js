@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Box,
   Table,
@@ -7,27 +6,17 @@ import {
   TableCell,
   Typography,
   TableBody,
-  IconButton,
+  TableContainer,
   Grid,
-  Button,
 } from '@mui/material';
 import { Stack } from '@mui/system';
-import {
-  IconTrash,
-  IconEdit,
-  IconCirclePlus,
-  IconSquarePlus,
-  IconEditCircle,
-  IconCircleMinus,
-} from '@tabler/icons';
-import Swal from 'sweetalert2';
 
 import ParentCard from '../../../../components/shared/ParentCard';
 import ChildCard from '../../../../components/shared/ChildCard';
 import DialogSubject from '../Subject/DialogSubject';
 
-import { listByCurriculm, remove as removeByCurriculum } from '../../../../function/structure';
-import { listByStructure, remove as removeByStructure } from '../../../../function/subject';
+import { listByCurriculm } from '../../../../function/structure';
+import { listByStructure } from '../../../../function/subject';
 import { currentUser } from '../../../../function/auth';
 
 const ListStructure = () => {
@@ -77,81 +66,14 @@ const ListStructure = () => {
 
   const sort = ['1. หมวดวิชาศึกษาทั่วไป', '2. หมวดวิชาเฉพาะ', '3. หมวดวิชาเลือกเสรี'];
 
-  const handleRemoveByCurriculum = async (_id) => {
-    Swal.fire({
-      title: 'ต้องการลบข้อมูลนี้ใช่หรือไม่?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'ยืนยัน',
-      cancelButtonText: 'ยกเลิก',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        removeByCurriculum(_id)
-          .then((res) => {
-            Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-            console.log(res);
-            loadByCurriculum(curriculum_id);
-          })
-          .catch((error) => {
-            Swal.fire({
-              icon: 'error',
-              title: 'ลบข้อมูลไม่สำเร็จ',
-              text: error.response.data.message,
-            });
-          });
-      }
-    });
-  };
-
-  const handleRemoveByStructure = async (_id) => {
-    Swal.fire({
-      title: 'ต้องการลบข้อมูลนี้ใช่หรือไม่?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'ยืนยัน',
-      cancelButtonText: 'ยกเลิก',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-        removeByStructure(_id).then(() => {
-          loadByStructure(structure_id);
-        });
-      }
-    });
-  };
-
   return (
     <Grid container spacing={3}>
       <Grid item sm={12}>
-        <ParentCard
-          title={
-            <Stack spacing={1} direction={{ xs: 'column', sm: 'row' }} justifyContent="end">
-              <Button
-                variant="outlined"
-                color="primary"
-                startIcon={<IconSquarePlus width={18} />}
-                component={Link}
-                to={
-                  '/lecturer/manage/curriculum/' +
-                  curriculum_id +
-                  '/structure/' +
-                  structure_id +
-                  '/add'
-                }
-              >
-                เพิ่มกลุ่มวิชา
-              </Button>
-            </Stack>
-          }
-        >
+        <ParentCard title="โครงสร้างหลักสูตร">
           {sort.map((category) => (
             <React.Fragment key={category}>
               {/* ชื่อหมวด */}
-              <Typography variant="h5" marginBottom={1} marginTop={3}>
+              <Typography variant="h5" marginBottom={1}>
                 {category}
               </Typography>
               {curriculum.length > 0 ? (
@@ -165,7 +87,7 @@ const ListStructure = () => {
                           <Stack
                             spacing={1}
                             direction={{ xs: 'column', sm: 'row' }}
-                            justifyContent="space-between"
+                            justifyContent="start"
                           >
                             <Box>
                               <Typography
@@ -177,26 +99,8 @@ const ListStructure = () => {
                                 {item.group_id} {item.group_name} {item.credit} หน่วยกิต
                               </Typography>
                             </Box>
-                            <Box>
-                              <IconButton
-                                component={Link}
-                                to={
-                                  '/lecturer/manage/curriculum/' +
-                                  item.curriculum +
-                                  '/structure/' +
-                                  item.structure_id +
-                                  '/edit/' +
-                                  item._id
-                                }
-                              >
-                                <IconEdit size="18" />
-                              </IconButton>
-                              <IconButton onClick={() => handleRemoveByCurriculum(item._id)}>
-                                <IconTrash size="18" />
-                              </IconButton>
-                            </Box>
                           </Stack>
-
+                          <TableContainer>
                           <Table>
                             <TableHead>
                               <TableCell width={'15%'} align="center">
@@ -214,24 +118,7 @@ const ListStructure = () => {
                               <TableCell width={'10%'} align="center">
                                 <Typography variant="h6">หน่วยกิตรวม</Typography>
                               </TableCell>
-                              <TableCell width={'15%'} align="center">
-                                <IconButton
-                                  component={Link}
-                                  to={
-                                    '/lecturer/manage/curriculum/' +
-                                    item.curriculum +
-                                    '/structure/' +
-                                    item.structure_id +
-                                    '/group/' +
-                                    item.group_id +
-                                    '/subject/add'
-                                  }
-                                  color="info"
-                                >
-                                  <IconCirclePlus size="18" />
-                                  <Typography marginLeft={1}>เพิ่มรายวิชา</Typography>
-                                </IconButton>
-                              </TableCell>
+                              <TableCell width={'5%'} align="center"></TableCell>
                             </TableHead>
 
                             {subject.map((subjectItem) => {
@@ -257,30 +144,8 @@ const ListStructure = () => {
                                     <TableCell width={'10%'} align="center">
                                       {subjectItem.total_credits}
                                     </TableCell>
-                                    <TableCell width={'15%'} align="center">
+                                    <TableCell width={'5%'} align="center">
                                       <DialogSubject _id={subjectItem._id} />
-                                      <IconButton
-                                        component={Link}
-                                        to={
-                                          '/lecturer/manage/curriculum/' +
-                                          item.curriculum +
-                                          '/structure/' +
-                                          item.structure_id +
-                                          '/group/' +
-                                          item.group_id +
-                                          '/subject/edit/' +
-                                          subjectItem._id
-                                        }
-                                        color="warning"
-                                      >
-                                        <IconEditCircle size="18" />
-                                      </IconButton>
-                                      <IconButton
-                                        onClick={() => handleRemoveByStructure(subjectItem._id)}
-                                        color="error"
-                                      >
-                                        <IconCircleMinus size="18" />
-                                      </IconButton>
                                     </TableCell>
                                   </TableBody>
                                 );
@@ -288,6 +153,7 @@ const ListStructure = () => {
                               return null;
                             })}
                           </Table>
+                          </TableContainer>
                           {subject.every(
                             (subjectItem) => subjectItem.group_id !== item.group_id,
                           ) && (

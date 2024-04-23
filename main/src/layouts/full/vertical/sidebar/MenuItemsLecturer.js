@@ -1,6 +1,5 @@
 import {
   IconListNumbers,
-  IconUserCircle,
   IconAlbum,
   IconLayoutDashboard,
   IconUsers,

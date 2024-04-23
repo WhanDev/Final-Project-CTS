@@ -10,12 +10,15 @@ const testTransferSlice = createSlice({
     setTestTransfer: (state, action) => {
       state.testTransfer = action.payload;
     },
+    setTestResultTransfer: (state, action) => {
+      state.testResultTransfer = action.payload;
+    },
     clearTestTransfer: (state) => {
       state.testTransfer = [];
     },
   },
 });
 
-export const { setTestTransfer,clearTestTransfer } = testTransferSlice.actions;
+export const { setTestTransfer,setTestResultTransfer,clearTestTransfer } = testTransferSlice.actions;
 
 export default testTransferSlice.reducer;

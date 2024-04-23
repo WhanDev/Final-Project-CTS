@@ -10,6 +10,7 @@ const CurriculumSchema = mongoose.Schema({
   level: String,
   year: String,
   time: String,
+  // credit: Number,
 });
 
 module.exports = mongoose.model("Curriculum", CurriculumSchema);
