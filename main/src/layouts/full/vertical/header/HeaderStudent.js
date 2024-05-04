@@ -57,7 +57,7 @@ const HeaderStudent = () => {
             color="inherit"
             sx={{ color: (theme) => theme.palette.text.primary }}
             variant="text"
-            to="/"
+            to="/student/profile"
             component={Link}
           >
             ข้อมูลส่วนตัว

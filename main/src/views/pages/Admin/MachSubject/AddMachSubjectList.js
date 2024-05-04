@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Grid, Button, IconButton, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
-import { IconCircleMinus } from '@tabler/icons';
+import { IconCircleMinus, IconCirclePlus } from '@tabler/icons';
 import TextField from '@mui/material/TextField';
 import Swal from 'sweetalert2';
 
@@ -41,7 +41,7 @@ const AddMachSubjectList = () => {
 
   useEffect(() => {
     loadDataAllExtraSubject();
-  },[]);
+  }, []);
 
   const loadDataAllExtraSubject = async () => {
     AllExtraSubject()
@@ -176,7 +176,7 @@ const AddMachSubjectList = () => {
                     color="info"
                     onClick={handleAddAutocomplete}
                   >
-                    เพิ่มรายวิชานอกหลักสูตร
+                    <IconCirclePlus size="25" />
                   </Button>
                 </Stack>
               </Stack>
@@ -188,11 +188,7 @@ const AddMachSubjectList = () => {
                   <Button type="submit" variant="contained" color="success">
                     บันทึก
                   </Button>
-                  <Button
-                    variant="outlined"
-                    color="warning"
-                    onClick={() => handleBack()}
-                  >
+                  <Button variant="outlined" color="warning" onClick={() => handleBack()}>
                     ยกเลิก
                   </Button>
                 </Stack>

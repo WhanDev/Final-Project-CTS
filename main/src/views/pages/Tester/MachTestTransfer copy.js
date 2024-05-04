@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -26,7 +26,6 @@ import { listByStructure } from '../../../function/subject';
 import { list } from '../../../function/extar-subject';
 
 import { IconCircleX, IconCircleCheck } from '@tabler/icons';
-import { subject } from '@casl/ability';
 
 const MachTestTransfer = () => {
   const curriculumRedux = useSelector((state) => state.tester.testTransfer.curriculum);
@@ -34,9 +33,9 @@ const MachTestTransfer = () => {
   const success = useSelector((state) => state.tester.testResultTransfer.success);
   const unsuccess = useSelector((state) => state.tester.testResultTransfer.unsuccess);
 
-  const [allSubject, setAllSubject] = useState([]);
-  const [total_credits, setTotalCredits] = useState(0);
-  const [allExtra, setAllExtra] = useState([]);
+  const [allSubject, setAllSubject] = React.useState([]);
+  const [total_credits, setTotalCredits] = React.useState(0);
+  const [allExtra, setAllExtra] = React.useState([]);
 
   const fetchData = async () => {
     try {
@@ -71,6 +70,10 @@ const MachTestTransfer = () => {
     setTotalCredits(totalCredits);
   }, [success, allSubject]);
 
+  const handleDone = (e) => {
+    navigate('/test');
+  };
+
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -94,35 +97,48 @@ const MachTestTransfer = () => {
             </Stack>
           }
         >
-          <Grid container>
+          <Grid container spacing={3}>
             <Grid item xs={12} sm={12} lg={12}>
               <TableContainer>
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell align="center" width={'40%'} sx={{ paddingX: 0 }}>
-                        <TableCell align="center" width={'40%'} sx={{ border: 0 }}>
-                          <Typography variant="h5">รายวิชาในหลักสูตร</Typography>
-                        </TableCell>
+                      <TableCell align="center" width={'50%'}>
+                        <Typography variant="h5">รายวิชาในหลักสูตร</Typography>
                       </TableCell>
-
-                      <TableCell align="center" width={'60%'} sx={{ paddingX: 0 }}>
-                        <TableCell align="center" width={'15%'} sx={{ border: 0 }}>
-                          <Typography variant="h5">รหัสวิชา</Typography>
-                        </TableCell>
-                        <TableCell width={'25%'} sx={{ border: 0 }}>
-                          <Typography variant="h5">ชื่อวิชา</Typography>
-                        </TableCell>
-                        <TableCell align="center" width={'10%'} sx={{ border: 0 }}>
-                          <Typography variant="h5">หน่วยกิต</Typography>
-                        </TableCell>
-                        <TableCell align="center" width={'10%'} sx={{ border: 0 }}>
-                          <Typography variant="h5">เกรด</Typography>
-                        </TableCell>
+                      <TableCell align="center" width={'50%'}>
+                        <Typography variant="h5">รายวิชาที่นำมาเทียบ</Typography>
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
+                    <TableRow>
+                      <TableCell align="center" width={'50%'} colSpan={1}>
+                        <TableCell align="center" width={'30%'}>
+                          <Typography fontWeight={500}>รหัสวิชา</Typography>
+                        </TableCell>
+                        <TableCell width={'60%'}>
+                          <Typography fontWeight={500}>ชื่อวิชา</Typography>
+                        </TableCell>
+                        <TableCell align="center" width={'10%'}>
+                          <Typography fontWeight={500}>หน่วยกิต</Typography>
+                        </TableCell>
+                      </TableCell>
+                      <TableCell align="center" width={'50%'} colSpan={1}>
+                        <TableCell align="center" width={'30%'}>
+                          <Typography fontWeight={500}>รหัสวิชา</Typography>
+                        </TableCell>
+                        <TableCell width={'60%'}>
+                          <Typography fontWeight={500}>ชื่อวิชา</Typography>
+                        </TableCell>
+                        <TableCell align="center" width={'10%'}>
+                          <Typography fontWeight={500}>เกรด</Typography>
+                        </TableCell>
+                        <TableCell align="center" width={'10%'}>
+                          <Typography fontWeight={500}>หน่วยกิต</Typography>
+                        </TableCell>
+                      </TableCell>
+                    </TableRow>
                     {success.length > 0 ? (
                       success.map((item, index) => {
                         const subject = allSubject.find(
@@ -130,29 +146,24 @@ const MachTestTransfer = () => {
                         );
                         if (subject) {
                           return (
-                            <TableRow key={index} hover>
-                              <TableCell
-                                align="center"
-                                colSpan={1}
-                                width={'40%'}
-                                sx={{ paddingX: 0 }}
-                              >
-                                <TableCell align="center" width={'40%'} sx={{ border: 0 }}>
-                                  <Typography color={'green'}>
-                                    {subject.subject_id}
-                                    <br />
+                            <TableRow key={item.id} hover>
+                              <TableCell align="center" width="50%" colSpan={1}>
+                                <TableCell align="center" width="30%">
+                                  <Typography>{subject.subject_id}</Typography>
+                                </TableCell>
+                                <TableCell width="60%">
+                                  <Typography>
                                     {subject.subject_nameTh}
-                                    <br />
-                                    {subject.total_credits} หน่วยกิต
+                                    <Typography color={'green'}>
+                                      ({subject.subject_nameEn})
+                                    </Typography>
                                   </Typography>
                                 </TableCell>
+                                <TableCell align="center" width="10%">
+                                  <Typography>{subject.total_credits}</Typography>
+                                </TableCell>
                               </TableCell>
-                              <TableCell
-                                align="center"
-                                colSpan={4}
-                                width={'60%'}
-                                sx={{ paddingX: 0 }}
-                              >
+                              <TableCell align="center" width="50%" colSpan={1}>
                                 {item.extra_id.map((extra_id) => {
                                   const extra = allExtra.find(
                                     (option) => option.extraSubject_id === extra_id.id,
@@ -160,17 +171,22 @@ const MachTestTransfer = () => {
                                   if (extra) {
                                     return (
                                       <TableRow key={extra_id}>
-                                        <TableCell align="center" width="15%">
+                                        <TableCell align="center" width="30%">
                                           <Typography>{extra.extraSubject_id}</Typography>
                                         </TableCell>
-                                        <TableCell width="25%">
-                                          <Typography>{extra.extraSubject_nameTh}</Typography>
-                                        </TableCell>
-                                        <TableCell align="center" width="10%">
-                                          <Typography>{extra.total_credits}</Typography>
+                                        <TableCell width="60%">
+                                          <Typography>
+                                            {extra.extraSubject_nameTh}
+                                            <Typography color={'green'}>
+                                              ({extra.extraSubject_nameEn})
+                                            </Typography>
+                                          </Typography>
                                         </TableCell>
                                         <TableCell align="center" width="10%">
                                           <Typography>{extra_id.grade}</Typography>
+                                        </TableCell>
+                                        <TableCell align="center" width="10%">
+                                          <Typography>{extra.total_credits}</Typography>
                                         </TableCell>
                                       </TableRow>
                                     );
@@ -185,7 +201,7 @@ const MachTestTransfer = () => {
                       })
                     ) : (
                       <TableRow>
-                        <TableCell align="center">
+                        <TableCell colSpan={6} align="center">
                           <Typography align="center">ไม่มีรายวิชาที่สามารถเทียบโอนได้</Typography>
                         </TableCell>
                       </TableRow>
@@ -229,10 +245,10 @@ const MachTestTransfer = () => {
                         <Typography variant="h5">ชื่อวิชา</Typography>
                       </TableCell>
                       <TableCell align="center" width={'10%'}>
-                        <Typography variant="h5">หน่วยกิต</Typography>
+                        <Typography variant="h5">เกรด</Typography>
                       </TableCell>
                       <TableCell align="center" width={'10%'}>
-                        <Typography variant="h5">เกรด</Typography>
+                        <Typography variant="h5">หน่วยกิต</Typography>
                       </TableCell>
                       <TableCell align="center" width={'40%'}>
                         <Typography variant="h5">หมายเหตุ</Typography>
@@ -252,14 +268,20 @@ const MachTestTransfer = () => {
                                 <Typography>{subject.extraSubject_id}</Typography>
                               </TableCell>
                               <TableCell width="30%">
-                                <Typography>{subject.extraSubject_nameTh}</Typography>
-                              </TableCell>
-                              <TableCell align="center" width="10%">
-                                <Typography>{subject.total_credits}</Typography>
+                                <Typography>
+                                  {subject.extraSubject_nameTh}
+                                  <Typography color={'red'}>
+                                    ({subject.extraSubject_nameEn})
+                                  </Typography>
+                                </Typography>
                               </TableCell>
                               <TableCell align="center" width="10%">
                                 <Typography>{item.grade}</Typography>
                               </TableCell>
+                              <TableCell align="center" width="10%">
+                                <Typography>{subject.total_credits}</Typography>
+                              </TableCell>
+
                               <TableCell align="center" width="40%">
                                 <Typography color={'red'}>{item.note}</Typography>
                               </TableCell>
@@ -295,6 +317,9 @@ const MachTestTransfer = () => {
             <Stack spacing={1} direction="row">
               <Button variant="outlined" color="warning" onClick={handleBack}>
                 ย้อนกลับ
+              </Button>
+              <Button variant="contained" color="primary" onClick={handleDone}>
+                เสร็จสิ้น
               </Button>
             </Stack>
           </Stack>

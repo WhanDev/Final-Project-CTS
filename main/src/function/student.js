@@ -25,6 +25,10 @@ export const update = async (id, data) => {
   return await axios.put(process.env.REACT_APP_API + '/student/' + id, data);
 };
 
+export const updatedStudent = async (data) => {
+  return await axios.put(process.env.REACT_APP_API + '/student/',data);
+};
+
 export const remove = async (id) =>
   await axios.delete(process.env.REACT_APP_API + '/student/' + id);
 

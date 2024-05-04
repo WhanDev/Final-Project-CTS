@@ -67,6 +67,13 @@ const AddMachSubjectList = Loadable(
 const EditMachSubjectList = Loadable(
   lazy(() => import('../views/pages/Admin/MachSubject/EditMachSubjectList')),
 );
+const ManageTransfer = Loadable(
+  lazy(() => import('../views/pages/Admin/Transfer/ManageTransfer')),
+);
+const OrderTransfer = Loadable(
+  lazy(() => import('../views/pages/Admin/Transfer/OrderTransfer')),
+);
+
 
 //Officer
 const IndexOfficer = Loadable(lazy(() => import('../views/pages/Officer/IndexOfficer')));
@@ -152,6 +159,7 @@ const TransferStudent = Loadable(lazy(() => import('../views/pages/Student/Trans
 const TransferCheckStudent = Loadable(lazy(() => import('../views/pages/Student/Transfer/Check')));
 const TransferMachStudent = Loadable(lazy(() => import('../views/pages/Student/Transfer/Mach')));
 const StudentProfile = Loadable(lazy(() => import('../views/pages/Student/StudentProfile')));
+const StudentProfileEdit = Loadable(lazy(() => import('../views/pages/Student/StudentProfileEdit')));
 
 const ShowMachSubject = Loadable(lazy(() => import('../views/pages/MachSubject/ShowMachSubject')));
 const ShowListMachSubject = Loadable(
@@ -226,16 +234,22 @@ const Router = [
         element: <ListMachSubject />,
       },
       {
-        path: '/admin/manage/machsubject/curriculum/:curriculum/structure/:structure_id/add',
-        element: <AddMachSubject />,
-      },
-      {
         path: '/admin/manage/machsubject/curriculum/:curriculum/structure/:structure_id/:subject_id/add',
         element: <AddMachSubjectList />,
       },
       {
         path: '/admin/manage/machsubject/curriculum/:curriculum/structure/:structure_id/:subject_id/:_id/edit',
         element: <EditMachSubjectList />,
+      },
+
+      //จัดการข้อมูลเทียบโอน ManageTransfer
+      {
+        path: '/admin/manage/transfer',
+        element: <ManageTransfer />,
+      },
+      {
+        path: '/admin/manage/transfer/:_id',
+        element: <OrderTransfer />,
       },
     ],
   },
@@ -331,6 +345,7 @@ const Router = [
       { path: '/student/check', element: <TransferCheckStudent /> },
       { path: '/student/mach', element: <TransferMachStudent /> },
       { path: '/student/profile', element: <StudentProfile /> },
+      { path: '/student/profile/edit', element: <StudentProfileEdit /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },

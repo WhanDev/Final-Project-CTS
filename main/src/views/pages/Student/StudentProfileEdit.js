@@ -11,8 +11,11 @@ import { Stack } from '@mui/system';
 
 import { currentUser } from '../../../function/auth';
 import { read as readCurriculum } from '../../../function/curriculum';
+import { updatedStudent } from 'src/function/student';
 
-const StudentProfile = () => {
+import Swal from 'sweetalert2';
+
+const StudentProfileEdit = () => {
   const token = localStorage.getItem('token');
   const [user, setUser] = useState({});
 
@@ -44,63 +47,120 @@ const StudentProfile = () => {
   }, [curriculum_id]);
 
   const navigate = useNavigate();
-  const handleEdit = () => {
-    navigate('/student/profile/edit');
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+  const handleDataChange = (e) => {
+    setUser({
+      ...user,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+
+    const updated = {
+      _id: user._id,
+      fullname: user.fullname,
+      institution: user.institution,
+      branch: user.branch,
+    };
+    try {
+      await updatedStudent(updated);
+      Swal.fire({
+        icon: 'success',
+        title: 'แก้ไขข้อมูลสำเร็จ',
+      });
+      navigate(-1);
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'แก้ไขข้อมูลไม่สำเร็จ',
+        text: error.response.data,
+      });
+      console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูล:', error);
+    }
   };
 
   return (
     <PageContainer title="ข้อมูลนักศึกษา" description="this is Add Admin">
       <Breadcrumb title="ข้อมูลนักศึกษา" />
       <ParentCard title="ข้อมูลนักศึกษา">
+        <form encType="multipart/form-data" onSubmit={handleSave}>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>รหัสนักศึกษา</CustomFormLabel>
-            <CustomTextField value={user._id} fullWidth />
+            <CustomTextField value={user._id} fullWidth disabled />
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>ชื่อนามสกุล</CustomFormLabel>
-            <CustomTextField value={user.fullname} fullWidth />
+            <CustomTextField
+              value={user.fullname}
+              fullWidth
+              onChange={handleDataChange}
+              name="fullname"
+              id="fullname"
+            />
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>หลักสูตร</CustomFormLabel>
             <CustomTextField
-              value={`${dataCurriculum ? `${dataCurriculum.name} (${dataCurriculum.level} ${dataCurriculum.time} ปี) พ.ศ ${dataCurriculum.year}` : ''}`}
+              value={`${
+                dataCurriculum
+                  ? `${dataCurriculum.name} (${dataCurriculum.level} ${dataCurriculum.time} ปี) พ.ศ ${dataCurriculum.year}`
+                  : ''
+              }`}
               fullWidth
+              disabled
             />
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>รุ่นปี</CustomFormLabel>
-            <CustomTextField value={user.year} fullWidth />
+            <CustomTextField value={user.year} fullWidth disabled />
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>สถาบันเดิม</CustomFormLabel>
-            <CustomTextField value={user.institution} fullWidth />
+            <CustomTextField
+              value={user.institution}
+              fullWidth
+              onChange={handleDataChange}
+              name="institution"
+              id="institution"
+            />
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>สาขาวิชาเดิม</CustomFormLabel>
-            <CustomTextField value={user.branch} fullWidth />
+            <CustomTextField
+              value={user.branch}
+              fullWidth
+              onChange={handleDataChange}
+              name="branch"
+              id="branch"
+            />
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>การเทียบโอน</CustomFormLabel>
-            <CustomTextField value={user.status} fullWidth />
+            <CustomTextField value={user.status} fullWidth disabled />
           </Grid>
           <Grid item xs={12} sm={12} lg={12}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="end" mt={2}>
               <Stack spacing={1} direction="row">
-                <Button
-                  variant="outlined"
-                  color="warning"
-                  onClick={handleEdit}
-                >
-                  แก้ไข
+                <Button variant="outlined" color="warning" onClick={handleBack}>
+                  ยกเลิก
+                </Button>
+                <Button type="submit" variant="outlined" color="primary">
+                  บันทึก
                 </Button>
               </Stack>
             </Stack>
           </Grid>
         </Grid>
+        </form>
       </ParentCard>
     </PageContainer>
   );
 };
 
-export default StudentProfile;
+export default StudentProfileEdit;

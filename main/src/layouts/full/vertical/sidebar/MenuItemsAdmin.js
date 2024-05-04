@@ -56,7 +56,7 @@ const MenuItemsAdmin = [
     id: uniqueId(),
     title: 'เทียบโอน',
     icon: IconLayersIntersect,
-    href: '#',
+    href: '/admin/manage/transfer',
   },
 ];
 

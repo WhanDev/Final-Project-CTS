@@ -15,24 +15,22 @@ import {
   IconButton,
   Tooltip,
   Typography,
-  Container,
   Stack,
   Grid,
   TextField,
   Button,
-  Autocomplete,
 } from '@mui/material';
-import CustomCheckbox from '../../../components/forms/theme-elements/CustomCheckbox';
-import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
-import PageContainer from '../../../components/container/PageContainer';
-import ParentCard from '../../../components/shared/ParentCard';
+import CustomCheckbox from '../../../../components/forms/theme-elements/CustomCheckbox';
+import Breadcrumb from '../../../../layouts/full/shared/breadcrumb/Breadcrumb';
+import PageContainer from '../../../../components/container/PageContainer';
+import ParentCard from '../../../../components/shared/ParentCard';
 import { IconTrash } from '@tabler/icons';
-import { list } from '../../../function/extar-subject';
+import { list } from '../../../../function/extar-subject';
 import { useNavigate } from 'react-router-dom';
-import { list as listCurriculum } from '../../../function/curriculum';
 import { useDispatch } from 'react-redux';
-import { setTestTransfer } from '../../../store/testTransfer';
+import { setTestTransfer } from '../../../../store/testTransfer';
 import Swal from 'sweetalert2';
+import { currentUser } from '../../../../function/auth';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -173,7 +171,7 @@ EnhancedTableToolbar.propTypes = {
   selected: PropTypes.array.isRequired, // เพิ่ม PropTypes สำหรับ selected
 };
 
-const EnhancedTable = () => {
+const Select = () => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('extraSubject_id');
   const [selected, setSelected] = useState([]);
@@ -260,79 +258,49 @@ const EnhancedTable = () => {
       item.extraSubject_nameEn.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const [Curriculum, setCurriculum] = useState([]);
+  const token = localStorage.getItem('token');
+  const [user, setUser] = useState({});
 
-  const loadDataCurriculum = async () => {
-    listCurriculum()
-      .then((res) => setCurriculum(res.data))
-      .catch((err) => console.log(err));
+  const checkUser = async () => {
+    try {
+      const res = await currentUser(token);
+      setUser(res.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const [selectedCurriculum, setSelectedCurriculum] = useState([]);
-  const handleCurriculumChange = (event, value) => {
-    setSelectedCurriculum(value);
-  };
+  const curriculum_id = user.curriculum;
 
   useEffect(() => {
-    loadDataCurriculum();
+    checkUser()
   }, []);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
-    if (selectedCurriculum.value !== null && extraSelect.length !== 0) {
+    if (extraSelect.length !== 0) {
       dispatch(
         setTestTransfer({
-          curriculum: selectedCurriculum.value,
+          curriculum: curriculum_id,
           extraSubject: extraSelect,
         }),
       );
-      navigate('/test/check');
-    } else {
+      navigate('/student/check');
+    }else{
       Swal.fire({
         icon: 'warning',
-        title: 'กรุณาเลือกหลักสูตรและรายวิชา',
+        title: 'กรุณาเลือกรายวิชา',
       });
     }
   };
 
-
   return (
-    <PageContainer title="ทดสอบเทียบโอน" description="this is Enhanced Table page">
-      <Container maxWidth="lg">
-        <Breadcrumb title="ทดสอบเทียบโอน" />
-        <ParentCard title="เลือกหลักสูตร">
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={12} lg={12}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-                <Autocomplete
-                  fullWidth
-                  id="subject_id"
-                  name="subject_id"
-                  disableClearable
-                  options={Curriculum.map((option) => ({
-                    label: 'หลักสูตร ' + option.name +' ปี พ.ศ '+ option.year +' ('+ option.level + ' ' + option.time + ' ปี)',
-                    value: option._id,
-                  }))}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      placeholder="กรอกรหัสหลักสูตร/ชื่อหลักสูตร"
-                      variant="outlined"
-                      fullWidth
-                    />
-                  )}
-                  onChange={handleCurriculumChange}
-                  value={selectedCurriculum}
-                  sx={{ mr: 1 }}
-                  
-                />
-              </Stack>
-            </Grid>
-          </Grid>
-        </ParentCard>
-        <Box m={3} />
+    <PageContainer title="เทียบโอนเบื้องต้น" description="this is Enhanced Table page">
+      
+        <Breadcrumb title="เทียบโอนเบื้องต้น" />
+        
         <ParentCard title="เลือกรายวิชา (รายวิชาในใบ รบ.)">
           <Paper variant="outlined">
             <Typography variant="h6" mx={2} mt={3}>
@@ -449,9 +417,9 @@ const EnhancedTable = () => {
             </Grid>
           </Paper>
         </ParentCard>
-      </Container>
+      
     </PageContainer>
   );
 };
 
-export default EnhancedTable;
+export default Select;

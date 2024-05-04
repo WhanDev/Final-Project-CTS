@@ -17,7 +17,10 @@ const TransferListSchema = mongoose.Schema({
   mach_id: { type: String, ref: "MachSubject" },
   subject_id: { type: String, ref: "Subject" },
   machlist_id: { type: String, ref: "MachSubjectList" },
-  extraSubject_id: { type: [String], ref: "ExtraSubject" },
+  extraSubject_id: [{
+    id: String,
+    grade: String
+  }],
   grade: Number,
 });
 

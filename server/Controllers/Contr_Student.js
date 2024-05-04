@@ -142,6 +142,28 @@ exports.update = async (req, res) => {
   }
 };
 
+//แก้ไขข้อมูลนักศึกษา
+exports.updatedStudent = async (req, res) => {
+  try {
+    const _id = req.body._id;
+    var newData = req.body;
+
+    const updatedStudent = await Student.findOneAndUpdate(
+      { _id: _id },
+      newData,
+      {
+        new: true,
+      }
+    ).exec();
+    res.json({ message: "แก้ไขข้อมูลสำเร็จ!", data: updatedStudent });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
+  }
+};
+
 //ลบข้อมูลนักศึกษา
 exports.remove = async (req, res) => {
   try {

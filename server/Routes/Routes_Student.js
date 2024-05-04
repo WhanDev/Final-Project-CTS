@@ -8,6 +8,7 @@ const {
   listCurriculumAndYear,
   create,
   update,
+  updatedStudent,
   remove,
   downloadTemplate,
   uploadExcel,
@@ -24,6 +25,7 @@ router.get("/student/year", listYear);
 router.get("/student/curriculum/:curriculum/year/:year", listCurriculumAndYear);
 router.get("/student/:_id", read);
 router.put("/student/:_id", update);
+router.put("/student/", updatedStudent);
 router.delete("/student/:_id", remove);
 router.post("/student/template", downloadTemplate);
 router.post("/student/upload", uploadExcel);
