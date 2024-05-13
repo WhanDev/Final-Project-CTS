@@ -104,14 +104,20 @@ const OrderTransfer = () => {
       loadReadStudent(params._id);
       loadListCurriculum();
       loadAllExtraSubject();
+    },
+    [params._id],
+  );
+
+  useEffect(
+    () => {
       if (student.curriculum) {
         loadAllSubject(structure_id);
       }
     },
-    [params._id],
     [student.curriculum],
-    [transferOrder.file],
   );
+
+
 
   const pdfURL = 'http://localhost:5000/api/pdf/'+transferOrder.file; // URL ของไฟล์ PDF
 
