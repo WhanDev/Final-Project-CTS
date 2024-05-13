@@ -50,7 +50,7 @@ exports.create = async (req, res) => {
 //ดูข้อมูลรายวิชาทั้งหมด
 exports.list = async (req, res) => {
   try {
-    const listExtraSubject = await ExtraSubject.find({})
+    const listExtraSubject = await ExtraSubject.find()
       .sort({
         extraSubject_id: 1,
       })

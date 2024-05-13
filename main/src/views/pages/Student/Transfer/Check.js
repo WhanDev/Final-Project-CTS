@@ -16,7 +16,7 @@ import {
   TextField,
 } from '@mui/material';
 import Swal from 'sweetalert2';
-import { IconCircleMinus,IconCirclePlus } from '@tabler/icons';
+import { IconCircleMinus, IconCirclePlus } from '@tabler/icons';
 
 import Autocomplete from '@mui/material/Autocomplete';
 import PageContainer from '../../../../components/container/PageContainer';
@@ -25,9 +25,7 @@ import ParentCard from '../../../../components/shared/ParentCard';
 import { useSelector, useDispatch } from 'react-redux';
 import { list as AllExtraSubject } from '../../../../function/extar-subject';
 import { read as AllCurriculum } from '../../../../function/curriculum';
-import {
-  setTestResultTransfer,setTestTransfer
-} from '../../../../store/testTransfer';
+import { setTestResultTransfer, setTestTransfer } from '../../../../store/testTransfer';
 import { testTransfer } from '../../../../function/transfer';
 
 const ExtarSubjectCheck = () => {
@@ -112,8 +110,10 @@ const ExtarSubjectCheck = () => {
 
         const DataTransfer = {
           structure_id: 'CS-' + curriculumRedux,
-          extraSubjects: extraSubjectList,
+          extraSubjects: AllSecelect,
         };
+
+        console.log(DataTransfer);
 
         Swal.fire({
           html: '<div class="loader"></div><div class="loading-text">กำลังจับคู่เทียบโอน...</div>',
@@ -128,6 +128,7 @@ const ExtarSubjectCheck = () => {
                 setTestResultTransfer({
                   success: responseTransfer.data.success,
                   unsuccess: responseTransfer.data.unsuccess,
+                  ungrade: responseTransfer.data.ungrade,
                 }),
               );
 
@@ -158,201 +159,200 @@ const ExtarSubjectCheck = () => {
     navigate(-1);
   };
 
-
   return (
     <PageContainer title="ตรวจสอบรายวิชาที่นำมาเทียบ" description="ตรวจสอบรายวิชาที่นำมาเทียบ">
-        <Breadcrumb title={<>รายวิชาที่นำมาเทียบ</>} />
-        <ParentCard title="หลักสูตร">
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={12} lg={12}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-                <TextField
-                  placeholder="กรอกรหัสหลักสูตร/ชื่อหลักสูตร"
-                  variant="outlined"
-                  value={
-                    curriculum._id +
-                    ' | ' +
-                    curriculum.name +
-                    ' ' +
-                    curriculum.level +
-                    ' (' +
-                    curriculum.year +
-                    ')'
-                  }
-                  fullWidth
-                  disabled
-                />
-              </Stack>
-            </Grid>
+      <Breadcrumb title={<>รายวิชาที่นำมาเทียบ</>} />
+      <ParentCard title="หลักสูตร">
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={12} lg={12}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+              <TextField
+                placeholder="กรอกรหัสหลักสูตร/ชื่อหลักสูตร"
+                variant="outlined"
+                value={
+                  curriculum._id +
+                  ' | ' +
+                  curriculum.name +
+                  ' ' +
+                  curriculum.level +
+                  ' (' +
+                  curriculum.year +
+                  ')'
+                }
+                fullWidth
+                disabled
+              />
+            </Stack>
           </Grid>
-        </ParentCard>
-        <Box m={3} />
-        <ParentCard title="รายวิชาที่สามารถนำมาเทียบ">
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={12} lg={12}>
-              <Stack>
-                <Box mt={2}>
-                  <TableContainer>
+        </Grid>
+      </ParentCard>
+      <Box m={3} />
+      <ParentCard title="รายวิชาที่สามารถนำมาเทียบ">
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={12} lg={12}>
+            <Stack>
+              <Box mt={2}>
+                <TableContainer>
                   <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell align="center" width={'15%'}>
-                            <Typography variant="h5">รหัสวิชา</Typography>
-                          </TableCell>
-                          <TableCell width={'60%'}>
-                            <Typography variant="h5">ชื่อวิชา</Typography>
-                          </TableCell>
-                          <TableCell align="center" width={'10%'}>
-                            <Typography variant="h5">เกรด</Typography>
-                          </TableCell>
-                          <TableCell align="center" width={'10%'}>
-                            <Typography variant="h5">ลบ</Typography>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {extraSubjectList.length > 0
-                          ? extraSubjectList.map((item, index) => {
-                              const subject = extraSubject.find(
-                                (option) => option.extraSubject_id === item.id,
+                    <TableHead>
+                      <TableRow>
+                        <TableCell align="center" width={'15%'}>
+                          <Typography variant="h5">รหัสวิชา</Typography>
+                        </TableCell>
+                        <TableCell width={'60%'}>
+                          <Typography variant="h5">ชื่อวิชา</Typography>
+                        </TableCell>
+                        <TableCell align="center" width={'10%'}>
+                          <Typography variant="h5">เกรด</Typography>
+                        </TableCell>
+                        <TableCell align="center" width={'10%'}>
+                          <Typography variant="h5">ลบ</Typography>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {extraSubjectList.length > 0
+                        ? extraSubjectList.map((item, index) => {
+                            const subject = extraSubject.find(
+                              (option) => option.extraSubject_id === item.id,
+                            );
+                            if (subject) {
+                              return (
+                                <TableRow key={item.id} hover>
+                                  <TableCell align="center" width="15%">
+                                    {subject.extraSubject_id}
+                                  </TableCell>
+                                  <TableCell width="70%">
+                                    {subject.extraSubject_nameTh}
+                                    <Typography color="primary">
+                                      ({subject.extraSubject_nameEn})
+                                    </Typography>
+                                  </TableCell>
+                                  <TableCell align="center" width="10%">
+                                    <TextField
+                                      variant="outlined"
+                                      value={item.grade}
+                                      onChange={(e) => handleGradeChange(e.target.value, item.id)}
+                                      rows={1}
+                                      maxRows={1}
+                                      inputProps={{ max: 4, min: 0 }}
+                                    />
+                                  </TableCell>
+                                  <TableCell align="center" width="10%">
+                                    <IconButton
+                                      variant="outlined"
+                                      color="error"
+                                      onClick={() => handleDelete(index)}
+                                    >
+                                      <IconCircleMinus width={20} />
+                                    </IconButton>
+                                  </TableCell>
+                                </TableRow>
                               );
-                              if (subject) {
-                                return (
-                                  <TableRow key={item.id} hover>
-                                    <TableCell align="center" width="15%">
-                                      {subject.extraSubject_id}
-                                    </TableCell>
-                                    <TableCell width="70%">
-                                      {subject.extraSubject_nameTh}
-                                      <Typography color="primary">
-                                        ({subject.extraSubject_nameEn})
-                                      </Typography>
-                                    </TableCell>
-                                    <TableCell align="center" width="10%">
-                                      <TextField
-                                        variant="outlined"
-                                        value={item.grade}
-                                        onChange={(e) => handleGradeChange(e.target.value, item.id)}
-                                        rows={1}
-                                        maxRows={1}
-                                        inputProps={{ max: 4, min: 0 }}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="center" width="10%">
-                                      <IconButton
-                                        variant="outlined"
-                                        color="error"
-                                        onClick={() => handleDelete(index)}
-                                      >
-                                        <IconCircleMinus width={20} />
-                                      </IconButton>
-                                    </TableCell>
-                                  </TableRow>
-                                );
-                              } else {
-                                return null;
+                            } else {
+                              return null;
+                            }
+                          })
+                        : null}
+                      {newSecelect.map((secelect, index) => (
+                        <TableRow key={index} hover>
+                          <TableCell width="85%" colSpan={2}>
+                            <Autocomplete
+                              fullWidth
+                              id={`extraSubject_id_${index}`}
+                              name={`extraSubject_id_${index}`}
+                              disableClearable
+                              options={extraSubject.map((option) => ({
+                                label:
+                                  option.extraSubject_id +
+                                  ' | ' +
+                                  option.extraSubject_nameTh +
+                                  ' (' +
+                                  option.extraSubject_nameEn +
+                                  ') ' +
+                                  option.total_credits +
+                                  ' หน่วยกิต',
+                                value: option.extraSubject_id,
+                              }))}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  placeholder="Select Subject"
+                                  variant="outlined"
+                                  fullWidth
+                                />
+                              )}
+                              onChange={(event, newValue) =>
+                                setNewSeclect((prev) => [
+                                  ...prev.slice(0, index),
+                                  {
+                                    id: newValue ? newValue.value : '',
+                                    grade: prev[index].grade,
+                                  },
+                                  ...prev.slice(index + 1),
+                                ])
                               }
-                            })
-                          : null}
-                        {newSecelect.map((secelect, index) => (
-                          <TableRow key={index} hover>
-                            <TableCell width="85%" colSpan={2}>
-                              <Autocomplete
-                                fullWidth
-                                id={`extraSubject_id_${index}`}
-                                name={`extraSubject_id_${index}`}
-                                disableClearable
-                                options={extraSubject.map((option) => ({
-                                  label:
-                                    option.extraSubject_id +
-                                    ' | ' +
-                                    option.extraSubject_nameTh +
-                                    ' (' +
-                                    option.extraSubject_nameEn +
-                                    ') ' +
-                                    option.total_credits +
-                                    ' หน่วยกิต',
-                                  value: option.extraSubject_id,
-                                }))}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    placeholder="Select Subject"
-                                    variant="outlined"
-                                    fullWidth
-                                  />
-                                )}
-                                onChange={(event, newValue) =>
-                                  setNewSeclect((prev) => [
-                                    ...prev.slice(0, index),
-                                    {
-                                      id: newValue ? newValue.value : '',
-                                      grade: prev[index].grade,
-                                    },
-                                    ...prev.slice(index + 1),
-                                  ])
-                                }
-                              />
-                            </TableCell>
-                            <TableCell align="center" width="10%">
-                              <TextField
-                                variant="outlined"
-                                value={secelect.grade}
-                                onChange={(e) =>
-                                  setNewSeclect((prev) => [
-                                    ...prev.slice(0, index),
-                                    { id: prev[index].id, grade: e.target.value },
-                                    ...prev.slice(index + 1),
-                                  ])
-                                }
-                                rows={1}
-                                maxRows={1}
-                                inputProps={{ max: 4, min: 0 }}
-                              />
-                            </TableCell>
-                            <TableCell align="center" width="10%">
-                              <IconButton
-                                variant="outlined"
-                                color="error"
-                                onClick={() => handleDeleteNewSeclect(index)}
-                              >
-                                <IconCircleMinus width={20} />
-                              </IconButton>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-
-                        <TableRow>
-                          <TableCell colSpan={5} align="center">
-                            <IconButton variant="outlined" color="primary" onClick={handleAdd}>
-                              <IconCirclePlus width={20} />
-                              <Typography color="primary" marginLeft={1}>
-                                เพิ่มรายวิชา
-                              </Typography>
+                            />
+                          </TableCell>
+                          <TableCell align="center" width="10%">
+                            <TextField
+                              variant="outlined"
+                              value={secelect.grade}
+                              onChange={(e) =>
+                                setNewSeclect((prev) => [
+                                  ...prev.slice(0, index),
+                                  { id: prev[index].id, grade: e.target.value },
+                                  ...prev.slice(index + 1),
+                                ])
+                              }
+                              rows={1}
+                              maxRows={1}
+                              inputProps={{ max: 4, min: 0 }}
+                            />
+                          </TableCell>
+                          <TableCell align="center" width="10%">
+                            <IconButton
+                              variant="outlined"
+                              color="error"
+                              onClick={() => handleDeleteNewSeclect(index)}
+                            >
+                              <IconCircleMinus width={20} />
                             </IconButton>
                           </TableCell>
                         </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Box>
-              </Stack>
-            </Grid>
-          </Grid>
-        </ParentCard>
-        <Grid item xs={12} sm={12} lg={12}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="end" mt={2}>
-            <Stack spacing={1} direction="row">
-              <Button variant="outlined" color="warning" onClick={handleBack}>
-                ย้อนกลับ
-              </Button>
-              <Button type="submit" variant="contained" color="success" onClick={handleSubmit}>
-                ถัดไป
-              </Button>
+                      ))}
+
+                      <TableRow>
+                        <TableCell colSpan={5} align="center">
+                          <IconButton variant="outlined" color="primary" onClick={handleAdd}>
+                            <IconCirclePlus width={20} />
+                            <Typography color="primary" marginLeft={1}>
+                              เพิ่มรายวิชา
+                            </Typography>
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Box>
             </Stack>
-          </Stack>
+          </Grid>
         </Grid>
-        ;
+      </ParentCard>
+      <Grid item xs={12} sm={12} lg={12}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="end" mt={2}>
+          <Stack spacing={1} direction="row">
+            <Button variant="outlined" color="warning" onClick={handleBack}>
+              ย้อนกลับ
+            </Button>
+            <Button type="submit" variant="contained" color="success" onClick={handleSubmit}>
+              ถัดไป
+            </Button>
+          </Stack>
+        </Stack>
+      </Grid>
+      ;
     </PageContainer>
   );
 };

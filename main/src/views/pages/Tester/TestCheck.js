@@ -127,6 +127,7 @@ const ExtarSubjectCheck = () => {
                 setTestResultTransfer({
                   success: responseTransfer.data.success,
                   unsuccess: responseTransfer.data.unsuccess,
+                  ungrade: responseTransfer.data.ungrade,
                 }),
               );
 

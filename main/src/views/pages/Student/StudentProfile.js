@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Button } from '@mui/material';
+import { Grid, Button, Typography } from '@mui/material';
 
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from '../../../components/container/PageContainer';
-import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../../components/forms/theme-elements/CustomFormLabel';
 import ParentCard from '../../../components/shared/ParentCard';
 import { Stack } from '@mui/system';
@@ -52,46 +51,44 @@ const StudentProfile = () => {
     <PageContainer title="ข้อมูลนักศึกษา" description="this is Add Admin">
       <Breadcrumb title="ข้อมูลนักศึกษา" />
       <ParentCard title="ข้อมูลนักศึกษา">
-        <Grid container spacing={3}>
+        <Grid container>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>รหัสนักศึกษา</CustomFormLabel>
-            <CustomTextField value={user._id} fullWidth />
+            <Typography>{user._id}</Typography>
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>ชื่อนามสกุล</CustomFormLabel>
-            <CustomTextField value={user.fullname} fullWidth />
+            <Typography>{user.fullname}</Typography>
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>หลักสูตร</CustomFormLabel>
-            <CustomTextField
-              value={`${dataCurriculum ? `${dataCurriculum.name} (${dataCurriculum.level} ${dataCurriculum.time} ปี) พ.ศ ${dataCurriculum.year}` : ''}`}
-              fullWidth
-            />
+            <Typography>
+              {dataCurriculum
+                ? `${dataCurriculum.name} (${dataCurriculum.level} ${dataCurriculum.time} ปี) พ.ศ ${dataCurriculum.year}`
+                : ''}
+            </Typography>
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>รุ่นปี</CustomFormLabel>
-            <CustomTextField value={user.year} fullWidth />
+            <Typography>{user.year}</Typography>
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>สถาบันเดิม</CustomFormLabel>
-            <CustomTextField value={user.institution} fullWidth />
+            <Typography>{user.institution}</Typography>
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>สาขาวิชาเดิม</CustomFormLabel>
-            <CustomTextField value={user.branch} fullWidth />
+            <Typography>{user.branch}</Typography>
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>การเทียบโอน</CustomFormLabel>
-            <CustomTextField value={user.status} fullWidth />
+            <Typography>{user.status}</Typography>
           </Grid>
+
           <Grid item xs={12} sm={12} lg={12}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="end" mt={2}>
               <Stack spacing={1} direction="row">
-                <Button
-                  variant="outlined"
-                  color="warning"
-                  onClick={handleEdit}
-                >
+                <Button variant="outlined" color="warning" onClick={handleEdit}>
                   แก้ไข
                 </Button>
               </Stack>

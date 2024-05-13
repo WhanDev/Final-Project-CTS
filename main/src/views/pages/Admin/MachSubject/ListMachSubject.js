@@ -311,7 +311,7 @@ const ListMachSubject = () => {
                                                         key={matchedMachSubjectList._id}
                                                         style={{
                                                           backgroundColor:
-                                                            index % 2 === 0 ? '#e0e0e0' : '#f5f5f5',
+                                                            index % 2 === 0 ? '#f5f5f5' : '#ffffff',
                                                         }}
                                                       >
                                                         <TableCell align="center" width={'5%'}>
@@ -412,15 +412,19 @@ const ListMachSubject = () => {
                                                         </TableCell>
                                                       </TableRow>
                                                     ))}
-                                                  <TableRow>
+                                                  <TableRow style={{ backgroundColor: '#bdbdbd' }}>
                                                     <TableCell
                                                       width={'100%'}
                                                       align="center"
                                                       colSpan={6}
                                                     >
-                                                      <Typography variant="normal">
-                                                      เพิ่มรายการคู่เทียบโอน
-                                                    </Typography>
+                                                      <Typography
+                                                        variant="normal"
+                                                        fontWeight={600}
+                                                        fontSize={20}
+                                                      >
+                                                        เพิ่มรายการคู่เทียบโอน
+                                                      </Typography>
                                                       <IconButton
                                                         color="info"
                                                         component={Link}
@@ -452,24 +456,28 @@ const ListMachSubject = () => {
                                                     align="center"
                                                     colSpan={6}
                                                   >
-                                                    <Typography variant="normal">
-                                                      เพิ่มรายการคู่เทียบโอน
-                                                    </Typography>
-                                                    <IconButton
-                                                        color="info"
-                                                        component={Link}
-                                                        to={
-                                                          '/admin/manage/machsubject/curriculum/' +
-                                                          params.curriculum +
-                                                          '/structure/' +
-                                                          params.structure_id +
-                                                          '/' +
-                                                          subjectItem.subject_id +
-                                                          '/add'
-                                                        }
+                                                    <Typography
+                                                        variant="normal"
+                                                        fontWeight={600}
+                                                        fontSize={20}
                                                       >
-                                                        <IconCirclePlus size="23" />
-                                                      </IconButton>
+                                                        เพิ่มรายการคู่เทียบโอน
+                                                      </Typography>
+                                                    <IconButton
+                                                      color="info"
+                                                      component={Link}
+                                                      to={
+                                                        '/admin/manage/machsubject/curriculum/' +
+                                                        params.curriculum +
+                                                        '/structure/' +
+                                                        params.structure_id +
+                                                        '/' +
+                                                        subjectItem.subject_id +
+                                                        '/add'
+                                                      }
+                                                    >
+                                                      <IconCirclePlus size="23" />
+                                                    </IconButton>
                                                   </TableCell>
                                                 </TableRow>
                                               </Table>

@@ -54,6 +54,7 @@ const ListStructure = () => {
     },
     [params.curriculum],
     [params.structure_id],
+    []
   );
 
   const sort = ['1. หมวดวิชาศึกษาทั่วไป', '2. หมวดวิชาเฉพาะ', '3. หมวดวิชาเลือกเสรี'];

@@ -60,14 +60,14 @@ const AuthRole = () => {
                 </CardContent>
               </BlankCard>
             </Grid>
-            <Grid item xs={12} lg={6} marginBottom={5}>
+            <Grid item xs={12} lg={6} marginBottom={2}>
               <BlankCard>
                 <CardContent>
                   <Box textAlign="center">
                     <img src={Admin} alt="star" width={'40%'} />
 
-                    <Typography variant="h2" mb={2} fontWeight={400}>
-                      อาจารย์ เจ้าหน้าที่และผู้ดูแลระบบ
+                    <Typography variant="h2" mb={2} fontWeight={400} >
+                      อาจารย์และเจ้าหน้าที่
                     </Typography>
 
                     <Button

@@ -16,7 +16,10 @@ const Mached = () => {
   }, [navigate]);
 
   return (
-    <PageContainer title="รอการอนุมัติเทียบโอนผลการเรียน" description="รอการอนุมัติเทียบโอนผลการเรียน">
+    <PageContainer
+      title="รอการอนุมัติเทียบโอนผลการเรียน"
+      description="รอการอนุมัติเทียบโอนผลการเรียน"
+    >
       <Box
         display="flex"
         flexDirection="column"

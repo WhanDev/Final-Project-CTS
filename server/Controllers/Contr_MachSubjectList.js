@@ -1,21 +1,43 @@
 const MachSubjectList = require("../Models/Model_MachSubjectList");
+const MachSubject = require("../Models/Model_MatchSubject");
 
 exports.create = async (req, res) => {
   try {
-    const { machSubject_id, extraSubject_id } = req.body;
+    const { curriculum, subject_id, machSubject_id, extraSubject_id } =
+      req.body;
 
-    if (!machSubject_id || !extraSubject_id) {
-      return res.status(400).send("กรุณากรอกข้อมูลให้ครบ");
+    const _id = "MS" + curriculum + "-" + subject_id;
+
+    const checkMachSubject = await MachSubject.findOne({ _id });
+
+    if (checkMachSubject) {
+      const createMachSubjectList = await MachSubjectList.create({
+        machSubject_id,
+        extraSubject_id,
+      });
+
+      res
+        .status(201)
+        .json({ message: "เพิ่มข้อมูลสำเร็จ!", data: createMachSubjectList });
+    } else {
+      const createMachSubject = await MachSubject.create({
+        _id,
+        curriculum,
+        subject_id,
+      });
+
+      const createMachSubjectList = await MachSubjectList.create({
+        machSubject_id,
+        extraSubject_id,
+      });
+
+      res
+        .status(201)
+        .json({
+          message: "เพิ่มข้อมูลสำเร็จ!",
+          data: { createMachSubject, createMachSubjectList },
+        });
     }
-
-    const createMachSubjectList = await MachSubjectList.create({
-      machSubject_id,
-      extraSubject_id,
-    });
-
-    res
-      .status(201)
-      .json({ message: "เพิ่มข้อมูลสำเร็จ!", data: createMachSubjectList });
   } catch (err) {
     console.error(err);
     res

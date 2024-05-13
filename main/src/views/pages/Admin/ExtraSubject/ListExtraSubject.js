@@ -1,40 +1,144 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import {
   Box,
   Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  Typography,
   TableBody,
-  IconButton,
+  TableCell,
   TableContainer,
-  TextField,
+  TableHead,
+  TablePagination,
+  TableRow,
+  IconButton,
+  Typography,
   Stack,
+  TextField,
 } from '@mui/material';
 import { IconEditCircle, IconCircleMinus } from '@tabler/icons';
+import Swal from 'sweetalert2';
+import DialogExtraSubject from './DialogExtraSubject';
 import {
-  list as listExtraSubject,
+  list,
   read as readExtraSubject,
   remove as removeExtraSubject,
 } from '../../../../function/extar-subject';
-import DialogExtraSubject from './DialogExtraSubject';
-import Swal from 'sweetalert2';
 import { currentUser } from '../../../../function/auth';
 
-const ListExtraSubject = () => {
-  const [extraSubjects, setExtraSubjects] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+function descendingComparator(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
 
-  const loadDataExtraSubjects = async () => {
+function getComparator(order, orderBy) {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function stableSort(array, comparator) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
+
+function EnhancedTableHead(props) {
+  return (
+    <TableHead>
+      <TableRow>
+        <TableCell>
+          <Typography variant="h5" align="center">
+            รหัสวิชา
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="h5">ชื่อวิชา</Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="h5" align="center">
+            หน่วยกิต
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="h5" align="center">
+            เพิ่มเติม
+          </Typography>
+        </TableCell>
+      </TableRow>
+    </TableHead>
+  );
+}
+
+EnhancedTableHead.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
+  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired,
+};
+
+const ListExtraSubject = () => {
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('extraSubject_id');
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rows, setRows] = useState([]);
+
+  const fetchData = async () => {
     try {
-      const response = await listExtraSubject();
-      setExtraSubjects(response.data);
+      const response = await list();
+      setRows(response.data);
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching data:', error);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredExtraSubjects = rows.filter(
+    (item) =>
+      (item.extraSubject_id && item.extraSubject_id.includes(searchTerm)) ||
+      (item.extraSubject_nameTh &&
+        item.extraSubject_nameTh.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (item.extraSubject_nameEn &&
+        item.extraSubject_nameEn.toLowerCase().includes(searchTerm.toLowerCase())),
+  );
 
   const token = localStorage.getItem('token');
   const [user, setUser] = useState([]);
@@ -49,7 +153,6 @@ const ListExtraSubject = () => {
   };
 
   useEffect(() => {
-    loadDataExtraSubjects();
     CheckUser();
   }, []);
 
@@ -70,11 +173,11 @@ const ListExtraSubject = () => {
         if (extrasubject.data.createBy === user.curriculum) {
           await removeExtraSubject(_id);
           Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-          loadDataExtraSubjects();
+          fetchData();
         } else if (user.curriculum === '0000000') {
           await removeExtraSubject(_id);
           Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-          loadDataExtraSubjects();
+          fetchData();
         } else {
           Swal.fire({
             icon: 'error',
@@ -88,29 +191,18 @@ const ListExtraSubject = () => {
     }
   };
 
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const filteredExtraSubjects = extraSubjects.filter(
-    (item) =>
-      item.extraSubject_id.includes(searchTerm) ||
-      item.extraSubject_nameTh.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.extraSubject_nameEn.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
   return (
-    <Box mt={3}>
+    <>
+      <Typography variant="h6" mx={2} mt={3}>
+        ค้นหารายวิชา
+      </Typography>
       <Stack
         spacing={1}
-        direction={{ xs: 'column', sm: 'row' }}
+        direction={{ sm: 'row' }}
         justifyContent="center"
         alignItems="center"
-        mb={2}
+        mx={2}
       >
-        <Typography variant="h6" width={'10%'} align="center">
-          ค้นหารายวิชา
-        </Typography>
         <TextField
           variant="outlined"
           size="small"
@@ -121,80 +213,71 @@ const ListExtraSubject = () => {
           placeholder="กรอกรหัสวิชา/ชื่อวิชา"
         />
       </Stack>
+      <Box mb={2} sx={{ mb: 2 }}>
+        <TableContainer>
+          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+            <EnhancedTableHead
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+              rowCount={rows.length}
+            />
+            <TableBody>
+              {stableSort(filteredExtraSubjects, getComparator(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row.extraSubject_id}>
+                      <TableCell width={'15%'}>
+                        <Typography align="center" color="textSecondary">
+                          {row.extraSubject_id}
+                        </Typography>
+                      </TableCell>
+                      <TableCell width={'50%'}>
+                        <Typography>
+                          {row.extraSubject_nameTh}
+                          <Typography color="primary">({row.extraSubject_nameEn})</Typography>
+                        </Typography>
+                      </TableCell>
 
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell width={'15%'} align="center">
-                <Typography variant="h6">รหัสวิชา</Typography>
-              </TableCell>
-              <TableCell width={'30%'} align="left">
-                <Typography variant="h6">ชื่อวิชา</Typography>
-              </TableCell>
-              <TableCell width={'5%'} align="center">
-                <Typography variant="h6">ทฤษฎี</Typography>
-              </TableCell>
-              <TableCell width={'5%'} align="center">
-                <Typography variant="h6">ปฏิบัติ</Typography>
-              </TableCell>
-              <TableCell width={'10%'} align="center">
-                <Typography variant="h6">หน่วยกิตรวม</Typography>
-              </TableCell>
-              <TableCell width={'15%'} align="center">
-                <Typography variant="h6">จัดการข้อมูล</Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredExtraSubjects.length > 0 ? (
-              filteredExtraSubjects.map((item, index) => (
-                <TableRow key={index} hover>
-                  <TableCell width={'15%'} align="center">
-                    {item.extraSubject_id}
-                  </TableCell>
-                  <TableCell width={'30%'} align="left">
-                    {item.extraSubject_nameTh}
-                    <br />
-                    <Typography color="primary">({item.extraSubject_nameEn})</Typography>
-                  </TableCell>
-                  <TableCell width={'5%'} align="center">
-                    {item.theory_credits}
-                  </TableCell>
-                  <TableCell width={'5%'} align="center">
-                    {item.practical_credits}
-                  </TableCell>
-                  <TableCell width={'10%'} align="center">
-                    {item.total_credits}
-                  </TableCell>
-                  <TableCell width={'15%'} align="center">
-                    <DialogExtraSubject _id={item._id} />
-                    <IconButton
-                      component={Link}
-                      to={`/admin/manage/extrasubject/edit/${item._id}`}
-                      color="warning"
-                    >
-                      <IconEditCircle size="18" />
-                    </IconButton>
-                    <IconButton onClick={() => handleRemove(item._id)} color="error">
-                      <IconCircleMinus size="18" />
-                    </IconButton>
-                  </TableCell>
+                      <TableCell width={'15%'}>
+                        <Typography align="center">{row.total_credits}</Typography>
+                      </TableCell>
+                      <TableCell width={'20%'} align="center">
+                        <DialogExtraSubject _id={row._id} />
+                        <IconButton
+                          component={Link}
+                          to={`/admin/manage/extrasubject/edit/${row._id}`}
+                          color="warning"
+                        >
+                          <IconEditCircle size="18" />
+                        </IconButton>
+                        <IconButton onClick={() => handleRemove(row._id)} color="error">
+                          <IconCircleMinus size="18" />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  <TableCell colSpan={6} />
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={6} align="center">
-                  <Box>
-                    <Typography align="center">ไม่มีข้อมูลรายวิชานอกหลักสูตร</Typography>
-                  </Box>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 50]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Box>
+    </>
   );
 };
 

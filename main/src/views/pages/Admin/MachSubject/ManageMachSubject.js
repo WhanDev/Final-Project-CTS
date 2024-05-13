@@ -41,9 +41,7 @@ const ManageMachSubject = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell align="center">
-                    <Typography variant="h6">ลำดับ</Typography>
-                  </TableCell>
+                  
                   <TableCell align="center">
                     <Typography variant="h6">รหัสหลักสูตร</Typography>
                   </TableCell>
@@ -68,7 +66,6 @@ const ManageMachSubject = () => {
                 {Curriculum.length > 0 ? (
                   Curriculum.map((item, index) => (
                     <TableRow key={index} hover>
-                      <TableCell align="center">{index + 1}</TableCell>
                       <TableCell align="center">{item._id}</TableCell>
                       <TableCell align="left">{item.name}</TableCell>
                       <TableCell align="center">{item.level}</TableCell>

@@ -26,13 +26,15 @@ import { listByStructure } from '../../../function/subject';
 import { list } from '../../../function/extar-subject';
 
 import { IconCircleX, IconCircleCheck } from '@tabler/icons';
-import { subject } from '@casl/ability';
 
 const MachTestTransfer = () => {
   const curriculumRedux = useSelector((state) => state.tester.testTransfer.curriculum);
 
   const success = useSelector((state) => state.tester.testResultTransfer.success);
   const unsuccess = useSelector((state) => state.tester.testResultTransfer.unsuccess);
+  const ungrade = useSelector((state) => state.tester.testResultTransfer.ungrade);
+
+  const combinedData = [...unsuccess, ...ungrade];
 
   const [allSubject, setAllSubject] = useState([]);
   const [total_credits, setTotalCredits] = useState(0);
@@ -100,25 +102,36 @@ const MachTestTransfer = () => {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell align="center" width={'40%'} sx={{ paddingX: 0 }}>
-                        <TableCell align="center" width={'40%'} sx={{ border: 0 }}>
-                          <Typography variant="h5">รายวิชาในหลักสูตร</Typography>
-                        </TableCell>
+                      <TableCell align="center" width={'50%'} sx={{ paddingX: 0 }}>
+                        <Typography variant="h5">รายวิชาในหลักสูตร</Typography>
+                        <Stack direction="row" justifyContent="space-between" alignItems="center">
+                          <TableCell align="center" width={'30%'} sx={{ border: 0 }}>
+                            <Typography variant="h6">รหัสวิชา</Typography>
+                          </TableCell>
+                          <TableCell width={'50%'} sx={{ border: 0 }}>
+                            <Typography variant="h6">ชื่อวิชา</Typography>
+                          </TableCell>
+                          <TableCell align="center" width={'20%'} sx={{ border: 0 }}>
+                            <Typography variant="h6">หน่วยกิต</Typography>
+                          </TableCell>
+                        </Stack>
                       </TableCell>
-
-                      <TableCell align="center" width={'60%'} sx={{ paddingX: 0 }}>
-                        <TableCell align="center" width={'15%'} sx={{ border: 0 }}>
-                          <Typography variant="h5">รหัสวิชา</Typography>
-                        </TableCell>
-                        <TableCell width={'25%'} sx={{ border: 0 }}>
-                          <Typography variant="h5">ชื่อวิชา</Typography>
-                        </TableCell>
-                        <TableCell align="center" width={'10%'} sx={{ border: 0 }}>
-                          <Typography variant="h5">หน่วยกิต</Typography>
-                        </TableCell>
-                        <TableCell align="center" width={'10%'} sx={{ border: 0 }}>
-                          <Typography variant="h5">เกรด</Typography>
-                        </TableCell>
+                      <TableCell align="center" width={'50%'} sx={{ paddingX: 0 }}>
+                        <Typography variant="h5">รายวิชาที่นำมาเทียบ</Typography>
+                        <Stack direction="row" justifyContent="space-between" alignItems="center">
+                          <TableCell align="center" width={'25%'} sx={{ border: 0 }}>
+                            <Typography variant="h6">รหัสวิชา</Typography>
+                          </TableCell>
+                          <TableCell width={'40%'} sx={{ border: 0 }}>
+                            <Typography variant="h6">ชื่อวิชา</Typography>
+                          </TableCell>
+                          <TableCell align="center" width={'20%'} sx={{ border: 0 }}>
+                            <Typography variant="h6">หน่วยกิต</Typography>
+                          </TableCell>
+                          <TableCell align="center" width={'15%'} sx={{ border: 0 }}>
+                            <Typography variant="h6">เกรด</Typography>
+                          </TableCell>
+                        </Stack>
                       </TableCell>
                     </TableRow>
                   </TableHead>
@@ -130,28 +143,45 @@ const MachTestTransfer = () => {
                         );
                         if (subject) {
                           return (
-                            <TableRow key={index} hover>
-                              <TableCell
-                                align="center"
-                                colSpan={1}
-                                width={'40%'}
-                                sx={{ paddingX: 0 }}
-                              >
-                                <TableCell align="center" width={'40%'} sx={{ border: 0 }}>
-                                  <Typography color={'green'}>
-                                    {subject.subject_id}
-                                    <br />
-                                    {subject.subject_nameTh}
-                                    <br />
-                                    {subject.total_credits} หน่วยกิต
-                                  </Typography>
-                                </TableCell>
+                            <TableRow
+                              key={index}
+                              sx={{ borderBottom: '0.5px solid #e6e6e6' }}
+                              hover
+                            >
+                              <TableCell align="center" width={'50%'} sx={{ paddingX: 0 }}>
+                                <Stack
+                                  direction="row"
+                                  justifyContent="space-between"
+                                  alignItems="center"
+                                >
+                                  <TableCell align="center" width={'30%'} sx={{ borderBottom: 0 }}>
+                                    <Typography>{subject.subject_id}</Typography>
+                                  </TableCell>
+                                  {allSubject
+                                    .filter(
+                                      (subjectItem) => subjectItem.subject_id === item.subject_id,
+                                    )
+                                    .map((subjectItem) => (
+                                      <React.Fragment key={subjectItem.subject_id}>
+                                        <TableCell width={'50%'} sx={{ borderBottom: 0 }}>
+                                          <Typography>{subjectItem.subject_nameTh}</Typography>
+                                          <Typography>({subjectItem.subject_nameEn})</Typography>
+                                        </TableCell>
+                                        <TableCell
+                                          align="center"
+                                          width={'20%'}
+                                          sx={{ borderBottom: 0 }}
+                                        >
+                                          <Typography>{subjectItem.total_credits}</Typography>
+                                        </TableCell>
+                                      </React.Fragment>
+                                    ))}
+                                </Stack>
                               </TableCell>
                               <TableCell
                                 align="center"
-                                colSpan={4}
-                                width={'60%'}
-                                sx={{ paddingX: 0 }}
+                                width={'50%'}
+                                sx={{ paddingX: 0, borderLeft: '0.5px solid #e6e6e6' }}
                               >
                                 {item.extra_id.map((extra_id) => {
                                   const extra = allExtra.find(
@@ -159,12 +189,15 @@ const MachTestTransfer = () => {
                                   );
                                   if (extra) {
                                     return (
-                                      <TableRow key={extra_id}>
+                                      <TableRow key={extra_id} sx={{ borderBottom: 'none' }}>
                                         <TableCell align="center" width="15%">
                                           <Typography>{extra.extraSubject_id}</Typography>
                                         </TableCell>
                                         <TableCell width="25%">
                                           <Typography>{extra.extraSubject_nameTh}</Typography>
+                                          <Typography color="green">
+                                            ({extra.extraSubject_nameEn})
+                                          </Typography>
                                         </TableCell>
                                         <TableCell align="center" width="10%">
                                           <Typography>{extra.total_credits}</Typography>
@@ -195,6 +228,7 @@ const MachTestTransfer = () => {
               </TableContainer>
             </Grid>
           </Grid>
+
           <Grid item xs={12} sm={12} lg={12}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="end" mt={2}>
               <Stack spacing={1} direction="row">
@@ -240,8 +274,8 @@ const MachTestTransfer = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {unsuccess.length > 0 ? (
-                      unsuccess.map((item, index) => {
+                    {combinedData.length > 0 ? (
+                      combinedData.map((item, index) => {
                         const subject = allExtra.find(
                           (option) => option.extraSubject_id === item.extra_id,
                         );

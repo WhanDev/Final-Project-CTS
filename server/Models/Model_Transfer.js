@@ -10,18 +10,33 @@ const TransferSchema = mongoose.Schema({
 const TransferOrderSchema = mongoose.Schema({
   _id: String,
   student_id: { type: String, ref: "Student" },
+  file: {
+    type: String,
+  },
 });
 
 const TransferListSchema = mongoose.Schema({
   transferOrder_id: { type: String, ref: "TransferOrder" },
-  mach_id: { type: String, ref: "MachSubject" },
-  subject_id: { type: String, ref: "Subject" },
-  machlist_id: { type: String, ref: "MachSubjectList" },
-  extraSubject_id: [{
-    id: String,
-    grade: String
-  }],
-  grade: Number,
+  success: [
+    {
+      mach_id: { type: String, ref: "MachSubject" },
+      subject_id: { type: String, ref: "Subject" },
+      machlist_id: { type: String, ref: "MachSubjectList" },
+      extraSubject: [
+        {
+          id: String,
+          grade: String,
+        },
+      ],
+    },
+  ],
+  unsuccess: [
+    {
+      extraSubject: { type: String },
+      grade: { type: String },
+      note: { type: String },
+    },
+  ],
 });
 
 module.exports = {

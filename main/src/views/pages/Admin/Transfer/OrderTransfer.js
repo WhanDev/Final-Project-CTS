@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   Box,
   Table,
@@ -12,113 +12,153 @@ import {
   Stack,
   TableContainer,
   IconButton,
+  Button,
 } from '@mui/material';
-import { IconCircleCheck } from '@tabler/icons';
+import { IconCircleCheck, IconAlertCircle, IconFile, IconSearch } from '@tabler/icons';
 
 import PageContainer from '../../../../components/container/PageContainer';
-import CustomTextField from '../../../../components/forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../../../components/forms/theme-elements/CustomFormLabel';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../../components/shared/ParentCard';
 
 import { TransferRead } from '../../../../function/transfer';
 import { read as readStudent } from '../../../../function/student';
-import { read as readCurriculum } from '../../../../function/curriculum';
+import { list as ListCurriculum } from '../../../../function/curriculum';
+import { listByStructure as AllSubject } from '../../../../function/subject';
+import { list as AllExtraSubject } from '../../../../function/extar-subject';
 
 const OrderTransfer = () => {
   const params = useParams();
 
-  const [transfer, setTransfer] = useState([]);
+  const [transferList, setTransferList] = useState([]);
+  const [transferOrder, setTransferOrder] = useState([]);
 
   const loadTransferRead = async (id) => {
     TransferRead(id)
-      .then((res) => setTransfer(res.data))
+      .then((res) => {
+        setTransferList(res.data.transferList);
+        setTransferOrder(res.data.readTransferOrder);
+      })
       .catch((err) => console.log(err));
   };
 
-  const [student, setStudent] = useState({
-    _id: '',
-    fullname: '',
-    year: '',
-    institution: '',
-    branch: '',
-    status: '',
-  });
+  const [student, setStudent] = useState({});
+  const structure_id = 'CS-' + student.curriculum;
 
   const loadReadStudent = async (id) => {
     readStudent(id)
-      .then((res) => setStudent(res.data))
+      .then((res) => {
+        setStudent(res.data);
+      })
       .catch((err) => console.log(err));
   };
 
-  const curriculum_id = student.curriculum;
-  const [dataCurriculum, setDataCurriculum] = useState({
-    name: '',
-    level: '',
-    time: '',
-    year: '',
-  });
+  const [allCurriculum, setAllCurriculum] = useState([]);
 
-  const loadReadCurriculum = async (id) => {
-    readCurriculum(id)
-      .then((res) => setDataCurriculum(res.data))
+  const loadListCurriculum = async () => {
+    ListCurriculum()
+      .then((res) => setAllCurriculum(res.data))
       .catch((err) => console.log(err));
   };
+
+  const [allSubject, setAllSubject] = useState([]);
+
+  const loadAllSubject = async (id) => {
+    AllSubject(id)
+      .then((res) => setAllSubject(res.data))
+      .catch((err) => console.log(err));
+  };
+
+  const [allExtraSubject, setAllExtraSubject] = useState([]);
+
+  const loadAllExtraSubject = async () => {
+    AllExtraSubject()
+      .then((res) => setAllExtraSubject(res.data))
+      .catch((err) => console.log(err));
+  };
+
+  const [total_credits, setTotalCredits] = React.useState(0);
+
+  useEffect(() => {
+    let totalCredits = 0;
+
+    if (Array.isArray(transferList)) {
+      transferList.forEach((list) => {
+        list.success.forEach((successItem) => {
+          const subject = allSubject.find(
+            (subjectItem) => subjectItem.subject_id === successItem.subject_id,
+          );
+          if (subject) {
+            totalCredits += subject.total_credits;
+          }
+        });
+      });
+    }
+
+    setTotalCredits(totalCredits);
+  }, [transferList, allSubject]);
 
   useEffect(
     () => {
       loadTransferRead(params._id);
       loadReadStudent(params._id);
-      loadReadCurriculum(curriculum_id);
+      loadListCurriculum();
+      loadAllExtraSubject();
+      if (student.curriculum) {
+        loadAllSubject(structure_id);
+      }
     },
     [params._id],
-    [params._id],
-    // [curriculum_id],
+    [student.curriculum],
+    [transferOrder.file],
   );
 
-//   const curriculum =
-//     dataCurriculum.name +
-//     '(' +
-//     dataCurriculum.level +
-//     ' ' +
-//     dataCurriculum.time +
-//     'ปี) พ.ศ ' +
-//     dataCurriculum.year;
+  const pdfURL = 'http://localhost:5000/api/pdf/'+transferOrder.file; // URL ของไฟล์ PDF
 
-//   console.log(curriculum_id);
+  const handleViewPDF = () => {
+    window.open(pdfURL, '_blank'); // เปิด URL ในแท็บใหม่
+  };
 
   return (
     <PageContainer title="ข้อมูลเทียบโอนเบื้องต้น" description="ข้อมูลเทียบโอนเบื้องต้น">
       <Breadcrumb title="ข้อมูลเทียบโอนเบื้องต้น" />
       <ParentCard title="ข้อมูลนักศึกษา">
-        <Grid container spacing={3}>
+        <Grid container>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>รหัสนักศึกษา</CustomFormLabel>
-            <CustomTextField value={student._id || ''} fullWidth />
+            <Typography>{student._id || ''}</Typography>
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>ชื่อนามสกุล</CustomFormLabel>
-            <CustomTextField value={student.fullname || ''} fullWidth />
+            <Typography>{student.fullname || ''}</Typography>
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>หลักสูตร</CustomFormLabel>
-            <CustomTextField value={student.curriculum|| ''} fullWidth />
+            {allCurriculum.map((curriculum) =>
+              student.curriculum === curriculum._id ? (
+                <Typography key={curriculum.id}>
+                  {curriculum.name || ''} ปี พ.ศ {curriculum.year || ''} ({curriculum.level || ''}{' '}
+                  {curriculum.time || ''} ปี)
+                </Typography>
+              ) : null,
+            )}
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>รุ่นปี</CustomFormLabel>
-            <CustomTextField value={student.year|| ''} fullWidth />
+            <Typography>{student.year || ''}</Typography>
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>สถาบันเดิม</CustomFormLabel>
-            <CustomTextField value={student.institution|| ''} fullWidth />
+            <Typography>{student.institution || ''}</Typography>
           </Grid>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>สาขาวิชาเดิม</CustomFormLabel>
-            <CustomTextField value={student.branch || ''} fullWidth />
+            <Typography>{student.branch || ''}</Typography>
           </Grid>
+
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>การเทียบโอน</CustomFormLabel>
-            <CustomTextField value={student.status || ''} fullWidth />
+            <Typography>{student.status || ''}</Typography>
           </Grid>
         </Grid>
       </ParentCard>
@@ -133,110 +173,133 @@ const OrderTransfer = () => {
           </Stack>
         }
       >
-        <Grid container spacing={3}>
+        <Grid container>
           <Grid item xs={12} sm={12} lg={12}>
             <TableContainer>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center" width={'50%'}>
+                    <TableCell align="center" width={'50%'} sx={{ paddingX: 0 }}>
                       <Typography variant="h5">รายวิชาในหลักสูตร</Typography>
+                      <Stack direction="row" justifyContent="space-between" alignItems="center">
+                        <TableCell align="center" width={'30%'} sx={{ border: 0 }}>
+                          <Typography variant="h6">รหัสวิชา</Typography>
+                        </TableCell>
+                        <TableCell width={'50%'} sx={{ border: 0 }}>
+                          <Typography variant="h6">ชื่อวิชา</Typography>
+                        </TableCell>
+                        <TableCell align="center" width={'20%'} sx={{ border: 0 }}>
+                          <Typography variant="h6">หน่วยกิต</Typography>
+                        </TableCell>
+                      </Stack>
                     </TableCell>
-                    <TableCell align="center" width={'50%'}>
+                    <TableCell align="center" width={'50%'} sx={{ paddingX: 0 }}>
                       <Typography variant="h5">รายวิชาที่นำมาเทียบ</Typography>
+                      <Stack direction="row" justifyContent="space-between" alignItems="center">
+                        <TableCell align="center" width={'30%'} sx={{ border: 0 }}>
+                          <Typography variant="h6">รหัสวิชา</Typography>
+                        </TableCell>
+                        <TableCell width={'40%'} sx={{ border: 0 }}>
+                          <Typography variant="h6">ชื่อวิชา</Typography>
+                        </TableCell>
+                        <TableCell align="center" width={'20%'} sx={{ border: 0 }}>
+                          <Typography variant="h6">หน่วยกิต</Typography>
+                        </TableCell>
+                        <TableCell align="center" width={'10%'} sx={{ border: 0 }}>
+                          <Typography variant="h6">เกรด</Typography>
+                        </TableCell>
+                      </Stack>
                     </TableCell>
                   </TableRow>
                 </TableHead>
-                {/* <TableBody>
-                  <TableRow>
-                    <TableCell align="center" width={'50%'} colSpan={1}>
-                      <TableCell align="center" width={'30%'}>
-                        <Typography fontWeight={500}>รหัสวิชา</Typography>
-                      </TableCell>
-                      <TableCell width={'60%'}>
-                        <Typography fontWeight={500}>ชื่อวิชา</Typography>
-                      </TableCell>
-                      <TableCell align="center" width={'10%'}>
-                        <Typography fontWeight={500}>หน่วยกิต</Typography>
-                      </TableCell>
-                    </TableCell>
-                    <TableCell align="center" width={'50%'} colSpan={1}>
-                      <TableCell align="center" width={'30%'}>
-                        <Typography fontWeight={500}>รหัสวิชา</Typography>
-                      </TableCell>
-                      <TableCell width={'60%'}>
-                        <Typography fontWeight={500}>ชื่อวิชา</Typography>
-                      </TableCell>
-                      <TableCell align="center" width={'10%'}>
-                        <Typography fontWeight={500}>หน่วยกิต</Typography>
-                      </TableCell>
-                    </TableCell>
-                  </TableRow>
-                  {success.length > 0 ? (
-                    success.map((item, index) => {
-                      const subject = allSubject.find(
-                        (option) => option.subject_id === item.subject_id,
-                      );
-                      if (subject) {
-                        return (
-                          <TableRow key={item.id} hover>
-                            <TableCell align="center" width="50%" colSpan={1}>
-                              <TableCell align="center" width="30%">
-                                <Typography>{subject.subject_id}</Typography>
+                {Array.isArray(transferList) &&
+                  transferList.map((list) => (
+                    <TableBody key={list._id}>
+                      {list.success.map((successItem) => (
+                        <TableRow
+                          sx={{
+                            borderBottom: '0.5px solid #e6e6e6',
+                            '&:hover': { backgroundColor: '#f0f0f0' },
+                          }}
+                        >
+                          <TableCell align="center" width={'50%'} sx={{ paddingX: 0 }}>
+                            <Stack
+                              direction="row"
+                              justifyContent="space-between"
+                              alignItems="center"
+                            >
+                              <TableCell align="center" width={'30%'} sx={{ borderBottom: 0 }}>
+                                <Typography>{successItem.subject_id}</Typography>
                               </TableCell>
-                              <TableCell width="60%">
-                                <Typography>
-                                  {subject.subject_nameTh}
-                                  <Typography color={'green'}>
-                                    ({subject.subject_nameEn})
-                                  </Typography>
-                                </Typography>
-                              </TableCell>
-                              <TableCell align="center" width="10%">
-                                <Typography>{subject.total_credits}</Typography>
-                              </TableCell>
-                            </TableCell>
-                            <TableCell align="center" width="50%" colSpan={1}>
-                              {item.extra_id.map((extra_id) => {
-                                const extra = allExtra.find(
-                                  (option) => option.extraSubject_id === extra_id,
-                                );
-                                if (extra) {
-                                  return (
-                                    <TableRow key={extra_id}>
-                                      <TableCell align="center" width="30%">
-                                        <Typography>{extra.extraSubject_id}</Typography>
-                                      </TableCell>
-                                      <TableCell width="60%">
-                                        <Typography>
-                                          {extra.extraSubject_nameTh}
-                                          <Typography color={'green'}>
-                                            ({extra.extraSubject_nameEn})
-                                          </Typography>
+                              {allSubject
+                                .filter(
+                                  (subjectItem) =>
+                                    subjectItem.subject_id === successItem.subject_id,
+                                )
+                                .map((subjectItem) => (
+                                  <>
+                                    <TableCell width={'50%'} sx={{ borderBottom: 0 }}>
+                                      <Typography>{subjectItem.subject_nameTh}</Typography>
+                                      <Typography>({subjectItem.subject_nameEn})</Typography>
+                                    </TableCell>
+                                    <TableCell
+                                      align="center"
+                                      width={'20%'}
+                                      sx={{ borderBottom: 0 }}
+                                    >
+                                      <Typography>{subjectItem.total_credits}</Typography>
+                                    </TableCell>
+                                  </>
+                                ))}
+                            </Stack>
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            width={'50%'}
+                            sx={{ paddingX: 0, borderLeft: '0.5px solid #e6e6e6' }}
+                          >
+                            {successItem.extraSubject.map((extra) => (
+                              <Stack
+                                direction="row"
+                                justifyContent="space-between"
+                                alignItems="center"
+                              >
+                                <TableCell align="center" width={'30%'} sx={{ borderBottom: 0 }}>
+                                  <Typography>{extra.id}</Typography>
+                                </TableCell>
+                                {allExtraSubject
+                                  .filter((extraItem) => extraItem.extraSubject_id === extra.id)
+                                  .map((extraItem) => (
+                                    <>
+                                      <TableCell width={'40%'} sx={{ borderBottom: 0 }}>
+                                        <Typography>{extraItem.extraSubject_nameTh}</Typography>
+                                        <Typography color="green">
+                                          ({extraItem.extraSubject_nameEn})
                                         </Typography>
                                       </TableCell>
-                                      <TableCell align="center" width="10%">
-                                        <Typography>{extra.total_credits}</Typography>
+                                      <TableCell
+                                        align="center"
+                                        width={'20%'}
+                                        sx={{ borderBottom: 0 }}
+                                      >
+                                        <Typography>{extraItem.total_credits}</Typography>
                                       </TableCell>
-                                    </TableRow>
-                                  );
-                                }
-                              })}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      } else {
-                        return null;
-                      }
-                    })
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={6} align="center">
-                        <Typography align="center">ไม่มีรายวิชาที่สามารถเทียบโอนได้</Typography>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody> */}
+                                      <TableCell
+                                        align="center"
+                                        width={'10%'}
+                                        sx={{ borderBottom: 0 }}
+                                      >
+                                        <Typography>{extra.grade}</Typography>
+                                      </TableCell>
+                                    </>
+                                  ))}
+                              </Stack>
+                            ))}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  ))}
               </Table>
             </TableContainer>
           </Grid>
@@ -245,10 +308,111 @@ const OrderTransfer = () => {
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="end" mt={2}>
             <Stack spacing={1} direction="row">
               <Typography variant="h6" fontWeight={400} color="green">
-                จำนวนหน่วยกิตที่เทียบโอนได้ หน่วยกิต
+                จำนวนหน่วยกิตที่เทียบโอนได้ {total_credits} หน่วยกิต
               </Typography>
             </Stack>
           </Stack>
+        </Grid>
+      </ParentCard>
+      <Box marginY={3} />
+      <ParentCard
+        title={
+          <Stack direction="row" alignItems="center">
+            <Typography variant="h5">รายวิชาที่ขาดวิชาร่วม</Typography>
+            <IconButton>
+              <IconAlertCircle width={20} color={'red'} />
+            </IconButton>
+          </Stack>
+        }
+      >
+        <Grid container>
+          <Grid item xs={12} sm={12} lg={12}>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center" width={'20%'}>
+                      <Typography variant="h5">รหัสวิชา</Typography>
+                    </TableCell>
+                    <TableCell width={'30%'}>
+                      <Typography variant="h5">ชื่อวิชา</Typography>
+                    </TableCell>
+                    <TableCell align="center" width={'10%'}>
+                      <Typography variant="h5">หน่วยกิต</Typography>
+                    </TableCell>
+                    <TableCell align="center" width={'10%'}>
+                      <Typography variant="h5">เกรด</Typography>
+                    </TableCell>
+                    <TableCell align="center" width={'30%'}>
+                      <Typography variant="h5">หมายเหตุ</Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                {Array.isArray(transferList) &&
+                  transferList.map((list) => (
+                    <TableBody key={list._id}>
+                      {list.unsuccess.map((unsuccessItem) => (
+                        <TableRow
+                          sx={{
+                            borderBottom: '0.5px solid #e6e6e6',
+                            '&:hover': { backgroundColor: '#f0f0f0' },
+                          }}
+                        >
+                          <TableCell align="center" width={'20%'} sx={{ borderBottom: 0 }}>
+                            <Typography>{unsuccessItem.extraSubject}</Typography>
+                          </TableCell>
+                          {allExtraSubject
+                            .filter(
+                              (subjectItem) =>
+                                subjectItem.extraSubject_id === unsuccessItem.extraSubject,
+                            )
+                            .map((subjectItem) => (
+                              <>
+                                <TableCell width={'30%'} sx={{ borderBottom: 0 }}>
+                                  <Typography>{subjectItem.extraSubject_nameTh}</Typography>
+                                  <Typography>({subjectItem.extraSubject_nameEn})</Typography>
+                                </TableCell>
+                                <TableCell align="center" width={'10%'} sx={{ borderBottom: 0 }}>
+                                  <Typography>{subjectItem.total_credits}</Typography>
+                                </TableCell>
+                                <TableCell align="center" width={'10%'} sx={{ borderBottom: 0 }}>
+                                  <Typography>{unsuccessItem.grade}</Typography>
+                                </TableCell>
+                                <TableCell align="center" width={'30%'} sx={{ borderBottom: 0 }}>
+                                  <Typography color={'red'}>{unsuccessItem.note}</Typography>
+                                </TableCell>
+                              </>
+                            ))}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  ))}
+              </Table>
+            </TableContainer>
+          </Grid>
+        </Grid>
+      </ParentCard>
+      <Box marginY={3} />
+      <ParentCard
+        title={
+          <Stack direction="row" alignItems="center">
+            <Typography variant="h5">ไฟล์ที่แนบมา</Typography>
+            <IconButton>
+              <IconFile width={20} color={'blue'} />
+            </IconButton>
+          </Stack>
+        }
+      >
+        <Grid container>
+          <Grid item xs={12} sm={12} lg={12}>
+            <Stack spacing={1} direction={{ xs: 'column', sm: 'row' }} justifyContent="start">
+              <Button variant="outlined" color="primary" endIcon={<IconSearch width={18} />}
+              onClick={handleViewPDF}
+              >
+                ดูไฟล์ที่แนบมา
+              </Button>
+            </Stack>
+          </Grid>
         </Grid>
       </ParentCard>
     </PageContainer>

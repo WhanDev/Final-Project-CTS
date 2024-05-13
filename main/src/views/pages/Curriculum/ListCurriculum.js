@@ -33,16 +33,8 @@ const ListCurriculum = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>
-                <Typography variant="h5" align="center">
-                  ลำดับ
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="h5" align="center">
-                  รหัสหลักสูตร
-                </Typography>
-              </TableCell>
+              
+              
               <TableCell>
                 <Typography variant="h5" align="left">
                   ชื่อหลักสูตร
@@ -70,8 +62,7 @@ const ListCurriculum = () => {
             {curriculum.length > 0 ? (
               curriculum.map((item, index) => (
                 <TableRow key={index} hover>
-                  <TableCell align="center">{index + 1}</TableCell>
-                  <TableCell align="center">{item._id}</TableCell>
+                  
                   <TableCell align="left">{item.name}</TableCell>
                   <TableCell align="center">{item.level}</TableCell>
                   <TableCell align="center">{item.year}</TableCell>

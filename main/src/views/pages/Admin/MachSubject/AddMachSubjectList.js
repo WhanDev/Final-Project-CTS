@@ -73,6 +73,8 @@ const AddMachSubjectList = () => {
 
     try {
       const NewData = {
+        curriculum: params.curriculum,
+        subject_id: dataSubject.subject_id,
         machSubject_id: 'MS' + params.curriculum + '-' + params.subject_id,
         extraSubject_id: NewExtraSubject.map((extraSubject) => extraSubject.value),
       };

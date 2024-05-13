@@ -6,6 +6,9 @@ export const testTransfer = async (data) =>
 export const SaveTransfer = async (data) =>
   await axios.post(process.env.REACT_APP_API + '/transfer', data);
 
+export const UploadFile = async (data) =>
+  await axios.post(process.env.REACT_APP_API + '/transfer/upload', data);
+
 export const TransferListAdmin = async () =>
   await axios.get(process.env.REACT_APP_API + '/transfer');
 
