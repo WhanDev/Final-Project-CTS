@@ -68,9 +68,9 @@ const BannerContent = () => {
           }}
         >
           <Typography variant="h5" fontWeight={300}>
-            ยินดีต้อนรับเข้าสู่ ระบบดิจิทัลสำหรับการเทียบโอนผลการเรียน หลักสูตรบริหารธุรกิจบัณฑิต
-            สาขาวิชาเทคโนโลยีธุรกิจดิทัล Credit Transfer System of B.B.A Digital Business
-            Technology.
+            ยินดีต้อนรับเข้าสู่ ระบบดิจิทัลสำหรับการเทียบโอนผลการเรียน
+            คณะบริหารธุรกิจและเทคโนโลยีสารสนเทศ Credit Transfer System of Faculty Business
+            Administration and Information Technology
           </Typography>
         </motion.div>
       </Box>

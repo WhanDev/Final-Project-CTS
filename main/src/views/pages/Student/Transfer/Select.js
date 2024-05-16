@@ -301,7 +301,7 @@ const Select = () => {
       
         <Breadcrumb title="เทียบโอนเบื้องต้น" />
         
-        <ParentCard title="เลือกรายวิชา (รายวิชาในใบ รบ.)">
+        <ParentCard title="เลือกรายวิชาที่เคยศึกษามาแล้ว (รายวิชาในใบ รบ.)">
           <Paper variant="outlined">
             <Typography variant="h6" mx={2} mt={3}>
               ค้นหารายวิชา

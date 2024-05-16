@@ -106,7 +106,7 @@ const LoginAdmin = () => {
           >
             <Card elevation={9} sx={{ p: 4, zIndex: 1, width: '100%', maxWidth: '600px' }}>
               <Typography variant="h2" color="textSecondary" align="center" margin={1}>
-                กลุ่มอาจารย์ เจ้าหน้าที่และผู้ดูแลระบบ
+                กลุ่มอาจารย์และเจ้าหน้าที่
               </Typography>
               <Box>
                 <Divider>

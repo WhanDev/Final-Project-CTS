@@ -177,7 +177,7 @@ const AddAdmin = () => {
                   >
                     {curriculumList.map((item) => (
                       <MenuItem key={item._id} value={item._id}>
-                        {item._id} | {item.name}
+                        หลักสูตร {item.name} ปี พ.ศ {item.year} ({item.level} {item.time} ปี)
                       </MenuItem>
                     ))}
                   </CustomSelect>

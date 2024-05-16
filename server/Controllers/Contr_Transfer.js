@@ -67,6 +67,7 @@ exports.TestTransfer = async (req, res) => {
     let ResultFound = [];
     let success = [];
     let perSuccess = [];
+    let perFinalSuccess = [];
 
     for (const extraSubject of extraSubjects) {
       const validGrades = ["A", "B+", "B", "C+", "C"]; // รายการเกรดที่ถือว่าถูกต้อง
@@ -144,7 +145,7 @@ exports.TestTransfer = async (req, res) => {
                   mach_id: matchSubject.machSubject_id,
                   subject_id: foundMatch.subject_id,
                   machlist_id: machSubjectId,
-                  extra_id: extraSubjectId.extraSubject_id.map((id, index) => ({
+                  extra_id: extraSubjectId.extraSubject_id.map((id) => ({
                     id: id,
                     grade: extraSubjects.find((extra) => extra.id === id).grade,
                   })),
@@ -163,10 +164,8 @@ exports.TestTransfer = async (req, res) => {
       })
     );
 
-    // Create an object to store duplicate mach_ids and their corresponding entries
     const duplicateMachIds = {};
 
-    // Iterate through perSuccess array to find duplicates
     perSuccess.forEach((entry) => {
       if (duplicateMachIds[entry.mach_id]) {
         duplicateMachIds[entry.mach_id].push(entry);
@@ -175,7 +174,8 @@ exports.TestTransfer = async (req, res) => {
       }
     });
 
-    // Iterate through duplicateMachIds and compare the number of extra_ids
+    let unsuccessNew = [];
+
     for (const machId in duplicateMachIds) {
       const entries = duplicateMachIds[machId];
       const extraIdCounts = entries.map((entry) => entry.extra_id.length);
@@ -184,43 +184,136 @@ exports.TestTransfer = async (req, res) => {
       entries.forEach((entry) => {
         if (entry.extra_id.length > maxExtraIdCount) {
           entry.extra_id.map((extra) => {
-            unsuccess.push({
+            unsuccessNew.push({
               extra_id: extra.id,
               grade: extra.grade,
               note: `รายวิชาที่สามารถเทียบได้ซ้ำกัน`,
             });
           });
         } else {
-          success.push(entry);
+          perFinalSuccess.push(entry);
         }
       });
     }
 
-    for (let i = unsuccess.length - 1; i >= 0; i--) {
-      const unsuccessEntry = unsuccess[i];
-      let foundInSuccess = false;
+    let duplicate = [];
+    let unDuplicate = [];
 
-      for (const successEntry of success) {
-        if (
-          successEntry.extra_id.some(
-            (successExtra) => successExtra.id === unsuccessEntry.extra_id
-          )
-        ) {
-          foundInSuccess = true;
-          break;
+    const findDuplicateMachIds = (perFinalSuccess) => {
+      const duplicateMachIds = {};
+
+      perFinalSuccess.forEach((entry) => {
+        if (duplicateMachIds[entry.mach_id]) {
+          duplicateMachIds[entry.mach_id].push(entry);
+        } else {
+          duplicateMachIds[entry.mach_id] = [entry];
+        }
+      });
+
+      for (const machId in duplicateMachIds) {
+        const entries = duplicateMachIds[machId];
+        if (entries.length > 1) {
+          entries.forEach((entry) => {
+            duplicate.push(entry);
+          });
+        } else {
+          unDuplicate.push(entries[0]);
         }
       }
+    };
 
-      if (foundInSuccess) {
-        unsuccess.splice(i, 1);
+    findDuplicateMachIds(perFinalSuccess);
+
+    const findDuplicateExtraIds = (duplicate, unDuplicate) => {
+      const extractExtraIds = (entries) => {
+        return entries.flatMap((entry) =>
+          entry.extra_id.map((extra) => extra.id)
+        );
+      };
+
+      const duplicateExtraIds = extractExtraIds(duplicate);
+      const unDuplicateExtraIds = extractExtraIds(unDuplicate);
+
+      const duplicateIds = duplicateExtraIds.filter((extraId) =>
+        unDuplicateExtraIds.includes(extraId)
+      );
+
+      if (duplicateIds.length > 0) {
+        duplicate.forEach((entry, index) => {
+          entry.extra_id.forEach((extra) => {
+            if (duplicateIds.includes(extra.id)) {
+              duplicate.splice(index, 1);
+            }
+          });
+        });
       }
-    }
+    };
+
+    findDuplicateExtraIds(duplicate, unDuplicate);
+
+    let FinalSuccess = duplicate.concat(unDuplicate);
+
+    let FinalUnsuccess = [];
+
+    const updatedUnsuccess = (FinalSuccess) => {
+      const updatedUnsuccess = unsuccess.filter((un) => {
+        return !FinalSuccess.some((fs) =>
+          fs.extra_id.some((extra) => extra.id === un.extra_id)
+        );
+      });
+
+      const distinctItems = updatedUnsuccess.filter(
+        (item, index, self) =>
+          index === self.findIndex((t) => t.extra_id === item.extra_id)
+      );
+
+      FinalUnsuccess = distinctItems;
+    };
+
+    updatedUnsuccess(FinalSuccess);
+
+    let FinalUnsuccessNew = [];
+
+    const updatedUnsuccessNew = (FinalSuccess) => {
+      const updatedUnsuccess = unsuccessNew.filter((un) => {
+        return !FinalSuccess.some((fs) =>
+          fs.extra_id.some((extra) => extra.id === un.extra_id)
+        );
+      });
+
+      const distinctItems = updatedUnsuccess.filter(
+        (item, index, self) =>
+          index === self.findIndex((t) => t.extra_id === item.extra_id)
+      );
+
+      FinalUnsuccessNew = distinctItems;
+    };
+
+    updatedUnsuccessNew(FinalSuccess);
+
+    let AllUnsuccess = [];
+
+    const distinct = (FinalUnsuccess, FinalUnsuccessNew) => {
+      
+      FinalUnsuccess.forEach((un) => {
+        if (!FinalUnsuccessNew.some((unNew) => unNew.extra_id === un.extra_id)) {
+          AllUnsuccess.push(un);
+        }
+      });
+    
+      FinalUnsuccessNew.forEach((unNew) => {
+        AllUnsuccess.push(unNew);
+      });
+    
+    };
+    
+    distinct(FinalUnsuccess, FinalUnsuccessNew);
+
 
     res.status(200).json({
-      message: "ผ่าน",
       ungrade,
-      unsuccess,
-      success,
+      unsuccess: AllUnsuccess,
+      success: FinalSuccess,
     });
   } catch (err) {
     console.error(err);

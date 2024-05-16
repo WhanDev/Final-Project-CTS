@@ -18,6 +18,18 @@ import { read as readCurriculum } from '../../../../function/curriculum';
 import { currentUser } from '../../../../function/auth';
 
 const ListAdmin = () => {
+  const token = localStorage.getItem('token');
+  const [user, setUser] = useState([]);
+
+  const CheckUser = async () => {
+    try {
+      const res = await currentUser(token);
+      setUser(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const [admin, setDataAdmin] = useState([]);
 
   const loadDataAdmin = async () => {
@@ -40,13 +52,6 @@ const ListAdmin = () => {
     }
   };
 
-  useEffect(() => {
-    loadDataAdmin();
-    admin.forEach((item) => {
-      loadDataCurriculum(item.curriculum);
-    });
-  }, [admin]);
-
   const handleRemove = async (_id) => {
     Swal.fire({
       title: 'ต้องการลบข้อมูลผู้ใช้นี้ใช่หรือไม่?',
@@ -66,22 +71,17 @@ const ListAdmin = () => {
     });
   };
 
-  const token = localStorage.getItem('token');
-  const [user, setUser] = useState([]);
-
-  const CheckUser = async () => {
-    try {
-      const res = await currentUser(token);
-      setUser(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-
-  useEffect(() => {
-    CheckUser();
-  }, []);
+  useEffect(
+    () => {
+      loadDataAdmin();
+      CheckUser();
+      admin.forEach((item) => {
+        loadDataCurriculum(item.curriculum);
+      });
+    },
+    [admin],
+    [],
+  );
 
   return (
     <Box mt={2}>
@@ -115,19 +115,17 @@ const ListAdmin = () => {
                       <TableCell align="center">{item._id}</TableCell>
                       <TableCell align="center">{item.fullname}</TableCell>
                       <TableCell align="center">{item.role}</TableCell>
-                      <TableCell align="center">
-                        {curriculum[item.curriculum]?.name}
-                      </TableCell>
+                      <TableCell align="center">{curriculum[item.curriculum]?.name}</TableCell>
                       <TableCell align="center">
                         <IconButton
                           component={Link}
                           to={'/admin/manage/user/' + item._id}
                           color="warning"
                         >
-                          <IconEdit size="18" />
+                          <IconEdit size="25" />
                         </IconButton>
                         <IconButton onClick={() => handleRemove(item._id)} color="error">
-                          <IconTrash size="18" />
+                          <IconTrash size="25" />
                         </IconButton>
                       </TableCell>
                     </TableRow>

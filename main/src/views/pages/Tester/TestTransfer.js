@@ -74,12 +74,6 @@ const headCells = [
     label: 'ชื่อรายวิชา',
   },
   {
-    id: 'description',
-    numeric: false,
-    disablePadding: false,
-    label: 'คำอธิบาย',
-  },
-  {
     id: 'total_credits',
     numeric: false,
     disablePadding: false,
@@ -110,7 +104,7 @@ function EnhancedTableHead(props) {
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <Typography variant="h5" align="center">
+            <Typography variant="h5" align={headCell.label === 'ชื่อรายวิชา' ? 'left' : 'center'}>
               {headCell.label}
             </Typography>
           </TableCell>
@@ -168,9 +162,9 @@ const EnhancedTableToolbar = (props) => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
-  setSelected: PropTypes.func.isRequired, // เพิ่ม PropTypes สำหรับ setSelected
-  setExtraSelect: PropTypes.func.isRequired, // เพิ่ม PropTypes สำหรับ setExtraSelect
-  selected: PropTypes.array.isRequired, // เพิ่ม PropTypes สำหรับ selected
+  setSelected: PropTypes.func.isRequired,
+  setExtraSelect: PropTypes.func.isRequired,
+  selected: PropTypes.array.isRequired,
 };
 
 const EnhancedTable = () => {
@@ -297,7 +291,6 @@ const EnhancedTable = () => {
     }
   };
 
-
   return (
     <PageContainer title="ทดสอบเทียบโอน" description="this is Enhanced Table page">
       <Container maxWidth="lg">
@@ -312,7 +305,16 @@ const EnhancedTable = () => {
                   name="subject_id"
                   disableClearable
                   options={Curriculum.map((option) => ({
-                    label: 'หลักสูตร ' + option.name +' ปี พ.ศ '+ option.year +' ('+ option.level + ' ' + option.time + ' ปี)',
+                    label:
+                      'หลักสูตร ' +
+                      option.name +
+                      ' ปี พ.ศ ' +
+                      option.year +
+                      ' (' +
+                      option.level +
+                      ' ' +
+                      option.time +
+                      ' ปี)',
                     value: option._id,
                   }))}
                   renderInput={(params) => (
@@ -326,14 +328,13 @@ const EnhancedTable = () => {
                   onChange={handleCurriculumChange}
                   value={selectedCurriculum}
                   sx={{ mr: 1 }}
-                  
                 />
               </Stack>
             </Grid>
           </Grid>
         </ParentCard>
         <Box m={3} />
-        <ParentCard title="เลือกรายวิชา (รายวิชาในใบ รบ.)">
+        <ParentCard title="เลือกรายวิชาที่เคยศึกษามาแล้ว (รายวิชาในใบ รบ.)">
           <Paper variant="outlined">
             <Typography variant="h6" mx={2} mt={3}>
               ค้นหารายวิชา
@@ -405,14 +406,11 @@ const EnhancedTable = () => {
                                 {row.extraSubject_id}
                               </Typography>
                             </TableCell>
-                            <TableCell width={'30%'}>
+                            <TableCell width={'80%'}>
                               <Typography>
                                 {row.extraSubject_nameTh}
                                 <Typography color="primary">({row.extraSubject_nameEn})</Typography>
                               </Typography>
-                            </TableCell>
-                            <TableCell width={'50%'}>
-                              <Typography align="center">{row.description}</Typography>
                             </TableCell>
                             <TableCell width={'5%'}>
                               <Typography align="center">{row.total_credits}</Typography>

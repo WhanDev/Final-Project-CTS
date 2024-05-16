@@ -94,7 +94,7 @@ const LpHeader = () => {
                 to="/curriculum"
                 component={Link}
               >
-                หลักสูตร
+                โครงสร้างหลักสูตร
               </Button>
               <Button
                 color="inherit"

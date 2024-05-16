@@ -18,6 +18,7 @@ import {
 import PageContainer from '../../../../components/container/PageContainer';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../../components/shared/ParentCard';
+import CustomFormLabel from '../../../../components/forms/theme-elements/CustomFormLabel';
 
 import { useSelector } from 'react-redux';
 
@@ -25,8 +26,9 @@ import { listByStructure } from '../../../../function/subject';
 import { list } from '../../../../function/extar-subject';
 import { currentUser } from '../../../../function/auth';
 import { SaveTransfer, UploadFile } from '../../../../function/transfer';
+import { read as readCurriculum } from '../../../../function/curriculum';
 
-import { IconCircleX, IconCircleCheck, IconFile } from '@tabler/icons';
+import { IconCircleX, IconCircleCheck, IconFile, IconUser } from '@tabler/icons';
 import Swal from 'sweetalert2';
 
 const Mach = () => {
@@ -41,6 +43,16 @@ const Mach = () => {
   const [allSubject, setAllSubject] = React.useState([]);
   const [total_credits, setTotalCredits] = React.useState(0);
   const [allExtra, setAllExtra] = React.useState([]);
+  const [curriculum, setCurriculum] = React.useState({});
+
+  const loadCurriculum = async (curriculumRedux) => {
+    try {
+      const res = await readCurriculum(curriculumRedux);
+      setCurriculum(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -60,6 +72,7 @@ const Mach = () => {
 
   useEffect(() => {
     fetchData();
+    loadCurriculum(curriculumRedux);
   }, [curriculumRedux]);
 
   useEffect(() => {
@@ -152,15 +165,66 @@ const Mach = () => {
   };
 
   return (
-    <PageContainer
-      title="ผลการเทียบโอนหน่วยกิตผลการเรียนเบี้องต้น"
-      description="ผลการเทียบโอนหน่วยกิตผลการเรียนเบี้องต้น"
-    >
-      <Breadcrumb title={<>ผลการเทียบโอนหน่วยกิตผลการเรียนเบื้องต้น</>} />
+    <PageContainer title="ผลการเทียบโอนหน่วยเบี้องต้น" description="ผลการเทียบโอนหน่วยเบี้องต้น">
+      <Breadcrumb
+        title={
+          <>
+            ผลการเทียบโอนหน่วยเบี้องต้น
+            <br />
+            หลักสูตร {curriculum.name} ({curriculum.level} {curriculum.time} ปี) พ.ศ{' '}
+            {curriculum.year}
+          </>
+        }
+      />
       <ParentCard
         title={
           <Stack direction="row" alignItems="center">
-            <Typography variant="h5">รายวิชาที่สามารถเทียบโอนได้</Typography>
+            <Typography variant="h5">ข้อมูลนักศึกษา</Typography>
+            <IconButton>
+              <IconUser width={20} color={'gray'} />
+            </IconButton>
+          </Stack>
+        }
+      >
+        <Grid container>
+          <Grid item xs={12} lg={6}>
+            <CustomFormLabel>รหัสนักศึกษา</CustomFormLabel>
+            <Typography>{user._id}</Typography>
+          </Grid>
+          <Grid item xs={12} lg={6}>
+            <CustomFormLabel>ชื่อนามสกุล</CustomFormLabel>
+            <Typography>{user.fullname}</Typography>
+          </Grid>
+          <Grid item xs={12} lg={6}>
+            <CustomFormLabel>หลักสูตร</CustomFormLabel>
+            <Typography>
+              หลักสูตร {curriculum.name} ({curriculum.level} {curriculum.time} ปี) พ.ศ{' '}
+              {curriculum.year}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} lg={6}>
+            <CustomFormLabel>รุ่นปี</CustomFormLabel>
+            <Typography>{user.year}</Typography>
+          </Grid>
+          <Grid item xs={12} lg={6}>
+            <CustomFormLabel>สถาบันเดิม</CustomFormLabel>
+            <Typography>{user.institution}</Typography>
+          </Grid>
+          <Grid item xs={12} lg={6}>
+            <CustomFormLabel>สาขาวิชาเดิม</CustomFormLabel>
+            <Typography>{user.branch}</Typography>
+          </Grid>
+          <Grid item xs={12} lg={6}>
+            <CustomFormLabel>การเทียบโอน</CustomFormLabel>
+            <Typography>{user.status}</Typography>
+          </Grid>
+        </Grid>
+      </ParentCard>
+      <Box m={3} />
+      <ParentCard
+        title={
+          <Stack direction="row" alignItems="center">
+            <Typography variant="h5">รายวิชาที่สามารถเทียบโอนได้ </Typography>
             <IconButton>
               <IconCircleCheck width={20} color={'green'} />
             </IconButton>
@@ -353,6 +417,7 @@ const Mach = () => {
                             </TableCell>
                             <TableCell width="30%">
                               <Typography>{subject.extraSubject_nameTh}</Typography>
+                              <Typography>({subject.extraSubject_nameEn})</Typography>
                             </TableCell>
                             <TableCell align="center" width="10%">
                               <Typography>{subject.total_credits}</Typography>
@@ -388,7 +453,7 @@ const Mach = () => {
       <ParentCard
         title={
           <Stack direction="row" alignItems="center">
-            <Typography variant="h5">แนบใบรับ</Typography>
+            <Typography variant="h5">แนบ ใบรบ.</Typography>
             <IconButton>
               <IconFile width={20} color={'blue'} />
             </IconButton>
