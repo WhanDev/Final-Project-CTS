@@ -72,12 +72,6 @@ const headCells = [
     label: 'ชื่อรายวิชา',
   },
   {
-    id: 'description',
-    numeric: false,
-    disablePadding: false,
-    label: 'คำอธิบาย',
-  },
-  {
     id: 'total_credits',
     numeric: false,
     disablePadding: false,
@@ -108,7 +102,7 @@ function EnhancedTableHead(props) {
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <Typography variant="h5" align="center">
+            <Typography variant="h5" align={headCell.label === 'ชื่อรายวิชา' ? 'left' : 'center'}>
               {headCell.label}
             </Typography>
           </TableCell>
@@ -373,15 +367,13 @@ const Select = () => {
                                 {row.extraSubject_id}
                               </Typography>
                             </TableCell>
-                            <TableCell width={'30%'}>
+                            <TableCell width={'80%'}>
                               <Typography>
                                 {row.extraSubject_nameTh}
                                 <Typography color="primary">({row.extraSubject_nameEn})</Typography>
                               </Typography>
                             </TableCell>
-                            <TableCell width={'50%'}>
-                              <Typography align="center">{row.description}</Typography>
-                            </TableCell>
+                            
                             <TableCell width={'5%'}>
                               <Typography align="center">{row.total_credits}</Typography>
                             </TableCell>

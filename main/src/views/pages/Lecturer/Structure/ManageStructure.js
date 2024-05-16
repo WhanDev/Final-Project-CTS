@@ -1,32 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 
 import PageContainer from '../../../../components/container/PageContainer';
 import ListCurriculum from './ListStructure';
 
-import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
+import { currentUser } from '../../../../function/auth';
 import { read as readCurriculum } from '../../../../function/curriculum';
 
 const ManageStructure = () => {
-  const params = useParams();
+  const token = localStorage.getItem('token');
+  const [user, setUser] = useState({});
 
-  const [curriculum, setDataCurriculum] = useState({
-    _id: '',
-    name: '',
-    level: '',
-    year: '',
-    time: '',
-  });
+  const checkUser = async () => {
+    try {
+      const res = await currentUser(token);
+      setUser(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const loadData = async (_id) => {
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  const [curriculum, setDataCurriculum] = useState({});
+  const curriculum_id = user.curriculum;
+
+  const loadDataCurriculum = async (_id) => {
     readCurriculum(_id).then((res) => {
       setDataCurriculum(res.data);
     });
   };
 
   useEffect(() => {
-    loadData(params.curriculum);
-  }, [params.curriculum]);
+    loadDataCurriculum(curriculum_id);
+  }, [curriculum_id]);
 
   return (
     <PageContainer
@@ -36,11 +45,14 @@ const ManageStructure = () => {
       <Breadcrumb
         title={
           <>
-            โครงสร้างหลักสูตร {curriculum.name} ({curriculum.year}) {curriculum.level} {curriculum.time} ปี
+          หลักสูตร {' '}
+            {curriculum
+              ? `${curriculum.name} (${curriculum.level} ${curriculum.time} ปี) พ.ศ ${curriculum.year}`
+              : ''}
           </>
         }
       />
-      
+      <ListCurriculum />
     </PageContainer>
   );
 };
