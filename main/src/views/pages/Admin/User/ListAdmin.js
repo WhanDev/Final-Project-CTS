@@ -79,7 +79,7 @@ const ListAdmin = () => {
         loadDataCurriculum(item.curriculum);
       });
     },
-    [admin],
+    [admin.length],
     [],
   );
 
