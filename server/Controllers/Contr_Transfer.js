@@ -294,24 +294,20 @@ exports.TestTransfer = async (req, res) => {
     let AllUnsuccess = [];
 
     const distinct = (FinalUnsuccess, FinalUnsuccessNew) => {
-      
       FinalUnsuccess.forEach((un) => {
-        if (!FinalUnsuccessNew.some((unNew) => unNew.extra_id === un.extra_id)) {
+        if (
+          !FinalUnsuccessNew.some((unNew) => unNew.extra_id === un.extra_id)
+        ) {
           AllUnsuccess.push(un);
         }
       });
-    
+
       FinalUnsuccessNew.forEach((unNew) => {
         AllUnsuccess.push(unNew);
       });
-    
     };
-    
-    distinct(FinalUnsuccess, FinalUnsuccessNew);
 
-    //หารายการข้อมูลที่มี extra_id ตรงกันจาก FinalSuccess
-    //นำ mach_id ของรายการที่ได้เก็บไว้
-    //นำ extra_id ของ
+    distinct(FinalUnsuccess, FinalUnsuccessNew);
 
     res.status(200).json({
       ungrade,

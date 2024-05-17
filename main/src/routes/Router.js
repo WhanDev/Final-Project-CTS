@@ -67,13 +67,10 @@ const AddMachSubjectList = Loadable(
 const EditMachSubjectList = Loadable(
   lazy(() => import('../views/pages/Admin/MachSubject/EditMachSubjectList')),
 );
-const ManageTransfer = Loadable(
-  lazy(() => import('../views/pages/Admin/Transfer/ManageTransfer')),
-);
-const OrderTransfer = Loadable(
-  lazy(() => import('../views/pages/Admin/Transfer/OrderTransfer')),
-);
+const ManageTransfer = Loadable(lazy(() => import('../views/pages/Admin/Transfer/ManageTransfer')));
+const OrderTransfer = Loadable(lazy(() => import('../views/pages/Admin/Transfer/OrderTransfer')));
 
+const ManageReport = Loadable(lazy(() => import('../views/pages/Admin/Report/ManageReport')));
 
 //Officer
 const IndexOfficer = Loadable(lazy(() => import('../views/pages/Officer/IndexOfficer')));
@@ -154,12 +151,16 @@ const EditExtraSubjectLecturer = Loadable(
 
 //Student
 const IndexStudent = Loadable(lazy(() => import('../views/pages/Student/IndexStudent')));
-const CurriculumStudent = Loadable(lazy(() => import('../views/pages/Student/Structure/ManageStructure')));
+const CurriculumStudent = Loadable(
+  lazy(() => import('../views/pages/Student/Structure/ManageStructure')),
+);
 const TransferStudent = Loadable(lazy(() => import('../views/pages/Student/Transfer/Transfer')));
 const TransferCheckStudent = Loadable(lazy(() => import('../views/pages/Student/Transfer/Check')));
 const TransferMachStudent = Loadable(lazy(() => import('../views/pages/Student/Transfer/Mach')));
 const StudentProfile = Loadable(lazy(() => import('../views/pages/Student/StudentProfile')));
-const StudentProfileEdit = Loadable(lazy(() => import('../views/pages/Student/StudentProfileEdit')));
+const StudentProfileEdit = Loadable(
+  lazy(() => import('../views/pages/Student/StudentProfileEdit')),
+);
 
 const ShowMachSubject = Loadable(lazy(() => import('../views/pages/MachSubject/ShowMachSubject')));
 const ShowListMachSubject = Loadable(
@@ -250,6 +251,12 @@ const Router = [
       {
         path: '/admin/manage/transfer/:_id',
         element: <OrderTransfer />,
+      },
+
+      //รายงาน
+      {
+        path: '/admin/manage/report',
+        element: <ManageReport />,
       },
     ],
   },

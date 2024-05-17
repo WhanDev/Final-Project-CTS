@@ -63,7 +63,7 @@ const MenuItemsAdmin = [
     id: uniqueId(),
     title: 'รายงาน',
     icon: IconClipboardText,
-    href: '#',
+    href: '/admin/manage/report',
   },
 ];
 
