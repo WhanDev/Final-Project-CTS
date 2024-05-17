@@ -309,6 +309,9 @@ exports.TestTransfer = async (req, res) => {
     
     distinct(FinalUnsuccess, FinalUnsuccessNew);
 
+    //หารายการข้อมูลที่มี extra_id ตรงกันจาก FinalSuccess
+    //นำ mach_id ของรายการที่ได้เก็บไว้
+    //นำ extra_id ของ
 
     res.status(200).json({
       ungrade,
