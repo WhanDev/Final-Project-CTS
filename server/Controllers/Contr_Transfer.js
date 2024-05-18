@@ -251,7 +251,17 @@ exports.TestTransfer = async (req, res) => {
 
     findDuplicateExtraIds(duplicate, unDuplicate);
 
-    let FinalSuccess = duplicate.concat(unDuplicate);
+    let FinalPerSuccess = duplicate.concat(unDuplicate);
+
+    let FinalSuccess = FinalPerSuccess.sort((a, b) => {
+      if (a.mach_id < b.mach_id) {
+        return -1;
+      }
+      if (a.mach_id > b.mach_id) {
+        return 1;
+      }
+      return 0;
+    });
 
     let FinalUnsuccess = [];
 
@@ -309,10 +319,131 @@ exports.TestTransfer = async (req, res) => {
 
     distinct(FinalUnsuccess, FinalUnsuccessNew);
 
+    const perSuccessLast = [];
+    let perUnsuccessLast = [];
+
+    const findDuplicate = async (
+      finalSuccess,
+      allMatchSubject,
+      allUnsuccess
+    ) => {
+      const extraIdMap = new Map();
+
+      finalSuccess.forEach((entry) => {
+        entry.extra_id.forEach((extra) => {
+          if (!extraIdMap.has(extra.id)) {
+            extraIdMap.set(extra.id, []);
+          }
+          extraIdMap.get(extra.id).push(entry);
+        });
+      });
+
+      extraIdMap.forEach((entries) => {
+        if (entries.length > 1) {
+          for (let i = 1; i < entries.length; i++) {
+            const index = finalSuccess.findIndex(
+              (entry) => entry === entries[i]
+            );
+            if (index !== -1) {
+              finalSuccess.splice(index, 1);
+            }
+          }
+        }
+      });
+
+      const ResultFoundNew = [];
+
+      for (const extraSubject of allUnsuccess) {
+        const extraSubjectId = extraSubject.extra_id;
+
+        for (const matchSubject of allMatchSubject) {
+          for (const extraSubjectItem of matchSubject.extraSubject_id) {
+            if (extraSubjectItem.list.includes(extraSubjectId)) {
+              ResultFoundNew.push({
+                id: extraSubjectId,
+                grade: extraSubject.grade,
+                machSubject_id: extraSubjectItem.id,
+                subject_id: matchSubject.subject_id,
+                result: "พบในรายการคู่เทียบโอน",
+              });
+            }
+          }
+        }
+      }
+
+      let machSubjectCountNew = {};
+      const machSubjectIdsInResultFoundNew = [];
+
+      ResultFoundNew.forEach((result) => {
+        const { id, grade, machSubject_id, subject_id } = result;
+        if (machSubjectCountNew[machSubject_id]) {
+          machSubjectCountNew[machSubject_id]++;
+        } else {
+          machSubjectCountNew[machSubject_id] = 1;
+        }
+
+        machSubjectIdsInResultFoundNew.push({
+          id,
+          grade,
+          machSubject_id,
+          subject_id,
+        });
+      });
+
+      await Promise.all(
+        allMatchSubject.map(async (matchSubject) => {
+          await Promise.all(
+            matchSubject.extraSubject_id.map(async (extraSubjectItem) => {
+              const machSubjectId = extraSubjectItem.id;
+              const foundMatch = machSubjectIdsInResultFoundNew.find(
+                (item) => item.machSubject_id === machSubjectId
+              );
+              if (foundMatch) {
+                const machSubjectCountInResultFound =
+                  machSubjectCountNew[machSubjectId] || 0;
+                if (machSubjectCountInResultFound === extraSubjectItem.count) {
+                  const extraSubjectId = await MatchSubjectList.findOne({
+                    _id: machSubjectId,
+                  });
+                  perSuccessLast.push({
+                    curriculum_id: structureIdNumber,
+                    mach_id: matchSubject.machSubject_id,
+                    subject_id: foundMatch.subject_id,
+                    machlist_id: machSubjectId,
+                    extra_id: extraSubjectId.extraSubject_id.map((id) => ({
+                      id: id,
+                      grade: extraSubjects.find((extra) => extra.id === id)
+                        .grade,
+                    })),
+                    note: "สามารถนำมาเทียบโอนได้",
+                  });
+                }
+              }
+            })
+          );
+        })
+      );
+
+      const filteredUnsuccess = allUnsuccess.filter((unsuccessItem) => {
+        return !perSuccessLast.some((successItem) =>
+          successItem.extra_id.some(
+            (extra) => extra.id === unsuccessItem.extra_id
+          )
+        );
+      });
+
+      perUnsuccessLast = filteredUnsuccess;
+    };
+
+    await findDuplicate(FinalSuccess, AllMatchSubject, AllUnsuccess);
+
+    const LastSuccess = FinalSuccess.concat(perSuccessLast);
+
     res.status(200).json({
       ungrade,
       unsuccess: AllUnsuccess,
-      success: FinalSuccess,
+      perUnsuccessLast: perUnsuccessLast,
+      success: LastSuccess,
     });
   } catch (err) {
     console.error(err);
