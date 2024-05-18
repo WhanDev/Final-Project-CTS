@@ -20,14 +20,15 @@ const ManageReport = () => {
       });
       const blob = new Blob([response.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
 
-      const fileName = 'ส่วนที่ 1 ใบคำร้องขอเทียบโอนผลการเรียน.pdf';
+      // const fileName = 'ส่วนที่ 1 ใบคำร้องขอเทียบโอนผลการเรียน.pdf';
 
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = fileName;
-      anchor.click();
-      window.URL.revokeObjectURL(url);
+      // const anchor = document.createElement('a');
+      // anchor.href = url;
+      // anchor.window.open = fileName;
+      // anchor.click();
+      // window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error(err.message);
     } finally {
