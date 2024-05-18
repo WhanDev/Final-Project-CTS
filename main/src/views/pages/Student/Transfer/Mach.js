@@ -349,7 +349,7 @@ const Mach = () => {
                     })
                   ) : (
                     <TableRow>
-                      <TableCell align="center" colSpan={7}>
+                      <TableCell align="center" colSpan={5}>
                         <Typography align="center">ไม่มีรายวิชาที่สามารถเทียบโอนได้</Typography>
                       </TableCell>
                     </TableRow>
@@ -436,7 +436,7 @@ const Mach = () => {
                     })
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={4} align="center">
+                      <TableCell colSpan={5} align="center">
                         <Typography align="center">
                           ไม่มีรายวิชาที่ไม่สามารถนำมาเทียบโอนได้
                         </Typography>

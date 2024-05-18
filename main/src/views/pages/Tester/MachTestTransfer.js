@@ -218,7 +218,7 @@ const MachTestTransfer = () => {
                       })
                     ) : (
                       <TableRow>
-                        <TableCell align="center">
+                        <TableCell align="center" colSpan={4}>
                           <Typography align="center">ไม่มีรายวิชาที่สามารถเทียบโอนได้</Typography>
                         </TableCell>
                       </TableRow>
@@ -305,7 +305,7 @@ const MachTestTransfer = () => {
                       })
                     ) : (
                       <TableRow>
-                        <TableCell colSpan={4} align="center">
+                        <TableCell colSpan={5} align="center">
                           <Typography align="center">
                             ไม่มีรายวิชาที่ไม่สามารถนำมาเทียบโอนได้
                           </Typography>

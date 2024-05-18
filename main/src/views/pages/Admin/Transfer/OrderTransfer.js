@@ -14,7 +14,7 @@ import {
   IconButton,
   Button,
 } from '@mui/material';
-import { IconCircleCheck, IconAlertCircle, IconFile, IconSearch } from '@tabler/icons';
+import { IconCircleCheck, IconAlertCircle, IconFile, IconSearch,IconTrash, IconEdit } from '@tabler/icons';
 
 import PageContainer from '../../../../components/container/PageContainer';
 import CustomFormLabel from '../../../../components/forms/theme-elements/CustomFormLabel';
@@ -98,28 +98,20 @@ const OrderTransfer = () => {
     setTotalCredits(totalCredits);
   }, [transferList, allSubject]);
 
-  useEffect(
-    () => {
-      loadTransferRead(params._id);
-      loadReadStudent(params._id);
-      loadListCurriculum();
-      loadAllExtraSubject();
-    },
-    [params._id],
-  );
+  useEffect(() => {
+    loadTransferRead(params._id);
+    loadReadStudent(params._id);
+    loadListCurriculum();
+    loadAllExtraSubject();
+  }, [params._id]);
 
-  useEffect(
-    () => {
-      if (student.curriculum) {
-        loadAllSubject(structure_id);
-      }
-    },
-    [student.curriculum],
-  );
+  useEffect(() => {
+    if (student.curriculum) {
+      loadAllSubject(structure_id);
+    }
+  }, [student.curriculum]);
 
-
-
-  const pdfURL = 'http://localhost:5000/api/pdf/'+transferOrder.file; // URL ของไฟล์ PDF
+  const pdfURL = 'http://localhost:5000/api/pdf/' + transferOrder.file; // URL ของไฟล์ PDF
 
   const handleViewPDF = () => {
     window.open(pdfURL, '_blank'); // เปิด URL ในแท็บใหม่
@@ -186,20 +178,6 @@ const OrderTransfer = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell align="center" width={'50%'} sx={{ paddingX: 0 }}>
-                      <Typography variant="h5">รายวิชาในหลักสูตร</Typography>
-                      <Stack direction="row" justifyContent="space-between" alignItems="center">
-                        <TableCell align="center" width={'30%'} sx={{ border: 0 }}>
-                          <Typography variant="h6">รหัสวิชา</Typography>
-                        </TableCell>
-                        <TableCell width={'50%'} sx={{ border: 0 }}>
-                          <Typography variant="h6">ชื่อวิชา</Typography>
-                        </TableCell>
-                        <TableCell align="center" width={'20%'} sx={{ border: 0 }}>
-                          <Typography variant="h6">หน่วยกิต</Typography>
-                        </TableCell>
-                      </Stack>
-                    </TableCell>
-                    <TableCell align="center" width={'50%'} sx={{ paddingX: 0 }}>
                       <Typography variant="h5">รายวิชาที่นำมาเทียบ</Typography>
                       <Stack direction="row" justifyContent="space-between" alignItems="center">
                         <TableCell align="center" width={'30%'} sx={{ border: 0 }}>
@@ -216,6 +194,23 @@ const OrderTransfer = () => {
                         </TableCell>
                       </Stack>
                     </TableCell>
+                    <TableCell align="center" width={'50%'} sx={{ paddingX: 0 }}>
+                      <Typography variant="h5">รายวิชาในหลักสูตร</Typography>
+                      <Stack direction="row" justifyContent="space-between" alignItems="center">
+                        <TableCell align="center" width={'30%'} sx={{ border: 0 }}>
+                          <Typography variant="h6">รหัสวิชา</Typography>
+                        </TableCell>
+                        <TableCell width={'45%'} sx={{ border: 0 }}>
+                          <Typography variant="h6">ชื่อวิชา</Typography>
+                        </TableCell>
+                        <TableCell align="center" width={'15%'} sx={{ border: 0 }}>
+                          <Typography variant="h6">หน่วยกิต</Typography>
+                        </TableCell>
+                        <TableCell align="center" width={'15%'} sx={{ border: 0 }}>
+                          <Typography variant="h6">เพิ่มเติม</Typography>
+                        </TableCell>
+                      </Stack>
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 {Array.isArray(transferList) &&
@@ -229,41 +224,6 @@ const OrderTransfer = () => {
                           }}
                         >
                           <TableCell align="center" width={'50%'} sx={{ paddingX: 0 }}>
-                            <Stack
-                              direction="row"
-                              justifyContent="space-between"
-                              alignItems="center"
-                            >
-                              <TableCell align="center" width={'30%'} sx={{ borderBottom: 0 }}>
-                                <Typography>{successItem.subject_id}</Typography>
-                              </TableCell>
-                              {allSubject
-                                .filter(
-                                  (subjectItem) =>
-                                    subjectItem.subject_id === successItem.subject_id,
-                                )
-                                .map((subjectItem) => (
-                                  <>
-                                    <TableCell width={'50%'} sx={{ borderBottom: 0 }}>
-                                      <Typography>{subjectItem.subject_nameTh}</Typography>
-                                      <Typography>({subjectItem.subject_nameEn})</Typography>
-                                    </TableCell>
-                                    <TableCell
-                                      align="center"
-                                      width={'20%'}
-                                      sx={{ borderBottom: 0 }}
-                                    >
-                                      <Typography>{subjectItem.total_credits}</Typography>
-                                    </TableCell>
-                                  </>
-                                ))}
-                            </Stack>
-                          </TableCell>
-                          <TableCell
-                            align="center"
-                            width={'50%'}
-                            sx={{ paddingX: 0, borderLeft: '0.5px solid #e6e6e6' }}
-                          >
                             {successItem.extraSubject.map((extra) => (
                               <Stack
                                 direction="row"
@@ -279,9 +239,6 @@ const OrderTransfer = () => {
                                     <>
                                       <TableCell width={'40%'} sx={{ borderBottom: 0 }}>
                                         <Typography>{extraItem.extraSubject_nameTh}</Typography>
-                                        <Typography color="green">
-                                          ({extraItem.extraSubject_nameEn})
-                                        </Typography>
                                       </TableCell>
                                       <TableCell
                                         align="center"
@@ -301,6 +258,51 @@ const OrderTransfer = () => {
                                   ))}
                               </Stack>
                             ))}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            width={'50%'}
+                            sx={{ paddingX: 0, borderLeft: '0.5px solid #e6e6e6' }}
+                          >
+                            <Stack
+                              direction="row"
+                              justifyContent="space-between"
+                              alignItems="center"
+                            >
+                              <TableCell align="center" width={'30%'} sx={{ borderBottom: 0 }}>
+                                <Typography>{successItem.subject_id}</Typography>
+                              </TableCell>
+                              {allSubject
+                                .filter(
+                                  (subjectItem) =>
+                                    subjectItem.subject_id === successItem.subject_id,
+                                )
+                                .map((subjectItem) => (
+                                  <>
+                                    <TableCell width={'45%'} sx={{ borderBottom: 0 }}>
+                                      <Typography>{subjectItem.subject_nameTh}</Typography>
+                                      <Typography color={'green'}>
+                                        ({subjectItem.subject_nameEn})
+                                      </Typography>
+                                    </TableCell>
+                                    <TableCell
+                                      align="center"
+                                      width={'15%'}
+                                      sx={{ borderBottom: 0 }}
+                                    >
+                                      <Typography>{subjectItem.total_credits}</Typography>
+                                    </TableCell>
+                                  </>
+                                ))}
+                              <TableCell align="center" width={'15%'} sx={{ borderBottom: 0 }}>
+                                <IconButton color='warning'>
+                                  <IconEdit width={25}  />
+                                </IconButton>
+                                <IconButton color={'error'}>
+                                  <IconTrash width={25}  />
+                                </IconButton>
+                              </TableCell>
+                            </Stack>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -357,40 +359,50 @@ const OrderTransfer = () => {
                 {Array.isArray(transferList) &&
                   transferList.map((list) => (
                     <TableBody key={list._id}>
-                      {list.unsuccess.map((unsuccessItem) => (
-                        <TableRow
-                          sx={{
-                            borderBottom: '0.5px solid #e6e6e6',
-                            '&:hover': { backgroundColor: '#f0f0f0' },
-                          }}
-                        >
-                          <TableCell align="center" width={'20%'} sx={{ borderBottom: 0 }}>
-                            <Typography>{unsuccessItem.extraSubject}</Typography>
+                      {list.unsuccess.length > 0 ? (
+                        list.unsuccess.map((unsuccessItem) => (
+                          <TableRow
+                            sx={{
+                              borderBottom: '0.5px solid #e6e6e6',
+                              '&:hover': { backgroundColor: '#f0f0f0' },
+                            }}
+                          >
+                            <TableCell align="center" width={'20%'} sx={{ borderBottom: 0 }}>
+                              <Typography>{unsuccessItem.extraSubject}</Typography>
+                            </TableCell>
+                            {allExtraSubject
+                              .filter(
+                                (subjectItem) =>
+                                  subjectItem.extraSubject_id === unsuccessItem.extraSubject,
+                              )
+                              .map((subjectItem) => (
+                                <React.Fragment key={subjectItem.extraSubject_id}>
+                                  <TableCell width={'30%'} sx={{ borderBottom: 0 }}>
+                                    <Typography>{subjectItem.extraSubject_nameTh}</Typography>
+                                    <Typography>({subjectItem.extraSubject_nameEn})</Typography>
+                                  </TableCell>
+                                  <TableCell align="center" width={'10%'} sx={{ borderBottom: 0 }}>
+                                    <Typography>{subjectItem.total_credits}</Typography>
+                                  </TableCell>
+                                  <TableCell align="center" width={'10%'} sx={{ borderBottom: 0 }}>
+                                    <Typography>{unsuccessItem.grade}</Typography>
+                                  </TableCell>
+                                  <TableCell align="center" width={'30%'} sx={{ borderBottom: 0 }}>
+                                    <Typography color={'red'}>{unsuccessItem.note}</Typography>
+                                  </TableCell>
+                                </React.Fragment>
+                              ))}
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={5} align="center">
+                            <Typography align="center">
+                              ไม่มีรายวิชาที่ไม่สามารถนำมาเทียบโอนได้
+                            </Typography>
                           </TableCell>
-                          {allExtraSubject
-                            .filter(
-                              (subjectItem) =>
-                                subjectItem.extraSubject_id === unsuccessItem.extraSubject,
-                            )
-                            .map((subjectItem) => (
-                              <>
-                                <TableCell width={'30%'} sx={{ borderBottom: 0 }}>
-                                  <Typography>{subjectItem.extraSubject_nameTh}</Typography>
-                                  <Typography>({subjectItem.extraSubject_nameEn})</Typography>
-                                </TableCell>
-                                <TableCell align="center" width={'10%'} sx={{ borderBottom: 0 }}>
-                                  <Typography>{subjectItem.total_credits}</Typography>
-                                </TableCell>
-                                <TableCell align="center" width={'10%'} sx={{ borderBottom: 0 }}>
-                                  <Typography>{unsuccessItem.grade}</Typography>
-                                </TableCell>
-                                <TableCell align="center" width={'30%'} sx={{ borderBottom: 0 }}>
-                                  <Typography color={'red'}>{unsuccessItem.note}</Typography>
-                                </TableCell>
-                              </>
-                            ))}
                         </TableRow>
-                      ))}
+                      )}
                     </TableBody>
                   ))}
               </Table>
@@ -412,8 +424,11 @@ const OrderTransfer = () => {
         <Grid container>
           <Grid item xs={12} sm={12} lg={12}>
             <Stack spacing={1} direction={{ xs: 'column', sm: 'row' }} justifyContent="start">
-              <Button variant="outlined" color="primary" endIcon={<IconSearch width={18} />}
-              onClick={handleViewPDF}
+              <Button
+                variant="outlined"
+                color="primary"
+                endIcon={<IconSearch width={18} />}
+                onClick={handleViewPDF}
               >
                 ดูไฟล์ที่แนบมา
               </Button>
