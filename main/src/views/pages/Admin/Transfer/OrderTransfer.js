@@ -14,14 +14,24 @@ import {
   IconButton,
   Button,
 } from '@mui/material';
-import { IconCircleCheck, IconAlertCircle, IconFile, IconSearch,IconTrash, IconEdit } from '@tabler/icons';
+import {
+  IconCircleCheck,
+  IconAlertCircle,
+  IconFile,
+  IconSearch,
+  IconTrash,
+  IconEdit,
+  IconCirclePlus,
+} from '@tabler/icons';
+import Swal from 'sweetalert2';
 
 import PageContainer from '../../../../components/container/PageContainer';
 import CustomFormLabel from '../../../../components/forms/theme-elements/CustomFormLabel';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../../components/shared/ParentCard';
+import DialogAdd from './DialogAdd';
 
-import { TransferRead } from '../../../../function/transfer';
+import { TransferRead, TransferUpdate } from '../../../../function/transfer';
 import { read as readStudent } from '../../../../function/student';
 import { list as ListCurriculum } from '../../../../function/curriculum';
 import { listByStructure as AllSubject } from '../../../../function/subject';
@@ -116,6 +126,81 @@ const OrderTransfer = () => {
   const handleViewPDF = () => {
     window.open(pdfURL, '_blank'); // เปิด URL ในแท็บใหม่
   };
+
+  const handleAdd = () => {
+    console.log('handleAdd');
+  };
+
+  const handleEdit = (index) => {
+    console.log('handleEdit', index);
+  };
+
+  const handleDelete = (listIndex, successIndex) => {
+    setTransferList((prevTransferList) => {
+      const updatedTransferList = [...prevTransferList];
+      const deletedItem = updatedTransferList[listIndex].success.splice(successIndex, 1)[0]; // Remove the deleted item and get it
+      // deletedItem.extraSubject.forEach((extraSubject) => {
+      //   updatedTransferList[listIndex].unsuccess.push({
+      //     extraSubject: extraSubject.id,
+      //     grade: extraSubject.grade,
+      //     note: 'สามารถนำไปเทียบได้',
+      //   });
+      // });
+      return updatedTransferList;
+    });
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+
+    const NewSuccess = transferList.map((list) =>
+      list.success.map((successItem) => ({
+        curriculum_id: successItem.curriculum_id,
+        mach_id: successItem.mach_id,
+        subject_id: successItem.subject_id,
+        machlist_id: successItem.machlist_id,
+        extraSubject: successItem.extraSubject.map((extraSubject) => ({
+          id: extraSubject.id,
+          grade: extraSubject.grade,
+        })),
+        note: successItem.note,
+      })),
+    );
+
+    const NewUnSuccess = transferList.map((list) =>
+      list.unsuccess.map((unsuccessItem) => ({
+        extraSubject: unsuccessItem.extraSubject,
+        grade: unsuccessItem.grade,
+        note: unsuccessItem.note,
+      })),
+    );
+
+    const updatedData = {
+      success: NewSuccess.flat(),
+      unsuccess: NewUnSuccess.flat(),
+    };
+
+    console.log(updatedData);
+
+    try {
+      await TransferUpdate(params._id, updatedData);
+      Swal.fire({
+        icon: 'success',
+        title: 'แก้ไขข้อมูลสำเร็จ',
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'แก้ไขข้อมูลไม่สำเร็จ',
+        text: error.response.data,
+      });
+      console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูล:', error);
+    }
+  };
+
+  // const handleConfirm = () => {
+  //   console.log('handleConfirm');
+  // };
 
   return (
     <PageContainer title="ข้อมูลเทียบโอนเบื้องต้น" description="ข้อมูลเทียบโอนเบื้องต้น">
@@ -214,10 +299,11 @@ const OrderTransfer = () => {
                   </TableRow>
                 </TableHead>
                 {Array.isArray(transferList) &&
-                  transferList.map((list) => (
+                  transferList.map((list, listIndex) => (
                     <TableBody key={list._id}>
-                      {list.success.map((successItem) => (
+                      {list.success.map((successItem, successIndex) => (
                         <TableRow
+                          key={`${listIndex}-${successIndex}`}
                           sx={{
                             borderBottom: '0.5px solid #e6e6e6',
                             '&:hover': { backgroundColor: '#f0f0f0' },
@@ -236,7 +322,7 @@ const OrderTransfer = () => {
                                 {allExtraSubject
                                   .filter((extraItem) => extraItem.extraSubject_id === extra.id)
                                   .map((extraItem) => (
-                                    <>
+                                    <React.Fragment key={extraItem.extraSubject_id}>
                                       <TableCell width={'40%'} sx={{ borderBottom: 0 }}>
                                         <Typography>{extraItem.extraSubject_nameTh}</Typography>
                                       </TableCell>
@@ -254,7 +340,7 @@ const OrderTransfer = () => {
                                       >
                                         <Typography>{extra.grade}</Typography>
                                       </TableCell>
-                                    </>
+                                    </React.Fragment>
                                   ))}
                               </Stack>
                             ))}
@@ -278,7 +364,7 @@ const OrderTransfer = () => {
                                     subjectItem.subject_id === successItem.subject_id,
                                 )
                                 .map((subjectItem) => (
-                                  <>
+                                  <React.Fragment key={subjectItem.subject_id}>
                                     <TableCell width={'45%'} sx={{ borderBottom: 0 }}>
                                       <Typography>{subjectItem.subject_nameTh}</Typography>
                                       <Typography color={'green'}>
@@ -292,20 +378,34 @@ const OrderTransfer = () => {
                                     >
                                       <Typography>{subjectItem.total_credits}</Typography>
                                     </TableCell>
-                                  </>
+                                  </React.Fragment>
                                 ))}
                               <TableCell align="center" width={'15%'} sx={{ borderBottom: 0 }}>
-                                <IconButton color='warning'>
-                                  <IconEdit width={25}  />
+                                <IconButton
+                                  color="warning"
+                                  onClick={() => handleEdit(listIndex, successIndex)}
+                                >
+                                  <IconEdit width={25} />
                                 </IconButton>
-                                <IconButton color={'error'}>
-                                  <IconTrash width={25}  />
+                                <IconButton
+                                  color={'error'}
+                                  onClick={() => handleDelete(listIndex, successIndex)}
+                                >
+                                  <IconTrash width={25} />
                                 </IconButton>
                               </TableCell>
                             </Stack>
                           </TableCell>
                         </TableRow>
                       ))}
+                      <TableRow>
+                        <TableCell colSpan={5} align="center">
+                          <Typography variant="normal" fontWeight={600} fontSize={20}>
+                            เพิ่มรายการคู่เทียบโอน
+                          </Typography>
+                          <DialogAdd />
+                        </TableCell>
+                      </TableRow>
                     </TableBody>
                   ))}
               </Table>
@@ -326,7 +426,7 @@ const OrderTransfer = () => {
       <ParentCard
         title={
           <Stack direction="row" alignItems="center">
-            <Typography variant="h5">รายวิชาที่ขาดวิชาร่วม</Typography>
+            <Typography variant="h5">รายวิชาที่เหลือ</Typography>
             <IconButton>
               <IconAlertCircle width={20} color={'red'} />
             </IconButton>
@@ -436,6 +536,21 @@ const OrderTransfer = () => {
           </Grid>
         </Grid>
       </ParentCard>
+      <Grid item xs={12} sm={12} lg={12}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="end" mt={2}>
+          <Stack spacing={1} direction="row">
+            <Button type="submit" variant="contained" color="success" onClick={handleSave}>
+              บันทึกการปรับปรุง
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              ยืนยัน
+            </Button>
+            <Button variant="outlined" color="warning">
+              ยกเลิก
+            </Button>
+          </Stack>
+        </Stack>
+      </Grid>
     </PageContainer>
   );
 };

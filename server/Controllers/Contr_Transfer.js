@@ -441,8 +441,7 @@ exports.TestTransfer = async (req, res) => {
 
     res.status(200).json({
       ungrade,
-      unsuccess: AllUnsuccess,
-      perUnsuccessLast: perUnsuccessLast,
+      unsuccess: perUnsuccessLast,
       success: LastSuccess,
     });
   } catch (err) {
@@ -598,6 +597,56 @@ exports.TransferRead = async (req, res) => {
     };
 
     res.json(responseData);
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
+  }
+};
+
+exports.TransferUpdate = async (req, res) => {
+  try {
+    const { _id } = req.params;
+    const { unsuccess, success } = req.body;
+
+    const order_id = "TS-" + _id;
+
+    await TransferList.updateOne(
+      { transferOrder_id: order_id },
+      { unsuccess: unsuccess }
+    );
+
+    await TransferList.updateOne(
+      { transferOrder_id: order_id },
+      { success: success }
+    );
+
+    res.json({
+      message: "อัปเดตข้อมูลการเทียบโอนเรียบร้อยแล้ว",
+      unsuccess,
+      success,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "เกิดข้อผิดพลาดในการอัปเดตข้อมูลการเทียบโอน",
+      error: error.message,
+    });
+  }
+};
+
+exports.TransferListEdit = async (req, res) => {
+  try {
+    const student_id = req.params._id;
+    const student = await Student.findOne({ _id: student_id });
+    const structure_id = "CS-" + student.curriculum;
+
+    const SubjectByCurriculum = await Subject.find({
+      structure_id: structure_id,
+    });
+
+    res.json({ SubjectByCurriculum: SubjectByCurriculum });
   } catch (err) {
     console.error(err);
     res

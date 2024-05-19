@@ -13,4 +13,7 @@ export const TransferListAdmin = async () =>
   await axios.get(process.env.REACT_APP_API + '/transfer');
 
 export const TransferRead = async (id) =>
-  await axios.get(process.env.REACT_APP_API + '/transfer/'+id);
+  await axios.get(process.env.REACT_APP_API + '/transfer/' + id);
+
+export const TransferUpdate = async (id, data) =>
+  await axios.put(process.env.REACT_APP_API + '/transfer/' + id, data);

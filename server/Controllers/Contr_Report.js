@@ -335,7 +335,7 @@ exports.generatePdfPath1 = async (req, res) => {
                   margin: [400, -15, 0, 0],
                 },
                 {
-                  text: "2.4 หมวดวิชาเลือก เฉยๆ",
+                  text: "2.4 หมวดวิชาเสริมสร้างประสบการณ์วิชาชีพ",
                   fontSize: 12,
                   margin: [82, 5, 0, 0],
                 },
