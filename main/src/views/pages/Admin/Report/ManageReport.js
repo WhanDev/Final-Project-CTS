@@ -12,10 +12,34 @@ import axios from 'axios';
 const ManageReport = () => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleGeneratePdf = async () => {
+  const handleGeneratePdfPath1 = async () => {
     setIsLoading(true);
     try {
       const response = await axios.get('http://localhost:5000/api/reportPath1', {
+        responseType: 'blob',
+      });
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+
+      // const fileName = 'ส่วนที่ 1 ใบคำร้องขอเทียบโอนผลการเรียน.pdf';
+
+      // const anchor = document.createElement('a');
+      // anchor.href = url;
+      // anchor.window.open = fileName;
+      // anchor.click();
+      // window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGeneratePdfPath2 = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get('http://localhost:5000/api/reportPath2', {
         responseType: 'blob',
       });
       const blob = new Blob([response.data], { type: 'application/pdf' });
@@ -46,12 +70,18 @@ const ManageReport = () => {
               variant="outlined"
               color="primary"
               startIcon={<IconAlbum width={18} />}
-              onClick={handleGeneratePdf}
+              onClick={handleGeneratePdfPath1}
               disabled={isLoading}
             >
               รายงานส่วนที่ 1 ใบคำร้องขอเทียบโอนผลการเรียน
             </Button>
-            <Button variant="outlined" color="error" startIcon={<IconAlbum width={18} />} disabled>
+            <Button
+              variant="outlined"
+              color="error"
+              startIcon={<IconAlbum width={18} />}
+              onClick={handleGeneratePdfPath2}
+              disabled={isLoading}
+            >
               รายงานส่วนที่ 2 ใบคำร้องขอเทียบโอนผลการเรียน
             </Button>
           </Stack>

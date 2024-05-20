@@ -28,9 +28,8 @@ import { listByStructure as AllSubject } from '../../../../function/subject';
 import { list as AllExtraSubject } from '../../../../function/extar-subject';
 import { read as readStudent } from '../../../../function/student';
 import { list as AllMatchSubjectList } from '../../../../function/machsubjectlist';
-import { id } from 'date-fns/locale';
 
-const DialogAdd = ({ onSave }) => {
+const DialogAdd = ({ onAddSuccess }) => {
   const [open, setOpen] = useState(false);
   const [scroll, setScroll] = useState('paper');
   const [student, setStudent] = useState({});
@@ -113,23 +112,23 @@ const DialogAdd = ({ onSave }) => {
 
   const handleSave = () => {
     const filteredMatchSubjectList = MatchSubjectList.filter((item) => item._id === selectedValue);
-    const listExtra = filteredMatchSubjectList.map((item) => item.extraSubject_id);
+    const listExtra = filteredMatchSubjectList.flatMap((item) => item.extraSubject_id); // Use flatMap to flatten the array
 
     const success = {
       curriculum_id: student.curriculum,
       mach_id: 'MS' + student.curriculum + '-' + selectedSubject,
       subject_id: selectedSubject,
       machlist_id: selectedValue,
-      extraSubject: listExtra.map((extraSubject) =>
-        extraSubject.map((item) => ({
-          id: item,
-          grade: '4',
-        })),
-      ),
+      extraSubject: listExtra.map((extraSubjectId) => ({
+        id: extraSubjectId,
+        grade: '4',
+      })),
       note: 'เพิ่มโดยเจ้าหน้าที่ ผู้ดูแลระบบ',
     };
 
     console.log(success);
+    onAddSuccess(success);
+    setOpen(false);
   };
 
   return (

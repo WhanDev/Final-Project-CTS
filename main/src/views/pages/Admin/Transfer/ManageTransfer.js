@@ -62,14 +62,23 @@ const ManageTransfer = () => {
     loadAllCurriculum();
   }, []);
 
-  console.log('selectedCurriculum', selectedCurriculum.value);
+  const Status = [
+    { label: 'รออนุมัติ', value: 'รออนุมัติ' },
+    { label: 'อนุมัติ', value: 'อนุมัติ' },
+    { label: 'ไม่อนุมัติ', value: 'ไม่อนุมัติ' },
+  ];
+
+  const [selectedStatus, setSelectedStatus] = useState([]);
+  const handleStatus = (event, value) => {
+    setSelectedStatus(value);
+  };
 
   return (
     <PageContainer title="จัดการข้อมูลเทียบโอน" description="จัดการข้อมูลเทียบโอน">
       <Breadcrumb title="จัดการข้อมูลเทียบโอน" />
-      <ParentCard title="เลือกหลักสูตร">
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={12} lg={12}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6} lg={6}>
+          <ParentCard title="เลือกหลักสูตร">
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
               <Autocomplete
                 fullWidth
@@ -102,11 +111,39 @@ const ManageTransfer = () => {
                 sx={{ mr: 1 }}
               />
             </Stack>
-          </Grid>
+          </ParentCard>
         </Grid>
-      </ParentCard>
+        <Grid item xs={12} sm={6} lg={6}>
+          <ParentCard title="เลือกสถานะเทียบโอน">
+            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+              <Autocomplete
+                fullWidth
+                id="subject_id"
+                name="subject_id"
+                disableClearable
+                options={Status.map((option) => ({
+                  label: option.label,
+                  value: option.value,
+                }))}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="กรอกรหัสหลักสูตร/ชื่อหลักสูตร"
+                    variant="outlined"
+                    fullWidth
+                  />
+                )}
+                onChange={handleStatus}
+                value={selectedStatus}
+                sx={{ mr: 1 }}
+              />
+            </Stack>
+          </ParentCard>
+        </Grid>
+      </Grid>
+
       <Box m={3} />
-      <ParentCard title="ข้อมูลนักศึกษาที่ทำการเทียบโอนเบื้องต้น">
+      <ParentCard title="ข้อมูลนักศึกษาที่ทำการเทียบโอนเบื้องต้นแล้ว">
         <ChildCard>
           <Box>
             <TableContainer>
@@ -126,6 +163,9 @@ const ManageTransfer = () => {
                       <Typography variant="h6">สาขาวิชา</Typography>
                     </TableCell>
                     <TableCell align="center">
+                      <Typography variant="h6">สถานะ</Typography>
+                    </TableCell>
+                    <TableCell align="center">
                       <Typography variant="h6">เพิ่มเติม</Typography>
                     </TableCell>
                   </TableRow>
@@ -136,7 +176,7 @@ const ManageTransfer = () => {
                     (transfer.length > 0 ? (
                       transfer.map((item, index) => (
                         <TableRow key={index} hover>
-                          {item.result === 'รอการอนุมัติเทียบโอนผลการเรียน' && ( // เพิ่มเงื่อนไขตรวจสอบ transfer.result
+                          {item.result === 'รอการอนุมัติเทียบโอนผลการเรียน' && (
                             <React.Fragment>
                               {allStudent.filter(
                                 (student) =>
@@ -151,6 +191,7 @@ const ManageTransfer = () => {
                                       <TableCell align="center">{student.fullname}</TableCell>
                                       <TableCell align="center">{student.institution}</TableCell>
                                       <TableCell align="center">{student.branch}</TableCell>
+                                      <TableCell align="center">{student.status}</TableCell>
                                       <TableCell align="center">
                                         <IconButton
                                           component={Link}

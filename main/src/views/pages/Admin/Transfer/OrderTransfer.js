@@ -21,7 +21,6 @@ import {
   IconSearch,
   IconTrash,
   IconEdit,
-  IconCirclePlus,
 } from '@tabler/icons';
 import Swal from 'sweetalert2';
 
@@ -127,26 +126,43 @@ const OrderTransfer = () => {
     window.open(pdfURL, '_blank'); // เปิด URL ในแท็บใหม่
   };
 
-  const handleAdd = () => {
-    console.log('handleAdd');
-  };
-
   const handleEdit = (index) => {
     console.log('handleEdit', index);
   };
 
   const handleDelete = (listIndex, successIndex) => {
-    setTransferList((prevTransferList) => {
-      const updatedTransferList = [...prevTransferList];
-      const deletedItem = updatedTransferList[listIndex].success.splice(successIndex, 1)[0]; // Remove the deleted item and get it
-      // deletedItem.extraSubject.forEach((extraSubject) => {
-      //   updatedTransferList[listIndex].unsuccess.push({
-      //     extraSubject: extraSubject.id,
-      //     grade: extraSubject.grade,
-      //     note: 'สามารถนำไปเทียบได้',
-      //   });
-      // });
-      return updatedTransferList;
+    Swal.fire({
+      title: 'ต้องการลบรายการนี้ใช่หรือไม่?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ยืนยัน',
+      cancelButtonText: 'ยกเลิก',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          setTransferList((prevTransferList) => {
+            const updatedTransferList = [...prevTransferList];
+            const deletedItem = updatedTransferList[listIndex].success.splice(successIndex, 1)[0]; // Remove the deleted item and get it
+            deletedItem.extraSubject.forEach((extraSubject) => {
+              updatedTransferList[listIndex].unsuccess.push({
+                extraSubject: extraSubject.id,
+                grade: extraSubject.grade,
+                note: 'สามารถนำไปเทียบได้',
+              });
+            });
+            return updatedTransferList;
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'ลบรายการข้อมูลไม่สำเร็จ',
+            text: error.response ? error.response.data : 'An error occurred',
+          });
+          console.error('เกิดข้อผิดพลาดในการลบรายการข้อมูล:', error);
+        }
+      }
     });
   };
 
@@ -180,27 +196,52 @@ const OrderTransfer = () => {
       unsuccess: NewUnSuccess.flat(),
     };
 
-    console.log(updatedData);
-
-    try {
-      await TransferUpdate(params._id, updatedData);
-      Swal.fire({
-        icon: 'success',
-        title: 'แก้ไขข้อมูลสำเร็จ',
-      });
-    } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'แก้ไขข้อมูลไม่สำเร็จ',
-        text: error.response.data,
-      });
-      console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูล:', error);
-    }
+    Swal.fire({
+      title: 'ต้องการบันทึกข้อมูลนี้ใช่หรือไม่?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ยืนยัน',
+      cancelButtonText: 'ยกเลิก',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await TransferUpdate(params._id, updatedData);
+          Swal.fire({
+            icon: 'success',
+            title: 'บันทึกข้อมูลสำเร็จ',
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'บันทึกข้อมูลไม่สำเร็จ',
+            text: error.response ? error.response.data : 'An error occurred',
+          });
+          console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);
+        }
+      }
+    });
   };
 
-  // const handleConfirm = () => {
-  //   console.log('handleConfirm');
-  // };
+  const handleAddSuccess = (newSuccessItem) => {
+    setTransferList((prevTransferList) => {
+      const updatedTransferList = [...prevTransferList];
+      updatedTransferList[0].success.push(newSuccessItem);
+  
+      const extra = newSuccessItem.extraSubject;
+  
+      updatedTransferList[0].unsuccess = updatedTransferList[0].unsuccess.filter((unsuccessItem) =>
+        !extra.some((extraSubject) => extraSubject.id === unsuccessItem.extraSubject)
+      );
+  
+      return updatedTransferList;
+    });
+  };
+
+  const handleConfirm = () => {
+    console.log('handleConfirm');
+  };
 
   return (
     <PageContainer title="ข้อมูลเทียบโอนเบื้องต้น" description="ข้อมูลเทียบโอนเบื้องต้น">
@@ -403,7 +444,8 @@ const OrderTransfer = () => {
                           <Typography variant="normal" fontWeight={600} fontSize={20}>
                             เพิ่มรายการคู่เทียบโอน
                           </Typography>
-                          <DialogAdd />
+                          {/* <DialogAdd /> */}
+                          <DialogAdd onAddSuccess={handleAddSuccess} />
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -542,7 +584,7 @@ const OrderTransfer = () => {
             <Button type="submit" variant="contained" color="success" onClick={handleSave}>
               บันทึกการปรับปรุง
             </Button>
-            <Button type="submit" variant="contained" color="primary">
+            <Button type="submit" variant="contained" color="primary" onClick={handleConfirm}>
               ยืนยัน
             </Button>
             <Button variant="outlined" color="warning">
