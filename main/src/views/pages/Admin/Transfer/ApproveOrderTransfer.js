@@ -36,7 +36,7 @@ import { list as ListCurriculum } from '../../../../function/curriculum';
 import { listByStructure as AllSubject } from '../../../../function/subject';
 import { list as AllExtraSubject } from '../../../../function/extar-subject';
 
-const OrderTransfer = () => {
+const ApproveOrderTransfer = () => {
   const params = useParams();
 
   const [transferList, setTransferList] = useState([]);
@@ -609,7 +609,7 @@ const OrderTransfer = () => {
               บันทึกการปรับปรุง
             </Button>
             <Button type="submit" variant="contained" color="primary" onClick={handleConfirm}>
-              ยืนยัน
+              อนุมัติการเทียบโอน
             </Button>
             <Button variant="outlined" color="warning" onClick={handleBack}>
               ยกเลิก
@@ -621,4 +621,4 @@ const OrderTransfer = () => {
   );
 };
 
-export default OrderTransfer;
+export default ApproveOrderTransfer;

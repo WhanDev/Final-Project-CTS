@@ -6,7 +6,7 @@ import {
   IconUsers,
   IconRoute,
   IconLayersIntersect,
-  IconClipboardText
+  IconClipboardText,
 } from '@tabler/icons';
 
 import { uniqueId } from 'lodash';
