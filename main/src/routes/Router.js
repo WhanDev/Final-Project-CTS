@@ -69,6 +69,9 @@ const EditMachSubjectList = Loadable(
 );
 const ManageTransfer = Loadable(lazy(() => import('../views/pages/Admin/Transfer/ManageTransfer')));
 const OrderTransfer = Loadable(lazy(() => import('../views/pages/Admin/Transfer/OrderTransfer')));
+const ApproveOrderTransfer = Loadable(
+  lazy(() => import('../views/pages/Admin/Transfer/ApproveOrderTransfer')),
+);
 
 const ManageReport = Loadable(lazy(() => import('../views/pages/Admin/Report/ManageReport')));
 
@@ -252,7 +255,10 @@ const Router = [
         path: '/admin/manage/transfer/:_id',
         element: <OrderTransfer />,
       },
-
+      {
+        path: '/admin/manage/transfer/approve/:_id',
+        element: <ApproveOrderTransfer />,
+      },
       //รายงาน
       {
         path: '/admin/manage/report',

@@ -654,3 +654,57 @@ exports.TransferListEdit = async (req, res) => {
       .json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
   }
 };
+
+exports.TransferConfirmPath1 = async (req, res) => {
+  try {
+    const student_id = req.params._id;
+
+    const updatedStatusTransfer = await Transfer.findOneAndUpdate(
+      { _id: student_id },
+      { result: "รอการอนุมัติ โดยอาจารย์ประจำหลักสูตร" }
+    );
+
+    const updatedStatusStudent = await Student.findOneAndUpdate(
+      { _id: student_id },
+      { status: "รอการอนุมัติ โดยอาจารย์ประจำหลักสูตร" }
+    );
+
+    res.json({
+      message: "อัปโหลดสถานะสำเร็จ",
+      updatedStatusTransfer,
+      updatedStatusStudent,
+    });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
+  }
+};
+
+exports.TransferConfirmPath2 = async (req, res) => {
+  try {
+    const student_id = req.params._id;
+
+    const updatedStatusTransfer = await Transfer.findOneAndUpdate(
+      { _id: student_id },
+      { result: "อนุมัติการเทียบโอนเสร็จสิ้น" }
+    );
+
+    const updatedStatusStudent = await Student.findOneAndUpdate(
+      { _id: student_id },
+      { status: "อนุมัติการเทียบโอนเสร็จสิ้น" }
+    );
+
+    res.json({
+      message: "อัปโหลดสถานะสำเร็จ",
+      updatedStatusTransfer,
+      updatedStatusStudent,
+    });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
+  }
+};
