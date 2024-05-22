@@ -780,6 +780,14 @@ exports.generatePdfPath1 = async (req, res) => {
 
 exports.generatePdfPath2 = async (req, res) => {
   try {
+    const student_id = "65342310270-6";
+    const dataStudent = await Student.findOne({ _id: student_id }).exec();
+    const TransferOrder_id = "TS-" + student_id;
+    const transferList = await TransferList.find({
+      transferOrder_id: TransferOrder_id,
+    })
+      .select("success")
+      .exec();
     const documentDefinition = {
       pageMargins: [40, 90, 40, 150],
       header: function (currentPage, pageCount) {
@@ -835,7 +843,7 @@ exports.generatePdfPath2 = async (req, res) => {
             {
               text: "กรณีไม่เสียค่าธรรมเนียม",
               decoration: "underline",
-              margin: [-40, 37, 0, 0],
+              margin: [-40, 33, 0, 0],
               fontSize: 14,
               bold: true,
               font: "THSarabunNew",
@@ -850,7 +858,7 @@ exports.generatePdfPath2 = async (req, res) => {
               width: "*",
               stack: [
                 {
-                  text: "ชื่อ - สกุล: .......{{ studentName }}....     รหัสนักศึกษา....{{ studentId }}......สาขาวิชา.....เทคโนโลยีธุรกิจดิจิทัล............",
+                  text: "ชื่อ - สกุล: "+ dataStudent.fullname +"     รหัสนักศึกษา "+ dataStudent._id+" สาขาวิชา  เทคโนโลยีธุรกิจดิจิทัล  ",
                   fontSize: 11,
                   font: "THSarabunNew",
                   margin: [0, 0, 0, 0],
