@@ -35,8 +35,9 @@ import { read as readStudent } from '../../../../function/student';
 import { list as ListCurriculum } from '../../../../function/curriculum';
 import { listByStructure as AllSubject } from '../../../../function/subject';
 import { list as AllExtraSubject } from '../../../../function/extar-subject';
+import { currentUser } from '../../../../function/auth';
 
-const OrderTransfer = () => {
+const CheckOrderTransfer = () => {
   const params = useParams();
 
   const [transferList, setTransferList] = useState([]);
@@ -202,6 +203,21 @@ const OrderTransfer = () => {
   };
 
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  const [user, setUser] = useState({});
+
+  const checkUser = async () => {
+    try {
+      const res = await currentUser(token);
+      setUser(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+  }, []);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -233,6 +249,10 @@ const OrderTransfer = () => {
       unsuccess: NewUnSuccess.flat(),
     };
 
+    const checkBy = {
+      checkBy:user._id
+    }
+
     Swal.fire({
       title: 'ต้องการบันทึกข้อมูลและยืนยันการเทียบโอนเบื้องต้นใช่หรือไม่?',
       icon: 'warning',
@@ -245,7 +265,7 @@ const OrderTransfer = () => {
       if (result.isConfirmed) {
         try {
           await TransferUpdate(params._id, updatedData);
-          await TransferConfirmPath1(params._id);
+          await TransferConfirmPath1(params._id,checkBy);
           Swal.fire({
             icon: 'success',
             title: 'บันทึกข้อมูลสำเร็จ',
@@ -305,6 +325,9 @@ const OrderTransfer = () => {
   };
 
   const handleConfirm = () => {
+    const checkBy = {
+      checkBy:user._id
+    }
     Swal.fire({
       title: 'ต้องการยืนยันการเทียบโอนนี้ใช่หรือไม่?',
       icon: 'warning',
@@ -316,7 +339,7 @@ const OrderTransfer = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await TransferConfirmPath1(params._id);
+          await TransferConfirmPath1(params._id,checkBy);
           Swal.fire({
             icon: 'success',
             title: 'ยืนยันการเทียบโอนสำเร็จ',
@@ -709,4 +732,4 @@ const OrderTransfer = () => {
   );
 };
 
-export default OrderTransfer;
+export default CheckOrderTransfer;

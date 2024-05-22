@@ -663,14 +663,23 @@ exports.TransferConfirmPath1 = async (req, res) => {
 
     const updatedStatusTransfer = await Transfer.findOneAndUpdate(
       { _id: student_id },
-      { checkBy: checkBy_id },
-      { result: "รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร" }
+      { 
+        $set: { checkBy: checkBy_id, status: "รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร" }
+      },
+      { new: true } // This option returns the updated document
     );
 
     const updatedStatusStudent = await Student.findOneAndUpdate(
       { _id: student_id },
-      { status: "รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร" }
+      { 
+        $set: { status: "รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร" }
+      },
+      { new: true } // This option returns the updated document
     );
+
+    if (!updatedStatusTransfer || !updatedStatusStudent) {
+      return res.status(404).json({ message: "ไม่พบข้อมูลนักศึกษา" });
+    }
 
     res.json({
       message: "อัปโหลดสถานะสำเร็จ",
@@ -684,6 +693,7 @@ exports.TransferConfirmPath1 = async (req, res) => {
       .json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
   }
 };
+
 
 exports.TransferConfirmPath2 = async (req, res) => {
   try {
@@ -692,14 +702,19 @@ exports.TransferConfirmPath2 = async (req, res) => {
 
     const updatedStatusTransfer = await Transfer.findOneAndUpdate(
       { _id: student_id },
-      { approveBy: approve_id },
-      { result: "ยืนยันการเทียบโอนถูกต้อง" }
+      { $set: { approveBy: approve_id, status: "ยืนยันการเทียบโอนถูกต้อง" } },
+      { new: true } // This option returns the updated document
     );
 
     const updatedStatusStudent = await Student.findOneAndUpdate(
       { _id: student_id },
-      { status: "ยืนยันการเทียบโอนถูกต้อง" }
+      { $set: { status: "ยืนยันการเทียบโอนถูกต้อง" } },
+      { new: true } // This option returns the updated document
     );
+
+    if (!updatedStatusTransfer || !updatedStatusStudent) {
+      return res.status(404).json({ message: "ไม่พบข้อมูลนักเรียนหรือการโอนย้าย" });
+    }
 
     res.json({
       message: "อัปโหลดสถานะสำเร็จ",
@@ -708,8 +723,7 @@ exports.TransferConfirmPath2 = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res
-      .status(500)
-      .json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
+    res.status(500).json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
   }
 };
+

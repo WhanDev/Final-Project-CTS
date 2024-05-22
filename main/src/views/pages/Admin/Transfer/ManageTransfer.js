@@ -177,7 +177,7 @@ const ManageTransfer = () => {
                     (transfer.length > 0 ? (
                       transfer.map((item, index) => (
                         <TableRow key={index} hover>
-                          {item.result === selectedStatus && (
+                          {item.status === selectedStatus && (
                             <React.Fragment>
                               {allStudent.filter(
                                 (student) =>
@@ -193,16 +193,16 @@ const ManageTransfer = () => {
                                       <TableCell align="center">{student.institution}</TableCell>
                                       <TableCell align="center">{student.branch}</TableCell>
                                       <TableCell align="center">
-                                        {selectedStatus === 'รอการอนุมัติเทียบโอนผลการเรียน' ? (
+                                        {selectedStatus === 'รอการยืนยันการเทียบโอนเบื้องต้น' ? (
                                           <IconButton
                                             component={Link}
-                                            to={`/admin/manage/transfer/${item._id}`}
+                                            to={`/admin/manage/transfer/check/${item._id}`}
                                             color="warning"
                                           >
                                             <IconFileDescription size="18" />
                                           </IconButton>
                                         ) : selectedStatus ===
-                                          'รอการอนุมัติ โดยอาจารย์ประจำหลักสูตร' ? (
+                                          'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร' ? (
                                           <IconButton
                                             component={Link}
                                             to={`/admin/manage/transfer/approve/${item._id}`}
@@ -210,7 +210,8 @@ const ManageTransfer = () => {
                                           >
                                             <IconFileDescription size="18" />
                                           </IconButton>
-                                        ) : (
+                                        ) : selectedStatus ===
+                                        'ยืนยันการเทียบโอนถูกต้อง' ? (
                                           <IconButton
                                             component={Link}
                                             to={`/admin/manage/transfer/confirm/${item._id}`}
@@ -218,7 +219,7 @@ const ManageTransfer = () => {
                                           >
                                             <IconFileDescription size="18" />
                                           </IconButton>
-                                        )}
+                                        ): null}
                                       </TableCell>
                                     </React.Fragment>
                                   ) : null,

@@ -65,7 +65,7 @@ const EditMachSubjectList = Loadable(
   lazy(() => import('../views/pages/Admin/MachSubject/EditMachSubjectList')),
 );
 const ManageTransfer = Loadable(lazy(() => import('../views/pages/Admin/Transfer/ManageTransfer')));
-const OrderTransfer = Loadable(lazy(() => import('../views/pages/Admin/Transfer/OrderTransfer')));
+const CheckOrderTransfer = Loadable(lazy(() => import('../views/pages/Admin/Transfer/CheckOrderTransfer')));
 const ApproveOrderTransfer = Loadable(
   lazy(() => import('../views/pages/Admin/Transfer/ApproveOrderTransfer')),
 );
@@ -252,8 +252,8 @@ const Router = [
         element: <ManageTransfer />,
       },
       {
-        path: '/admin/manage/transfer/:_id',
-        element: <OrderTransfer />,
+        path: '/admin/manage/transfer/check/:_id',
+        element: <CheckOrderTransfer />,
       },
       {
         path: '/admin/manage/transfer/approve/:_id',

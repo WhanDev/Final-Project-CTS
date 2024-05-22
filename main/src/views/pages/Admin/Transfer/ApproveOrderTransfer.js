@@ -14,14 +14,7 @@ import {
   IconButton,
   Button,
 } from '@mui/material';
-import {
-  IconCircleCheck,
-  IconAlertCircle,
-  IconFile,
-  IconSearch,
-  IconTrash,
-  IconEdit,
-} from '@tabler/icons';
+import { IconCircleCheck, IconAlertCircle, IconFile, IconSearch, IconTrash } from '@tabler/icons';
 import Swal from 'sweetalert2';
 
 import PageContainer from '../../../../components/container/PageContainer';
@@ -35,6 +28,8 @@ import { read as readStudent } from '../../../../function/student';
 import { list as ListCurriculum } from '../../../../function/curriculum';
 import { listByStructure as AllSubject } from '../../../../function/subject';
 import { list as AllExtraSubject } from '../../../../function/extar-subject';
+import { list as AllAdmin } from '../../../../function/admin';
+import { currentUser } from '../../../../function/auth';
 
 const ApproveOrderTransfer = () => {
   const params = useParams();
@@ -42,12 +37,21 @@ const ApproveOrderTransfer = () => {
   const [transferList, setTransferList] = useState([]);
   const [transferOrder, setTransferOrder] = useState([]);
   const [hasChanges, setHasChanges] = useState(false);
+  const [checkByid, setCheckBy] = useState({});
+  const [checkMan, setCheckMan] = useState([]);
+
+  const loadAllAdmin = async () => {
+    AllAdmin()
+      .then((res) => setCheckMan(res.data))
+      .catch((err) => console.log(err));
+  };
 
   const loadTransferRead = async (id) => {
     TransferRead(id)
       .then((res) => {
         setTransferList(res.data.transferList);
         setTransferOrder(res.data.readTransferOrder);
+        setCheckBy(res.data.readTransfer.checkBy);
       })
       .catch((err) => console.log(err));
   };
@@ -113,6 +117,7 @@ const ApproveOrderTransfer = () => {
     loadReadStudent(params._id);
     loadListCurriculum();
     loadAllExtraSubject();
+    loadAllAdmin();
   }, [params._id]);
 
   useEffect(() => {
@@ -202,6 +207,21 @@ const ApproveOrderTransfer = () => {
   };
 
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  const [user, setUser] = useState({});
+
+  const checkUser = async () => {
+    try {
+      const res = await currentUser(token);
+      setUser(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+  }, []);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -233,6 +253,10 @@ const ApproveOrderTransfer = () => {
       unsuccess: NewUnSuccess.flat(),
     };
 
+    const approveBy = {
+      approveBy: user._id,
+    };
+
     Swal.fire({
       title: 'ต้องการบันทึกข้อมูลและยืนยันการเทียบโอนเบื้องต้นใช่หรือไม่?',
       icon: 'warning',
@@ -245,12 +269,11 @@ const ApproveOrderTransfer = () => {
       if (result.isConfirmed) {
         try {
           await TransferUpdate(params._id, updatedData);
-          await TransferConfirmPath2(params._id);
+          await TransferConfirmPath2(params._id, approveBy);
           Swal.fire({
             icon: 'success',
             title: 'บันทึกข้อมูลสำเร็จ',
           });
-          navigate(-1);
         } catch (error) {
           Swal.fire({
             icon: 'error',
@@ -306,6 +329,9 @@ const ApproveOrderTransfer = () => {
   };
 
   const handleConfirm = () => {
+    const approveBy = {
+      approveBy: user._id,
+    };
     Swal.fire({
       title: 'ต้องการยืนยันการเทียบโอนนี้ใช่หรือไม่?',
       icon: 'warning',
@@ -317,7 +343,7 @@ const ApproveOrderTransfer = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await TransferConfirmPath2(params._id);
+          await TransferConfirmPath2(params._id, approveBy);
           Swal.fire({
             icon: 'success',
             title: 'ยืนยันการเทียบโอนสำเร็จ',
@@ -381,10 +407,48 @@ const ApproveOrderTransfer = () => {
 
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>การเทียบโอน</CustomFormLabel>
-            <Typography color={'orange'}>{student.status || ''}</Typography>
+            <Typography color={'red'}>{student.status || ''}</Typography>
           </Grid>
         </Grid>
       </ParentCard>
+
+      <Box marginY={3} />
+      <ParentCard
+        title={
+          <Stack direction="row" alignItems="center">
+            <Typography variant="h5">ข้อมูลผู้ตรวจสอบเบื้องต้น</Typography>
+          </Stack>
+        }
+      >
+        <Grid container>
+          {checkMan.map((checkMan) =>
+            checkMan._id === checkByid ? (
+              <React.Fragment key={checkMan._id}>
+                <Grid item xs={12} lg={6}>
+                  <CustomFormLabel>ชื่อนามสกุล</CustomFormLabel>
+                  <Typography>{checkMan.fullname || ''}</Typography>
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <CustomFormLabel>สังกัดหลักสูตร</CustomFormLabel>
+                  {allCurriculum.some((curriculum) => checkMan.curriculum === curriculum._id) ? (
+                    allCurriculum.map((curriculum) =>
+                      checkMan.curriculum === curriculum._id ? (
+                        <Typography key={curriculum._id}>
+                          {curriculum.name || ''} ปี พ.ศ {curriculum.year || ''} (
+                          {curriculum.level || ''} {curriculum.time || ''} ปี)
+                        </Typography>
+                      ) : null,
+                    )
+                  ) : (
+                    <Typography>ไม่สังกัดหลักสูตร</Typography>
+                  )}
+                </Grid>
+              </React.Fragment>
+            ) : null,
+          )}
+        </Grid>
+      </ParentCard>
+
       <Box marginY={3} />
       <ParentCard
         title={
@@ -411,6 +475,7 @@ const ApproveOrderTransfer = () => {
           </Grid>
         </Grid>
       </ParentCard>
+
       <Box marginY={3} />
       <ParentCard
         title={
@@ -583,6 +648,7 @@ const ApproveOrderTransfer = () => {
           </Stack>
         </Grid>
       </ParentCard>
+
       <Box marginY={3} />
       <ParentCard
         title={
