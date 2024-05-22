@@ -788,6 +788,309 @@ exports.generatePdfPath2 = async (req, res) => {
     })
       .select("success")
       .exec();
+
+
+    const SubjectSuccess = transferList.flatMap((item) =>
+      item.success.map((successItem) => successItem)
+    );
+
+    const structure_id = "CS-" + dataStudent.curriculum;
+
+    const AllStructure = await Structure.find({ structure_id: structure_id })
+      .select("sort group_id group_name")
+      .exec();
+
+    const AllSubject = await Subject.find({ structure_id: structure_id })
+      .select("group_id subject_id subject_nameTh subject_nameEn total_credits")
+      .exec();
+
+    let SubjectSuccessInAllSubject = [];
+
+    AllSubject.forEach((subject) => {
+      SubjectSuccess.map((item) => {
+        if (item.subject_id === subject.subject_id) {
+          SubjectSuccessInAllSubject.push({
+            group_id: subject.group_id,
+            subject_id: item.subject_id,
+            subject_nameTh: subject.subject_nameTh,
+            subject_nameEn: subject.subject_nameEn,
+            total_credits: subject.total_credits,
+            extraSubject: item.extraSubject,
+          });
+        }
+      });
+    });
+
+    let SubjectSuccessInAllStructure = [];
+
+    AllStructure.forEach((structure) => {
+      const structureData = {
+        sort: structure.sort,
+        group_id: structure.group_id,
+        group_name: structure.group_name,
+        subjects: [],
+      };
+
+      SubjectSuccessInAllSubject.forEach((subject) => {
+        if (subject.group_id === structure.group_id) {
+          structureData.subjects.push(subject);
+        }
+      });
+
+      SubjectSuccessInAllStructure.push(structureData);
+    });
+
+    const sortedOrder = [
+      "1. หมวดวิชาศึกษาทั่วไป",
+      "2. หมวดวิชาเฉพาะ",
+      "3. หมวดวิชาเลือกเสรี",
+    ];
+
+    SubjectSuccessInAllStructure.sort((a, b) => {
+      const orderA = sortedOrder.indexOf(a.sort);
+      const orderB = sortedOrder.indexOf(b.sort);
+      return orderA - orderB;
+    });
+
+    SubjectSuccessInAllStructure.sort((a, b) => {
+      const orderA = sortedOrder.indexOf(a.group_id);
+      const orderB = sortedOrder.indexOf(b.group_id);
+      return orderA - orderB;
+    });
+
+    console.log(SubjectSuccessInAllStructure);
+
+    const H1 = [
+      {
+        text: "", // แทนที่เซลล์ที่ว่างด้วยเซลล์เปล่า
+        border: [true, true, true, false],
+      },
+      {
+        text: "รายวิชาที่นำมาเทียบโอน",
+        fontSize: 11,
+        colSpan: 5, // ใช้ colSpan: 4 เพื่อรวม 4 เซลล์
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [true, true, true, true],
+        margin: [0, 0, 0, 0],
+      },
+      {},
+      {},
+      {},
+      {},
+      {
+        text: "", // แทนที่เซลล์ที่ว่างด้วยเซลล์เปล่า
+        border: [true, true, true, false],
+      },
+      {
+        text: "รายวิชาที่นำมาเทียบโอน",
+        fontSize: 11,
+        colSpan: 5, // ใช้ colSpan: 4 เพื่อรวม 4 เซลล์
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [true, true, true, true],
+        margin: [0, 0, 0, 0],
+      },
+      {},
+      {},
+      {},
+      {},
+      {
+        text: "ผลการพิจารณา(√)",
+        fontSize: 11,
+        colSpan: 2,
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [true, true, true, true],
+        margin: [0, 0, 0, 0],
+      },
+      {},
+    ];
+    const H2 = [
+      {
+        text: "ที่",
+        fontSize: 11,
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [true, false, true, false],
+        margin: [0, 15, 0, 0],
+      },
+      {
+        text: "รหัสวิชา",
+        fontSize: 11,
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [false, false, true, false],
+        margin: [0, 8, 0, 0],
+      },
+      {
+        text: "ชื่อวิชา",
+        fontSize: 11,
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [false, false, true, false],
+        margin: [0, 8, 0, 0],
+      },
+      {
+        text: "หน่วยกิต",
+        fontSize: 11,
+        colSpan: 3,
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [false, false, true, true],
+        margin: [0, 8, 0, 0],
+      },
+      {},
+      {},
+      {
+        text: "เกรด",
+        alignment: "center",
+        rowSpan: 2,
+        border: [true, false, true, true],
+        margin: [0, -13, 0, 0],
+        stack: ["เ", "ก", "ร", "ด"].map((char) => ({
+          text: char,
+          alignment: "center",
+        })),
+      },
+      {
+        text: "รหัสวิชา",
+        fontSize: 11,
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [false, false, true, false],
+        margin: [0, 8, 0, 0],
+      },
+      {
+        text: "ชื่อวิชา",
+        fontSize: 11,
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [false, false, true, false],
+        margin: [0, 8, 0, 0],
+      },
+      {
+        text: "หน่วยกิต",
+        fontSize: 11,
+        colSpan: 3,
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [false, false, true, true],
+        margin: [0, 4, 0, 0],
+      },
+      {},
+      {},
+      {
+        text: "เทียบได้",
+        alignment: "center",
+        rowSpan: 2,
+        border: [true, false, true, true],
+        margin: [0, 0, 0, 0],
+      },
+      {
+        text: "การบันทึกผล",
+        alignment: "center",
+        rowSpan: 2,
+        border: [true, false, true, true],
+        margin: [0, 0, 0, 0],
+      },
+    ];
+
+    const H3 = [
+      {
+        text: "",
+        border: [true, false, true, true],
+      },
+      {
+        text: "",
+        border: [false, false, true, true],
+        margin: [0, 2, 0, 4],
+      },
+      {
+        text: "",
+        border: [false, false, true, true],
+        margin: [0, 2, 0, 0],
+      },
+      {
+        text: "ท.",
+        fontSize: 11,
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [false, false, true, true],
+        margin: [0, 2, 0, 0],
+      },
+      {
+        text: "ป.",
+        fontSize: 11,
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [false, false, true, true],
+        margin: [0, 2, 0, 0],
+      },
+      {
+        text: "ร.",
+        fontSize: 11,
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [false, false, true, true],
+        margin: [0, 2, 0, 0],
+      },
+      {},
+      {
+        text: "",
+        border: [false, false, true, true],
+        margin: [0, 2, 0, 4],
+      },
+      {
+        text: "",
+        border: [false, false, true, true],
+        margin: [0, 2, 0, 0],
+      },
+      {
+        text: "ท.",
+        fontSize: 11,
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [false, false, true, true],
+        margin: [0, 2, 0, 0],
+      },
+      {
+        text: "ป.",
+        fontSize: 11,
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [false, false, true, true],
+        margin: [0, 2, 0, 0],
+      },
+      {
+        text: "ร.",
+        fontSize: 11,
+        alignment: "center",
+        font: "THSarabunNew",
+        border: [false, false, true, true],
+        margin: [0, 2, 0, 0],
+      },
+      {},
+      {},
+    ];
+
+    const Sort = [];
+
+    SubjectSuccessInAllStructure.forEach((item) => {
+      Sort.push(
+        [
+          {
+            text: item.sort + " (" + item.group_name + ") ",
+            border: [true, true, true, true],
+            margin: [10, 2, 0, 0],
+            bold: true,
+            fontSize: 11,
+            colSpan: 14,
+          }
+        ],
+      )
+    });
+
     const documentDefinition = {
       pageMargins: [40, 90, 40, 150],
       header: function (currentPage, pageCount) {
@@ -886,580 +1189,9 @@ exports.generatePdfPath2 = async (req, res) => {
               "10%",
               "10%",
             ],
-            body: [
-              [
-                {
-                  text: "", // แทนที่เซลล์ที่ว่างด้วยเซลล์เปล่า
-                  border: [true, true, true, false],
-                },
-                {
-                  text: "รายวิชาที่นำมาเทียบโอน",
-                  fontSize: 11,
-                  colSpan: 5, // ใช้ colSpan: 4 เพื่อรวม 4 เซลล์
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [true, true, true, true],
-                  margin: [0, 0, 0, 0],
-                },
-                {},
-                {},
-                {},
-                {},
-                {
-                  text: "", // แทนที่เซลล์ที่ว่างด้วยเซลล์เปล่า
-                  border: [true, true, true, false],
-                },
-                {
-                  text: "รายวิชาที่นำมาเทียบโอน",
-                  fontSize: 11,
-                  colSpan: 5, // ใช้ colSpan: 4 เพื่อรวม 4 เซลล์
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [true, true, true, true],
-                  margin: [0, 0, 0, 0],
-                },
-                {},
-                {},
-                {},
-                {},
-                {
-                  text: "ผลการพิจารณา(√)",
-                  fontSize: 11,
-                  colSpan: 2,
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [true, true, true, true],
-                  margin: [0, 0, 0, 0],
-                },
-                {},
-              ],
-              [
-                {
-                  text: "ที่",
-                  fontSize: 11,
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [true, false, true, false],
-                  margin: [0, 15, 0, 0],
-                },
-                {
-                  text: "รหัสวิชา",
-                  fontSize: 11,
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [false, false, true, false],
-                  margin: [0, 8, 0, 0],
-                },
-                {
-                  text: "ชื่อวิชา",
-                  fontSize: 11,
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [false, false, true, false],
-                  margin: [0, 8, 0, 0],
-                },
-                {
-                  text: "หน่วยกิต",
-                  fontSize: 11,
-                  colSpan: 3,
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [false, false, true, true],
-                  margin: [0, 8, 0, 0],
-                },
-                {},
-                {},
-                {
-                  text: "เกรด",
-                  alignment: "center",
-                  rowSpan: 2,
-                  border: [true, false, true, true],
-                  margin: [0, -13, 0, 0],
-                  stack: ["เ", "ก", "ร", "ด"].map((char) => ({
-                    text: char,
-                    alignment: "center",
-                  })),
-                },
-                {
-                  text: "รหัสวิชา",
-                  fontSize: 11,
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [false, false, true, false],
-                  margin: [0, 8, 0, 0],
-                },
-                {
-                  text: "ชื่อวิชา",
-                  fontSize: 11,
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [false, false, true, false],
-                  margin: [0, 8, 0, 0],
-                },
-                {
-                  text: "หน่วยกิต",
-                  fontSize: 11,
-                  colSpan: 3,
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [false, false, true, true],
-                  margin: [0, 4, 0, 0],
-                },
-                {},
-                {},
-                {
-                  text: "เทียบได้",
-                  alignment: "center",
-                  rowSpan: 2,
-                  border: [true, false, true, true],
-                  margin: [0, 0, 0, 0],
-                },
-                {
-                  text: "การบันทึกผล",
-                  alignment: "center",
-                  rowSpan: 2,
-                  border: [true, false, true, true],
-                  margin: [0, 0, 0, 0],
-                },
-              ],
-              [
-                {
-                  text: "",
-                  border: [true, false, true, true],
-                },
-                {
-                  text: "",
-                  border: [false, false, true, true],
-                  margin: [0, 2, 0, 4],
-                },
-                {
-                  text: "",
-                  border: [false, false, true, true],
-                  margin: [0, 2, 0, 0],
-                },
-                {
-                  text: "ท.",
-                  fontSize: 11,
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [false, false, true, true],
-                  margin: [0, 2, 0, 0],
-                },
-                {
-                  text: "ป.",
-                  fontSize: 11,
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [false, false, true, true],
-                  margin: [0, 2, 0, 0],
-                },
-                {
-                  text: "ร.",
-                  fontSize: 11,
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [false, false, true, true],
-                  margin: [0, 2, 0, 0],
-                },
-                {},
-                {
-                  text: "",
-                  border: [false, false, true, true],
-                  margin: [0, 2, 0, 4],
-                },
-                {
-                  text: "",
-                  border: [false, false, true, true],
-                  margin: [0, 2, 0, 0],
-                },
-                {
-                  text: "ท.",
-                  fontSize: 11,
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [false, false, true, true],
-                  margin: [0, 2, 0, 0],
-                },
-                {
-                  text: "ป.",
-                  fontSize: 11,
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [false, false, true, true],
-                  margin: [0, 2, 0, 0],
-                },
-                {
-                  text: "ร.",
-                  fontSize: 11,
-                  alignment: "center",
-                  font: "THSarabunNew",
-                  border: [false, false, true, true],
-                  margin: [0, 2, 0, 0],
-                },
-                {},
-                {},
-              ],
-              [
-                {
-                  text: "หมวดวิชาศึกษาทั่วไป ( กลุ่มวิชาสังคมศาสตร์ )",
-                  border: [true, true, true, true],
-                  margin: [10, 2, 0, 0],
-                  bold: true,
-                  fontSize: 11,
-                  colSpan: 14,
-                },
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-              ],
-              [
-                {
-                  text: "i",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "ID",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "{{$subjectName}}",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "t",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "p",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "r",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "g",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "ID",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "{{$subjectName}}",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "t",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "p",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "r",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "/",
-                  border: [true, true, true, true],
-                  margin: [2, 0, 0, 0],
-                  alignment: "center",
-                  fontSize: 14,
-                },
-                {},
-              ],
-              
-              [
-                {
-                  text: "",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "รวม",
-                  border: [true, true, true, true],
-                  alignment: "center",
-                  colSpan: 2,
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {},
-                {
-                  text: "t",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "p",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "r",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "g",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "รวม",
-                  border: [true, true, true, true],
-                  alignment: "center",
-                  colSpan: 2,
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {},
-                {
-                  text: "t",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "p",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "r",
-                  border: [true, true, true, true],
-                  margin: [2, 2, 0, 0],
-                  fontSize: 11,
-                },
-                {
-                  text: "",
-                  border: [true, true, true, true],
-                  margin: [2, 0, 0, 0],
-                  alignment: "center",
-                  fontSize: 14,
-                },
-                {},
-              ],
-            ],
+            body: Sort,
           },
           margin: [-30, 8, 0, 0],
-        },
-        {
-          table: {
-            widths: ["*", "*", "*","*"],
-            body: [
-              [
-                {
-                  text: "ลงชื่อ ........................................................... กรรมการการทเทียบโอน",
-                  margin: [2, 30, 0, 0],
-                  colSpan: 2,
-                  alignment: "center",
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-                {
-                  text: "ลงชื่อ ........................................................... กรรมการการทเทียบโอน",
-                  margin: [20, 30, 0, 0],
-                  colSpan: 2,
-                  alignment: "center",
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-              ],
-              [
-                {
-                  text: "(                                              )",
-                  margin: [35, 1, 0, 0],
-                  colSpan: 2,
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-                {
-                  text: "(                                               )",
-                  margin: [45, 1, 0, 0],
-                  colSpan: 2,
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-              ],
-              [
-                {
-                  text: "วันที่ ...........................................................................",
-                  margin: [20, 1, 0, 0],
-                  colSpan: 2,
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-                {
-                  text: "วันที่ ............................................................................",
-                  margin: [30, 1, 0, 0],
-                  colSpan: 2,
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-              ],
-              [
-                {
-                  text: "ลงชื่อ ........................................................... กรรมการการทเทียบโอน",
-                  margin: [2, 10, 0, 0],
-                  colSpan: 2,
-                  alignment: "center",
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-                {
-                  text: "ลงชื่อ ........................................................... กรรมการการทเทียบโอน",
-                  margin: [20, 10, 0, 0],
-                  colSpan: 2,
-                  alignment: "center",
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-              ],
-              [
-                {
-                  text: "(                                              )",
-                  margin: [35, 1, 0, 0],
-                  colSpan: 2,
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-                {
-                  text: "(                                               )",
-                  margin: [45, 1, 0, 0],
-                  colSpan: 2,
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-              ],
-              [
-                {
-                  text: "วันที่ ...........................................................................",
-                  margin: [20, 1, 0, 0],
-                  colSpan: 2,
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-                {
-                  text: "วันที่ ............................................................................",
-                  margin: [30, 1, 0, 0],
-                  colSpan: 2,
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-              ],
-              [
-                {
-                  text: "ลงชื่อ ........................................................... กรรมการการทเทียบโอน",
-                  margin: [2, 10, 0, 0],
-                  colSpan: 2,
-                  alignment: "center",
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-                {
-                  text: "ลงชื่อ ........................................................... คณบดี",
-                  margin: [20, 10, 0, 0],
-                  colSpan: 2,
-                  alignment: "center",
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-              ],
-              [
-                {
-                  text: "(                                              )",
-                  margin: [35, 1, 0, 0],
-                  colSpan: 2,
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-                {
-                  text: "(                                               )",
-                  margin: [65, 1, 0, 0],
-                  colSpan: 2,
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-              ],
-              [
-                {
-                  text: "วันที่ ...........................................................................",
-                  margin: [20, 1, 0, 0],
-                  colSpan: 2,
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-                {
-                  text: "วันที่ ............................................................................",
-                  margin: [50, 1, 0, 0],
-                  colSpan: 2,
-                  border: [false, false, false, false],
-                  fontSize: 11,
-                },
-                {},
-              ],
-              
-            ],
-          },
         },
       ],
       defaultStyle: {
