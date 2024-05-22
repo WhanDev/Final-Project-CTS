@@ -9,7 +9,7 @@ const Mached = () => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      navigate(-1);
+      navigate('/student/index');
     }, 1500);
 
     return () => clearTimeout(timeout);

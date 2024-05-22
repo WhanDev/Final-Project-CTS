@@ -145,7 +145,7 @@ const Mach = () => {
             icon: 'success',
             title: 'บันทึกข้อมูลสำเร็จ',
           });
-          navigate('/student/transfer');
+          navigate('/student/index');
         } catch (error) {
           Swal.fire({
             icon: 'error',

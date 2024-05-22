@@ -6,7 +6,7 @@ const {
 } = require("../Controllers/Contr_Report");
 
 //http://localhost:5000/api/reportPath
-router.get("/reportPath1/:_id", generatePdfPath1);
+router.get("/reportPath1", generatePdfPath1);
 router.get("/reportPath2", generatePdfPath2);
 
 module.exports = router;
