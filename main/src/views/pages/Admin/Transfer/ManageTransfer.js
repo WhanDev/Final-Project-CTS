@@ -51,9 +51,14 @@ const ManageTransfer = () => {
       .catch((err) => console.log(err));
   };
 
-  const [selectedCurriculum, setSelectedCurriculum] = useState([]);
+  const [selectedCurriculum, setSelectedCurriculum] = useState(null);
   const handleCurriculumChange = (event, value) => {
     setSelectedCurriculum(value);
+  };
+
+  const [selectedStatus, setSelectedStatus] = useState(null);
+  const handleStatus = (event, value) => {
+    setSelectedStatus(value.value);
   };
 
   useEffect(() => {
@@ -70,11 +75,6 @@ const ManageTransfer = () => {
     },
     { label: 'อนุมัติการเทียบโอนเสร็จสิ้น', value: 'อนุมัติการเทียบโอนเสร็จสิ้น' },
   ];
-
-  const [selectedStatus, setSelectedStatus] = useState([]);
-  const handleStatus = (event, value) => {
-    setSelectedStatus(value.value);
-  };
 
   return (
     <PageContainer title="จัดการข้อมูลเทียบโอน" description="จัดการข้อมูลเทียบโอน">
@@ -131,13 +131,13 @@ const ManageTransfer = () => {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    placeholder="กรอกรหัสหลักสูตร/ชื่อหลักสูตร"
+                    placeholder="กรอกสถานะเทียบโอน"
                     variant="outlined"
                     fullWidth
                   />
                 )}
                 onChange={handleStatus}
-                value={selectedStatus}
+                value={Status.find(status => status.value === selectedStatus) || null}
                 sx={{ mr: 1 }}
               />
             </Stack>
@@ -165,75 +165,81 @@ const ManageTransfer = () => {
                     <TableCell align="center">
                       <Typography variant="h6">สาขาวิชา</Typography>
                     </TableCell>
-
                     <TableCell align="center">
                       <Typography variant="h6">เพิ่มเติม</Typography>
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {selectedCurriculum.value !== undefined &&
-                    selectedCurriculum.value !== null &&
-                    (transfer.length > 0 ? (
+                  {selectedCurriculum && selectedStatus ? (
+                    transfer.length > 0 ? (
                       transfer.map((item, index) => (
                         <TableRow key={index} hover>
-                          {item.result === selectedStatus && (
-                            <React.Fragment>
-                              {allStudent.filter(
+                          {item.result === selectedStatus &&
+                            allStudent
+                              .filter(
                                 (student) =>
                                   student._id === item._id &&
-                                  student.curriculum === selectedCurriculum.value,
-                              ).length > 0 ? (
-                                allStudent.map((student) =>
-                                  student._id === item._id &&
-                                  student.curriculum === selectedCurriculum.value ? (
-                                    <React.Fragment key={student._id}>
-                                      <TableCell align="center">{student._id}</TableCell>
-                                      <TableCell align="center">{student.fullname}</TableCell>
-                                      <TableCell align="center">{student.institution}</TableCell>
-                                      <TableCell align="center">{student.branch}</TableCell>
-                                      <TableCell align="center">
-                                        {selectedStatus ===
-                                        'รอการอนุมัติเทียบโอนผลการเรียน' ? (
-                                          <IconButton
-                                            component={Link}
-                                            to={`/admin/manage/transfer/${item._id}`}
-                                            color="warning"
-                                          >
-                                            <IconFileDescription size="18" />
-                                          </IconButton>
-                                        ) : selectedStatus ===
-                                          'รอการอนุมัติ โดยอาจารย์ประจำหลักสูตร' ? (
-                                          <IconButton
-                                            component={Link}
-                                            to={`/admin/manage/transfer/approve/${item._id}`}
-                                            color="primary"
-                                          >
-                                            <IconFileDescription size="18" />
-                                          </IconButton>
-                                        ) : (
-                                          <Typography>ไม่มีการดำเนินการเพิ่มเติม</Typography>
-                                        )}
-                                      </TableCell>
-                                    </React.Fragment>
-                                  ) : null,
-                                )
-                              ) : (
-                                <TableCell align="center" colSpan={5}>
-                                  <Typography>
-                                    ไม่มีข้อมูลนักศึกษาที่ทำการเทียบโอนในหลักสูตรนี้
-                                  </Typography>
-                                </TableCell>
-                              )}
-                            </React.Fragment>
-                          )}
+                                  student.curriculum === selectedCurriculum.value
+                              )
+                              .map((student) => (
+                                <React.Fragment key={student._id}>
+                                  <TableCell align="center">{student._id}</TableCell>
+                                  <TableCell align="center">{student.fullname}</TableCell>
+                                  <TableCell align="center">{student.institution}</TableCell>
+                                  <TableCell align="center">{student.branch}</TableCell>
+                                  <TableCell align="center">
+                                    {selectedStatus === 'รอการอนุมัติเทียบโอนผลการเรียน' ? (
+                                      <IconButton
+                                        component={Link}
+                                        to={`/admin/manage/transfer/${item._id}`}
+                                        color="warning"
+                                      >
+                                        <IconFileDescription size="18" />
+                                      </IconButton>
+                                    ) : selectedStatus ===
+                                      'รอการอนุมัติ โดยอาจารย์ประจำหลักสูตร' ? (
+                                      <IconButton
+                                        component={Link}
+                                        to={`/admin/manage/transfer/approve/${item._id}`}
+                                        color="primary"
+                                      >
+                                        <IconFileDescription size="18" />
+                                      </IconButton>
+                                    ) : (
+                                      <IconButton
+                                        component={Link}
+                                        to={`/admin/manage/transfer/confirm/${item._id}`}
+                                        color="success"
+                                      >
+                                        <IconFileDescription size="18" />
+                                      </IconButton>
+                                    )}
+                                  </TableCell>
+                                </React.Fragment>
+                              ))}
                         </TableRow>
                       ))
                     ) : (
+                      <TableRow>
+                        <TableCell align="center" colSpan={5}>
+                          <Typography>ไม่มีข้อมูลนักศึกษาที่ทำการเทียบโอน</Typography>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  ) : (
+                    <TableRow>
                       <TableCell align="center" colSpan={5}>
-                        <Typography>ไม่มีข้อมูลนักศึกษาที่ทำการเทียบโอน</Typography>
+                        <Typography>
+                          {selectedCurriculum
+                            ? 'กรุณาเลือกสถานะเทียบโอน'
+                            : selectedStatus
+                            ? 'กรุณาเลือกหลักสูตร'
+                            : 'กรุณาเลือกหลักสูตรและสถานะเทียบโอน'}
+                        </Typography>
                       </TableCell>
-                    ))}
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>

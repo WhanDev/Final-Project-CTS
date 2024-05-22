@@ -126,7 +126,6 @@ const DialogAdd = ({ onAddSuccess }) => {
       note: 'เพิ่มโดยเจ้าหน้าที่ ผู้ดูแลระบบ',
     };
 
-    console.log(success);
     onAddSuccess(success);
     setOpen(false);
   };

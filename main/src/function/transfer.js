@@ -20,3 +20,6 @@ export const TransferUpdate = async (id, data) =>
 
 export const TransferConfirmPath1 = async (id) =>
   await axios.post(process.env.REACT_APP_API + '/transfer/stutusPath1/' + id);
+
+export const TransferConfirmPath2 = async (id) =>
+  await axios.post(process.env.REACT_APP_API + '/transfer/stutusPath2/' + id);

@@ -58,9 +58,6 @@ const ManageMachSubject = Loadable(
 const ListMachSubject = Loadable(
   lazy(() => import('../views/pages/Admin/MachSubject/ListMachSubject')),
 );
-const AddMachSubject = Loadable(
-  lazy(() => import('../views/pages/Admin/MachSubject/AddMachSubject')),
-);
 const AddMachSubjectList = Loadable(
   lazy(() => import('../views/pages/Admin/MachSubject/AddMachSubjectList')),
 );
@@ -71,6 +68,9 @@ const ManageTransfer = Loadable(lazy(() => import('../views/pages/Admin/Transfer
 const OrderTransfer = Loadable(lazy(() => import('../views/pages/Admin/Transfer/OrderTransfer')));
 const ApproveOrderTransfer = Loadable(
   lazy(() => import('../views/pages/Admin/Transfer/ApproveOrderTransfer')),
+);
+const ConfirmOrderTransfer = Loadable(
+  lazy(() => import('../views/pages/Admin/Transfer/ConfirmOrderTransfer')),
 );
 
 const ManageReport = Loadable(lazy(() => import('../views/pages/Admin/Report/ManageReport')));
@@ -258,6 +258,10 @@ const Router = [
       {
         path: '/admin/manage/transfer/approve/:_id',
         element: <ApproveOrderTransfer />,
+      },
+      {
+        path: '/admin/manage/transfer/confirm/:_id',
+        element: <ConfirmOrderTransfer />,
       },
       //รายงาน
       {

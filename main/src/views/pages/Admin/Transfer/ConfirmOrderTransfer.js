@@ -36,12 +36,13 @@ import { list as ListCurriculum } from '../../../../function/curriculum';
 import { listByStructure as AllSubject } from '../../../../function/subject';
 import { list as AllExtraSubject } from '../../../../function/extar-subject';
 
-const ApproveOrderTransfer = () => {
+import axios from 'axios';
+
+const ConfirmOrderTransfer = () => {
   const params = useParams();
 
   const [transferList, setTransferList] = useState([]);
   const [transferOrder, setTransferOrder] = useState([]);
-  const [hasChanges, setHasChanges] = useState(false);
 
   const loadTransferRead = async (id) => {
     TransferRead(id)
@@ -127,7 +128,7 @@ const ApproveOrderTransfer = () => {
     window.open(pdfURL, '_blank'); // เปิด URL ในแท็บใหม่
   };
 
-  const handleDeleteSuccess = (listIndex, successIndex) => {
+  const handleDelete = (listIndex, successIndex) => {
     Swal.fire({
       title: 'ต้องการลบรายการนี้ใช่หรือไม่?',
       icon: 'warning',
@@ -151,7 +152,6 @@ const ApproveOrderTransfer = () => {
             });
             return updatedTransferList;
           });
-          setHasChanges(true);
         } catch (error) {
           Swal.fire({
             icon: 'error',
@@ -162,43 +162,6 @@ const ApproveOrderTransfer = () => {
         }
       }
     });
-  };
-
-  const handleDeleteUnSuccess = (listIndex, unsuccessIndex) => {
-    Swal.fire({
-      title: 'ต้องการลบรายการนี้ใช่หรือไม่?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'ยืนยัน',
-      cancelButtonText: 'ยกเลิก',
-    })
-      .then((result) => {
-        if (result.isConfirmed) {
-          setTransferList((prevTransferList) => {
-            const updatedTransferList = [...prevTransferList];
-            updatedTransferList[listIndex].unsuccess.splice(unsuccessIndex, 1);
-            return updatedTransferList;
-          });
-          setHasChanges(true);
-
-          Swal.fire({
-            icon: 'success',
-            title: 'ลบรายการสำเร็จ',
-            timer: 1500,
-            showConfirmButton: false,
-          });
-        }
-      })
-      .catch((error) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'ลบรายการข้อมูลไม่สำเร็จ',
-          text: error.response ? error.response.data : 'An error occurred',
-        });
-        console.error('เกิดข้อผิดพลาดในการลบรายการข้อมูล:', error);
-      });
   };
 
   const navigate = useNavigate();
@@ -234,7 +197,7 @@ const ApproveOrderTransfer = () => {
     };
 
     Swal.fire({
-      title: 'ต้องการบันทึกข้อมูลและยืนยันการเทียบโอนเบื้องต้นใช่หรือไม่?',
+      title: 'ต้องการบันทึกข้อมูลนี้ใช่หรือไม่?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -245,7 +208,6 @@ const ApproveOrderTransfer = () => {
       if (result.isConfirmed) {
         try {
           await TransferUpdate(params._id, updatedData);
-          await TransferConfirmPath2(params._id);
           Swal.fire({
             icon: 'success',
             title: 'บันทึกข้อมูลสำเร็จ',
@@ -264,44 +226,18 @@ const ApproveOrderTransfer = () => {
   };
 
   const handleAddSuccess = (newSuccessItem) => {
-    Swal.fire({
-      title: 'ยืนยันการเทียบโอนเพิ่มเติมใช่หรือไม่?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'ยืนยัน',
-      cancelButtonText: 'ยกเลิก',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          setTransferList((prevTransferList) => {
-            const updatedTransferList = [...prevTransferList];
-            updatedTransferList[0].success.push(newSuccessItem);
+    setTransferList((prevTransferList) => {
+      const updatedTransferList = [...prevTransferList];
+      updatedTransferList[0].success.push(newSuccessItem);
 
-            const extra = newSuccessItem.extraSubject;
+      const extra = newSuccessItem.extraSubject;
 
-            updatedTransferList[0].unsuccess = updatedTransferList[0].unsuccess.filter(
-              (unsuccessItem) =>
-                !extra.some((extraSubject) => extraSubject.id === unsuccessItem.extraSubject),
-            );
+      updatedTransferList[0].unsuccess = updatedTransferList[0].unsuccess.filter(
+        (unsuccessItem) =>
+          !extra.some((extraSubject) => extraSubject.id === unsuccessItem.extraSubject),
+      );
 
-            return updatedTransferList;
-          });
-          setHasChanges(true);
-          Swal.fire({
-            icon: 'success',
-            title: 'ยืนยันการเทียบโอนเพิ่มเติมสำเร็จ',
-          });
-        } catch (error) {
-          Swal.fire({
-            icon: 'error',
-            title: 'ยืนยันการเทียบโอนเพิ่มเติมไม่สำเร็จ',
-            text: error.response ? error.response.data : 'An error occurred',
-          });
-          console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);
-        }
-      }
+      return updatedTransferList;
     });
   };
 
@@ -335,16 +271,39 @@ const ApproveOrderTransfer = () => {
     });
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleGeneratePdfPath1 = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get('http://localhost:5000/api/reportPath1/' + params._id, {
+        responseType: 'blob',
+      });
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+
+      // const fileName = 'ส่วนที่ 1 ใบคำร้องขอเทียบโอนผลการเรียน.pdf';
+
+      // const anchor = document.createElement('a');
+      // anchor.href = url;
+      // anchor.window.open = fileName;
+      // anchor.click();
+      // window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleBack = () => {
     navigate(-1);
   };
 
   return (
-    <PageContainer
-      title="ข้อมูลเทียบโอนผลการเรียนเบื้องต้น"
-      description="ข้อมูลเทียบโอนผลการเรียนเบื้องต้น"
-    >
-      <Breadcrumb title="ข้อมูลเทียบโอนผลการเรียนเบื้องต้น" />
+    <PageContainer title="ข้อมูลเทียบโอนเบื้องต้น" description="ข้อมูลเทียบโอนเบื้องต้น">
+      <Breadcrumb title="ข้อมูลเทียบโอนเบื้องต้น" />
       <ParentCard title="ข้อมูลนักศึกษา">
         <Grid container>
           <Grid item xs={12} lg={6}>
@@ -381,7 +340,7 @@ const ApproveOrderTransfer = () => {
 
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>การเทียบโอน</CustomFormLabel>
-            <Typography color={'orange'}>{student.status || ''}</Typography>
+            <Typography color={'green'}>{student.status || ''}</Typography>
           </Grid>
         </Grid>
       </ParentCard>
@@ -389,7 +348,7 @@ const ApproveOrderTransfer = () => {
       <ParentCard
         title={
           <Stack direction="row" alignItems="center">
-            <Typography variant="h5">ใบรับรองการศึกษา</Typography>
+            <Typography variant="h5">ไฟล์ที่แนบมา</Typography>
             <IconButton>
               <IconFile width={20} color={'blue'} />
             </IconButton>
@@ -405,7 +364,7 @@ const ApproveOrderTransfer = () => {
                 endIcon={<IconSearch width={18} />}
                 onClick={handleViewPDF}
               >
-                ดูใบรับรองการศึกษา
+                ดูไฟล์ที่แนบมา
               </Button>
             </Stack>
           </Grid>
@@ -451,14 +410,11 @@ const ApproveOrderTransfer = () => {
                         <TableCell align="center" width={'30%'} sx={{ border: 0 }}>
                           <Typography variant="h6">รหัสวิชา</Typography>
                         </TableCell>
-                        <TableCell width={'45%'} sx={{ border: 0 }}>
+                        <TableCell width={'50%'} sx={{ border: 0 }}>
                           <Typography variant="h6">ชื่อวิชา</Typography>
                         </TableCell>
-                        <TableCell align="center" width={'15%'} sx={{ border: 0 }}>
+                        <TableCell align="center" width={'20%'} sx={{ border: 0 }}>
                           <Typography variant="h6">หน่วยกิต</Typography>
-                        </TableCell>
-                        <TableCell align="center" width={'15%'} sx={{ border: 0 }}>
-                          <Typography variant="h6">ลบ</Typography>
                         </TableCell>
                       </Stack>
                     </TableCell>
@@ -531,7 +487,7 @@ const ApproveOrderTransfer = () => {
                                 )
                                 .map((subjectItem) => (
                                   <React.Fragment key={subjectItem.subject_id}>
-                                    <TableCell width={'45%'} sx={{ borderBottom: 0 }}>
+                                    <TableCell width={'50%'} sx={{ borderBottom: 0 }}>
                                       <Typography>{subjectItem.subject_nameTh}</Typography>
                                       <Typography color={'green'}>
                                         ({subjectItem.subject_nameEn})
@@ -539,34 +495,17 @@ const ApproveOrderTransfer = () => {
                                     </TableCell>
                                     <TableCell
                                       align="center"
-                                      width={'15%'}
+                                      width={'20%'}
                                       sx={{ borderBottom: 0 }}
                                     >
                                       <Typography>{subjectItem.total_credits}</Typography>
                                     </TableCell>
                                   </React.Fragment>
                                 ))}
-                              <TableCell align="center" width={'15%'} sx={{ borderBottom: 0 }}>
-                                <IconButton
-                                  color={'error'}
-                                  onClick={() => handleDeleteSuccess(listIndex, successIndex)}
-                                >
-                                  <IconTrash width={25} />
-                                </IconButton>
-                              </TableCell>
                             </Stack>
                           </TableCell>
                         </TableRow>
                       ))}
-                      <TableRow>
-                        <TableCell colSpan={5} align="center">
-                          <Typography variant="normal" fontWeight={600} fontSize={20}>
-                            เทียบโอนเพิ่มเติม
-                          </Typography>
-                          {/* <DialogAdd /> */}
-                          <DialogAdd onAddSuccess={handleAddSuccess} />
-                        </TableCell>
-                      </TableRow>
                     </TableBody>
                   ))}
               </Table>
@@ -587,7 +526,7 @@ const ApproveOrderTransfer = () => {
       <ParentCard
         title={
           <Stack direction="row" alignItems="center">
-            <Typography variant="h5">รายวิชาจากใบ รบ. ของนักศึกษาที่เหลือ</Typography>
+            <Typography variant="h5">รายวิชาที่เหลือ</Typography>
             <IconButton>
               <IconAlertCircle width={20} color={'red'} />
             </IconButton>
@@ -612,21 +551,17 @@ const ApproveOrderTransfer = () => {
                     <TableCell align="center" width={'10%'}>
                       <Typography variant="h5">เกรด</Typography>
                     </TableCell>
-                    <TableCell align="center" width={'20%'}>
+                    <TableCell align="center" width={'30%'}>
                       <Typography variant="h5">หมายเหตุ</Typography>
-                    </TableCell>
-                    <TableCell align="center" width={'10%'}>
-                      <Typography variant="h5">ลบ</Typography>
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 {Array.isArray(transferList) &&
-                  transferList.map((list, listIndex) => (
+                  transferList.map((list) => (
                     <TableBody key={list._id}>
                       {list.unsuccess.length > 0 ? (
-                        list.unsuccess.map((unsuccessItem, unsuccessIndex) => (
+                        list.unsuccess.map((unsuccessItem) => (
                           <TableRow
-                            key={`${listIndex}-${unsuccessIndex}`}
                             sx={{
                               borderBottom: '0.5px solid #e6e6e6',
                               '&:hover': { backgroundColor: '#f0f0f0' },
@@ -655,23 +590,13 @@ const ApproveOrderTransfer = () => {
                                   <TableCell align="center" width={'30%'} sx={{ borderBottom: 0 }}>
                                     <Typography color={'red'}>{unsuccessItem.note}</Typography>
                                   </TableCell>
-                                  <TableCell align="center" width={'15%'} sx={{ borderBottom: 0 }}>
-                                    <IconButton
-                                      color={'error'}
-                                      onClick={() =>
-                                        handleDeleteUnSuccess(listIndex, unsuccessIndex)
-                                      }
-                                    >
-                                      <IconTrash width={25} />
-                                    </IconButton>
-                                  </TableCell>
                                 </React.Fragment>
                               ))}
                           </TableRow>
                         ))
                       ) : (
                         <TableRow>
-                          <TableCell colSpan={6} align="center">
+                          <TableCell colSpan={5} align="center">
                             <Typography align="center">
                               ไม่มีรายวิชาที่ไม่สามารถนำมาเทียบโอนได้
                             </Typography>
@@ -690,15 +615,12 @@ const ApproveOrderTransfer = () => {
       <Grid item xs={12} sm={12} lg={12}>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="end" mt={2}>
           <Stack spacing={1} direction="row">
-            {hasChanges ? (
-              <Button type="submit" variant="contained" color="success" onClick={handleSave}>
-                บันทึกการปรับปรุง
-              </Button>
-            ) : (
-              <Button type="submit" variant="contained" color="primary" onClick={handleConfirm}>
-                ยืนยันผลการเทียบโอนถูกต้อง
-              </Button>
-            )}
+            <Button variant="contained" color="primary" onClick={handleGeneratePdfPath1}>
+              ใบคำร้องขอเทียบโอนผลการเรียน ส่วนที่ 1
+            </Button>
+            <Button variant="contained" color="success">
+              ใบคำร้องขอเทียบโอนผลการเรียน ส่วนที่ 2
+            </Button>
             <Button variant="outlined" color="warning" onClick={handleBack}>
               ย้อนกลับ
             </Button>
@@ -709,4 +631,4 @@ const ApproveOrderTransfer = () => {
   );
 };
 
-export default ApproveOrderTransfer;
+export default ConfirmOrderTransfer;

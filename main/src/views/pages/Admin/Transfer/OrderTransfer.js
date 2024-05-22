@@ -41,6 +41,7 @@ const OrderTransfer = () => {
 
   const [transferList, setTransferList] = useState([]);
   const [transferOrder, setTransferOrder] = useState([]);
+  const [hasChanges, setHasChanges] = useState(false);
 
   const loadTransferRead = async (id) => {
     TransferRead(id)
@@ -126,7 +127,7 @@ const OrderTransfer = () => {
     window.open(pdfURL, '_blank'); // เปิด URL ในแท็บใหม่
   };
 
-  const handleDelete = (listIndex, successIndex) => {
+  const handleDeleteSuccess = (listIndex, successIndex) => {
     Swal.fire({
       title: 'ต้องการลบรายการนี้ใช่หรือไม่?',
       icon: 'warning',
@@ -150,6 +151,7 @@ const OrderTransfer = () => {
             });
             return updatedTransferList;
           });
+          setHasChanges(true);
         } catch (error) {
           Swal.fire({
             icon: 'error',
@@ -160,6 +162,43 @@ const OrderTransfer = () => {
         }
       }
     });
+  };
+
+  const handleDeleteUnSuccess = (listIndex, unsuccessIndex) => {
+    Swal.fire({
+      title: 'ต้องการลบรายการนี้ใช่หรือไม่?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ยืนยัน',
+      cancelButtonText: 'ยกเลิก',
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          setTransferList((prevTransferList) => {
+            const updatedTransferList = [...prevTransferList];
+            updatedTransferList[listIndex].unsuccess.splice(unsuccessIndex, 1);
+            return updatedTransferList;
+          });
+          setHasChanges(true);
+
+          Swal.fire({
+            icon: 'success',
+            title: 'ลบรายการสำเร็จ',
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        }
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'ลบรายการข้อมูลไม่สำเร็จ',
+          text: error.response ? error.response.data : 'An error occurred',
+        });
+        console.error('เกิดข้อผิดพลาดในการลบรายการข้อมูล:', error);
+      });
   };
 
   const navigate = useNavigate();
@@ -195,7 +234,7 @@ const OrderTransfer = () => {
     };
 
     Swal.fire({
-      title: 'ต้องการบันทึกข้อมูลนี้ใช่หรือไม่?',
+      title: 'ต้องการบันทึกข้อมูลและยืนยันการเทียบโอนเบื้องต้นใช่หรือไม่?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -206,11 +245,11 @@ const OrderTransfer = () => {
       if (result.isConfirmed) {
         try {
           await TransferUpdate(params._id, updatedData);
+          await TransferConfirmPath1(params._id);
           Swal.fire({
             icon: 'success',
             title: 'บันทึกข้อมูลสำเร็จ',
           });
-          navigate(-1);
         } catch (error) {
           Swal.fire({
             icon: 'error',
@@ -224,18 +263,44 @@ const OrderTransfer = () => {
   };
 
   const handleAddSuccess = (newSuccessItem) => {
-    setTransferList((prevTransferList) => {
-      const updatedTransferList = [...prevTransferList];
-      updatedTransferList[0].success.push(newSuccessItem);
+    Swal.fire({
+      title: 'ยืนยันการเทียบโอนเพิ่มเติมใช่หรือไม่?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ยืนยัน',
+      cancelButtonText: 'ยกเลิก',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          setTransferList((prevTransferList) => {
+            const updatedTransferList = [...prevTransferList];
+            updatedTransferList[0].success.push(newSuccessItem);
 
-      const extra = newSuccessItem.extraSubject;
+            const extra = newSuccessItem.extraSubject;
 
-      updatedTransferList[0].unsuccess = updatedTransferList[0].unsuccess.filter(
-        (unsuccessItem) =>
-          !extra.some((extraSubject) => extraSubject.id === unsuccessItem.extraSubject),
-      );
+            updatedTransferList[0].unsuccess = updatedTransferList[0].unsuccess.filter(
+              (unsuccessItem) =>
+                !extra.some((extraSubject) => extraSubject.id === unsuccessItem.extraSubject),
+            );
 
-      return updatedTransferList;
+            return updatedTransferList;
+          });
+          setHasChanges(true);
+          Swal.fire({
+            icon: 'success',
+            title: 'ยืนยันการเทียบโอนเพิ่มเติมสำเร็จ',
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'ยืนยันการเทียบโอนเพิ่มเติมไม่สำเร็จ',
+            text: error.response ? error.response.data : 'An error occurred',
+          });
+          console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);
+        }
+      }
     });
   };
 
@@ -274,8 +339,11 @@ const OrderTransfer = () => {
   };
 
   return (
-    <PageContainer title="ข้อมูลเทียบโอนเบื้องต้น" description="ข้อมูลเทียบโอนเบื้องต้น">
-      <Breadcrumb title="ข้อมูลเทียบโอนเบื้องต้น" />
+    <PageContainer
+      title="ข้อมูลเทียบโอนผลการเรียนเบื้องต้น"
+      description="ข้อมูลเทียบโอนผลการเรียนเบื้องต้น"
+    >
+      <Breadcrumb title="ข้อมูลเทียบโอนผลการเรียนเบื้องต้น" />
       <ParentCard title="ข้อมูลนักศึกษา">
         <Grid container>
           <Grid item xs={12} lg={6}>
@@ -312,7 +380,34 @@ const OrderTransfer = () => {
 
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>การเทียบโอน</CustomFormLabel>
-            <Typography>{student.status || ''}</Typography>
+            <Typography color={'red'}>{student.status || ''}</Typography>
+          </Grid>
+        </Grid>
+      </ParentCard>
+
+      <Box marginY={3} />
+      <ParentCard
+        title={
+          <Stack direction="row" alignItems="center">
+            <Typography variant="h5">ใบรับรองการศึกษา</Typography>
+            <IconButton>
+              <IconFile width={20} color={'blue'} />
+            </IconButton>
+          </Stack>
+        }
+      >
+        <Grid container>
+          <Grid item xs={12} sm={12} lg={12}>
+            <Stack spacing={1} direction={{ xs: 'column', sm: 'row' }} justifyContent="start">
+              <Button
+                variant="outlined"
+                color="primary"
+                endIcon={<IconSearch width={18} />}
+                onClick={handleViewPDF}
+              >
+                ดูใบรับรองการศึกษา
+              </Button>
+            </Stack>
           </Grid>
         </Grid>
       </ParentCard>
@@ -363,7 +458,7 @@ const OrderTransfer = () => {
                           <Typography variant="h6">หน่วยกิต</Typography>
                         </TableCell>
                         <TableCell align="center" width={'15%'} sx={{ border: 0 }}>
-                          <Typography variant="h6">เพิ่มเติม</Typography>
+                          <Typography variant="h6">ลบ</Typography>
                         </TableCell>
                       </Stack>
                     </TableCell>
@@ -454,7 +549,7 @@ const OrderTransfer = () => {
                               <TableCell align="center" width={'15%'} sx={{ borderBottom: 0 }}>
                                 <IconButton
                                   color={'error'}
-                                  onClick={() => handleDelete(listIndex, successIndex)}
+                                  onClick={() => handleDeleteSuccess(listIndex, successIndex)}
                                 >
                                   <IconTrash width={25} />
                                 </IconButton>
@@ -466,7 +561,7 @@ const OrderTransfer = () => {
                       <TableRow>
                         <TableCell colSpan={5} align="center">
                           <Typography variant="normal" fontWeight={600} fontSize={20}>
-                            เพิ่มรายการคู่เทียบโอน
+                            เทียบโอนเพิ่มเติม
                           </Typography>
                           {/* <DialogAdd /> */}
                           <DialogAdd onAddSuccess={handleAddSuccess} />
@@ -492,7 +587,7 @@ const OrderTransfer = () => {
       <ParentCard
         title={
           <Stack direction="row" alignItems="center">
-            <Typography variant="h5">รายวิชาที่เหลือ</Typography>
+            <Typography variant="h5">รายวิชาจากใบ รบ. ของนักศึกษาที่เหลือ</Typography>
             <IconButton>
               <IconAlertCircle width={20} color={'red'} />
             </IconButton>
@@ -517,17 +612,21 @@ const OrderTransfer = () => {
                     <TableCell align="center" width={'10%'}>
                       <Typography variant="h5">เกรด</Typography>
                     </TableCell>
-                    <TableCell align="center" width={'30%'}>
+                    <TableCell align="center" width={'20%'}>
                       <Typography variant="h5">หมายเหตุ</Typography>
+                    </TableCell>
+                    <TableCell align="center" width={'10%'}>
+                      <Typography variant="h5">ลบ</Typography>
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 {Array.isArray(transferList) &&
-                  transferList.map((list) => (
+                  transferList.map((list, listIndex) => (
                     <TableBody key={list._id}>
                       {list.unsuccess.length > 0 ? (
-                        list.unsuccess.map((unsuccessItem) => (
+                        list.unsuccess.map((unsuccessItem, unsuccessIndex) => (
                           <TableRow
+                            key={`${listIndex}-${unsuccessIndex}`}
                             sx={{
                               borderBottom: '0.5px solid #e6e6e6',
                               '&:hover': { backgroundColor: '#f0f0f0' },
@@ -556,13 +655,23 @@ const OrderTransfer = () => {
                                   <TableCell align="center" width={'30%'} sx={{ borderBottom: 0 }}>
                                     <Typography color={'red'}>{unsuccessItem.note}</Typography>
                                   </TableCell>
+                                  <TableCell align="center" width={'15%'} sx={{ borderBottom: 0 }}>
+                                    <IconButton
+                                      color={'error'}
+                                      onClick={() =>
+                                        handleDeleteUnSuccess(listIndex, unsuccessIndex)
+                                      }
+                                    >
+                                      <IconTrash width={25} />
+                                    </IconButton>
+                                  </TableCell>
                                 </React.Fragment>
                               ))}
                           </TableRow>
                         ))
                       ) : (
                         <TableRow>
-                          <TableCell colSpan={5} align="center">
+                          <TableCell colSpan={6} align="center">
                             <Typography align="center">
                               ไม่มีรายวิชาที่ไม่สามารถนำมาเทียบโอนได้
                             </Typography>
@@ -577,42 +686,21 @@ const OrderTransfer = () => {
         </Grid>
       </ParentCard>
       <Box marginY={3} />
-      <ParentCard
-        title={
-          <Stack direction="row" alignItems="center">
-            <Typography variant="h5">ไฟล์ที่แนบมา</Typography>
-            <IconButton>
-              <IconFile width={20} color={'blue'} />
-            </IconButton>
-          </Stack>
-        }
-      >
-        <Grid container>
-          <Grid item xs={12} sm={12} lg={12}>
-            <Stack spacing={1} direction={{ xs: 'column', sm: 'row' }} justifyContent="start">
-              <Button
-                variant="outlined"
-                color="primary"
-                endIcon={<IconSearch width={18} />}
-                onClick={handleViewPDF}
-              >
-                ดูไฟล์ที่แนบมา
-              </Button>
-            </Stack>
-          </Grid>
-        </Grid>
-      </ParentCard>
+
       <Grid item xs={12} sm={12} lg={12}>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="end" mt={2}>
           <Stack spacing={1} direction="row">
-            <Button type="submit" variant="contained" color="success" onClick={handleSave}>
-              บันทึกการปรับปรุง
-            </Button>
-            <Button type="submit" variant="contained" color="primary" onClick={handleConfirm}>
-              ยืนยัน
-            </Button>
+            {hasChanges ? (
+              <Button type="submit" variant="contained" color="success" onClick={handleSave}>
+                บันทึกการปรับปรุง
+              </Button>
+            ) : (
+              <Button type="submit" variant="contained" color="primary" onClick={handleConfirm}>
+                ยืนยันการเทียบโอนเบื้องต้น
+              </Button>
+            )}
             <Button variant="outlined" color="warning" onClick={handleBack}>
-              ยกเลิก
+              ย้อนกลับ
             </Button>
           </Stack>
         </Stack>
