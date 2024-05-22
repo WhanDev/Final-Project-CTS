@@ -14,7 +14,7 @@ const StudentSchema = mongoose.Schema({
   branch: String,
   status: {
     type: String,
-    default: "ยังไม่เทียบโอน",
+    default: "ยังไม่ดำเนินการเทียบโอนเบื้องต้น",
   },
   role: {
     type: String,

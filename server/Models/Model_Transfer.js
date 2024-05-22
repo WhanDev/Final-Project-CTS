@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 
 const TransferSchema = mongoose.Schema({
   _id: { type: String, ref: "Student" },
-  lecturer_id: { type: String, ref: "Admin" },
-  result: String,
+  checkBy: { type: String, ref: "Admin" },
+  approveBy: { type: String, ref: "Admin" },
+  status: String,
   date: String,
 });
 

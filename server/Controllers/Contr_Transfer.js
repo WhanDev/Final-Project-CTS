@@ -505,7 +505,7 @@ exports.Transfer = async (req, res) => {
     if (student) {
       await Student.updateOne(
         { _id: student_id },
-        { $set: { status: "รอการอนุมัติเทียบโอนผลการเรียน" } }
+        { $set: { status: "รอการยืนยันการเทียบโอนเบื้องต้น" } }
       );
     }
 
@@ -522,8 +522,9 @@ exports.Transfer = async (req, res) => {
 
     const newTransfer = new Transfer({
       _id: student_id,
-      lecturer_id: "---",
-      result: "รอการอนุมัติเทียบโอนผลการเรียน",
+      checkBy: "",
+      approveBy: "",
+      status: "รอการยืนยันการเทียบโอนเบื้องต้น",
       date: formattedDateTime,
     });
     await newTransfer.save();
@@ -658,15 +659,17 @@ exports.TransferListEdit = async (req, res) => {
 exports.TransferConfirmPath1 = async (req, res) => {
   try {
     const student_id = req.params._id;
+    const checkBy_id = req.body.checkBy;
 
     const updatedStatusTransfer = await Transfer.findOneAndUpdate(
       { _id: student_id },
-      { result: "รอการอนุมัติ โดยอาจารย์ประจำหลักสูตร" }
+      { checkBy: checkBy_id },
+      { result: "รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร" }
     );
 
     const updatedStatusStudent = await Student.findOneAndUpdate(
       { _id: student_id },
-      { status: "รอการอนุมัติ โดยอาจารย์ประจำหลักสูตร" }
+      { status: "รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร" }
     );
 
     res.json({
@@ -685,15 +688,17 @@ exports.TransferConfirmPath1 = async (req, res) => {
 exports.TransferConfirmPath2 = async (req, res) => {
   try {
     const student_id = req.params._id;
+    const approve_id = req.body.approveBy;
 
     const updatedStatusTransfer = await Transfer.findOneAndUpdate(
       { _id: student_id },
-      { result: "อนุมัติการเทียบโอนเสร็จสิ้น" }
+      { approveBy: approve_id },
+      { result: "ยืนยันการเทียบโอนถูกต้อง" }
     );
 
     const updatedStatusStudent = await Student.findOneAndUpdate(
       { _id: student_id },
-      { status: "อนุมัติการเทียบโอนเสร็จสิ้น" }
+      { status: "ยืนยันการเทียบโอนถูกต้อง" }
     );
 
     res.json({
