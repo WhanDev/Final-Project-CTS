@@ -32,8 +32,7 @@ const Structure = require("../Models/Model_Structure");
 
 exports.generatePdfPath1 = async (req, res) => {
   try {
-    // const student_id = req.params._id;
-    const student_id = "65342310270-6";
+    const student_id = req.params._id;
     const dataStudent = await Student.findOne({ _id: student_id }).exec();
     const TransferOrder_id = "TS-" + student_id;
     const transferList = await TransferList.find({
@@ -780,7 +779,7 @@ exports.generatePdfPath1 = async (req, res) => {
 
 exports.generatePdfPath2 = async (req, res) => {
   try {
-    const student_id = "65342310270-6";
+    const student_id = req.params._id;
     const dataStudent = await Student.findOne({ _id: student_id }).exec();
     const TransferOrder_id = "TS-" + student_id;
     const transferList = await TransferList.find({

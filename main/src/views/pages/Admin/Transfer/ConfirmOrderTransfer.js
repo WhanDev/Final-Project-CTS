@@ -167,6 +167,30 @@ const ConfirmOrderTransfer = () => {
     }
   };
 
+  const handleGeneratePdfPath2 = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get('http://localhost:5000/api/reportPath2/' + params._id, {
+        responseType: 'blob',
+      });
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+
+      // const fileName = 'ส่วนที่ 1 ใบคำร้องขอเทียบโอนผลการเรียน.pdf';
+
+      // const anchor = document.createElement('a');
+      // anchor.href = url;
+      // anchor.window.open = fileName;
+      // anchor.click();
+      // window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -562,7 +586,7 @@ const ConfirmOrderTransfer = () => {
             <Button variant="contained" color="primary" onClick={handleGeneratePdfPath1}>
               ใบคำร้องขอเทียบโอนผลการเรียน ส่วนที่ 1
             </Button>
-            <Button variant="contained" color="success">
+            <Button variant="contained" color="success" onClick={handleGeneratePdfPath2}>
               ใบคำร้องขอเทียบโอนผลการเรียน ส่วนที่ 2
             </Button>
             <Button variant="outlined" color="warning" onClick={handleBack}>
