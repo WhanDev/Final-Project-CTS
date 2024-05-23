@@ -28,6 +28,7 @@ const iconSvgSquereTook = `
 const Student = require("../Models/Model_Student");
 const { TransferList } = require("../Models/Model_Transfer");
 const Subject = require("../Models/Model_Subject");
+const ExtraSubject = require("../Models/Model_ExtraSubject");
 const Structure = require("../Models/Model_Structure");
 
 exports.generatePdfPath1 = async (req, res) => {
@@ -202,6 +203,7 @@ exports.generatePdfPath1 = async (req, res) => {
     });
 
     const documentDefinition = {
+      pageSize: "A4",
       content: [
         //header
         {
@@ -799,22 +801,52 @@ exports.generatePdfPath2 = async (req, res) => {
       .exec();
 
     const AllSubject = await Subject.find({ structure_id: structure_id })
-      .select("group_id subject_id subject_nameTh subject_nameEn total_credits")
+      .select(
+        "group_id subject_id subject_nameTh subject_nameEn theory_credits practical_credits total_credits"
+      )
+      .exec();
+
+    const AllExtraSubject = await ExtraSubject.find()
+      .select(
+        "extraSubject_id extraSubject_nameTh extraSubject_nameEn theory_credits practical_credits total_credits"
+      )
       .exec();
 
     let SubjectSuccessInAllSubject = [];
 
     AllSubject.forEach((subject) => {
-      SubjectSuccess.map((item) => {
+      SubjectSuccess.forEach((item) => {
         if (item.subject_id === subject.subject_id) {
-          SubjectSuccessInAllSubject.push({
+          const subjectSuccessItem = {
             group_id: subject.group_id,
             subject_id: item.subject_id,
             subject_nameTh: subject.subject_nameTh,
             subject_nameEn: subject.subject_nameEn,
+            theory_credits: subject.theory_credits,
+            practical_credits: subject.practical_credits,
             total_credits: subject.total_credits,
-            extraSubject: item.extraSubject,
+            extraSubject: [],
+          };
+
+          item.extraSubject.forEach((extraSubjectItem) => {
+            const matchingExtraSubject = AllExtraSubject.find(
+              (extraSubject) =>
+                extraSubject.extraSubject_id === extraSubjectItem.id
+            );
+
+            if (matchingExtraSubject) {
+              subjectSuccessItem.extraSubject.push({
+                extraSubject_id: matchingExtraSubject.extraSubject_id,
+                extraSubject_nameTh: matchingExtraSubject.extraSubject_nameTh,
+                extraSubject_nameEn: matchingExtraSubject.extraSubject_nameEn,
+                theory_credits: matchingExtraSubject.theory_credits,
+                practical_credits: matchingExtraSubject.practical_credits,
+                total_credits: matchingExtraSubject.total_credits,
+                grade: extraSubjectItem.grade,
+              });
+            }
           });
+          SubjectSuccessInAllSubject.push(subjectSuccessItem);
         }
       });
     });
@@ -856,17 +888,16 @@ exports.generatePdfPath2 = async (req, res) => {
       return orderA - orderB;
     });
 
-    console.log(SubjectSuccessInAllStructure);
-
     const H1 = [
       {
-        text: "", // แทนที่เซลล์ที่ว่างด้วยเซลล์เปล่า
+        text: "",
         border: [true, true, true, false],
       },
       {
         text: "รายวิชาที่นำมาเทียบโอน",
-        fontSize: 11,
-        colSpan: 5, // ใช้ colSpan: 4 เพื่อรวม 4 เซลล์
+        fontSize: 10,
+        bold:true,
+        colSpan: 5,
         alignment: "center",
         font: "THSarabunNew",
         border: [true, true, true, true],
@@ -877,13 +908,14 @@ exports.generatePdfPath2 = async (req, res) => {
       {},
       {},
       {
-        text: "", // แทนที่เซลล์ที่ว่างด้วยเซลล์เปล่า
+        text: "",
         border: [true, true, true, false],
       },
       {
         text: "รายวิชาที่นำมาเทียบโอน",
-        fontSize: 11,
-        colSpan: 5, // ใช้ colSpan: 4 เพื่อรวม 4 เซลล์
+        fontSize: 10,
+        bold:true,
+        colSpan: 5,
         alignment: "center",
         font: "THSarabunNew",
         border: [true, true, true, true],
@@ -895,7 +927,8 @@ exports.generatePdfPath2 = async (req, res) => {
       {},
       {
         text: "ผลการพิจารณา(√)",
-        fontSize: 11,
+        fontSize: 10,
+        bold:true,
         colSpan: 2,
         alignment: "center",
         font: "THSarabunNew",
@@ -907,7 +940,8 @@ exports.generatePdfPath2 = async (req, res) => {
     const H2 = [
       {
         text: "ที่",
-        fontSize: 11,
+        fontSize: 10,
+        bold:true,
         alignment: "center",
         font: "THSarabunNew",
         border: [true, false, true, false],
@@ -915,7 +949,8 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "รหัสวิชา",
-        fontSize: 11,
+        fontSize: 10,
+        bold:true,
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, false],
@@ -923,7 +958,8 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "ชื่อวิชา",
-        fontSize: 11,
+        fontSize: 10,
+        bold:true,
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, false],
@@ -931,7 +967,8 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "หน่วยกิต",
-        fontSize: 11,
+        fontSize: 10,
+        bold:true,
         colSpan: 3,
         alignment: "center",
         font: "THSarabunNew",
@@ -942,6 +979,8 @@ exports.generatePdfPath2 = async (req, res) => {
       {},
       {
         text: "เกรด",
+        fontSize: 10,
+        bold:true,
         alignment: "center",
         rowSpan: 2,
         border: [true, false, true, true],
@@ -953,7 +992,8 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "รหัสวิชา",
-        fontSize: 11,
+        fontSize: 10,
+        bold:true,
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, false],
@@ -961,7 +1001,8 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "ชื่อวิชา",
-        fontSize: 11,
+        fontSize: 10,
+        bold:true,
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, false],
@@ -969,7 +1010,8 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "หน่วยกิต",
-        fontSize: 11,
+        fontSize: 10,
+        bold:true,
         colSpan: 3,
         alignment: "center",
         font: "THSarabunNew",
@@ -980,20 +1022,23 @@ exports.generatePdfPath2 = async (req, res) => {
       {},
       {
         text: "เทียบได้",
+        fontSize: 10,
+        bold:true,
         alignment: "center",
         rowSpan: 2,
         border: [true, false, true, true],
         margin: [0, 0, 0, 0],
       },
       {
-        text: "การบันทึกผล",
+        text: "บันทึกผล",
+        fontSize: 10,
+        bold:true,
         alignment: "center",
         rowSpan: 2,
         border: [true, false, true, true],
         margin: [0, 0, 0, 0],
       },
     ];
-
     const H3 = [
       {
         text: "",
@@ -1011,7 +1056,8 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "ท.",
-        fontSize: 11,
+        fontSize: 10,
+        bold:true,
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, true],
@@ -1019,7 +1065,8 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "ป.",
-        fontSize: 11,
+        fontSize: 10,
+        bold:true,
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, true],
@@ -1027,7 +1074,8 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "ร.",
-        fontSize: 11,
+        fontSize: 10,bold:true,
+        
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, true],
@@ -1046,7 +1094,8 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "ท.",
-        fontSize: 11,
+        fontSize: 10,bold:true,
+        
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, true],
@@ -1054,7 +1103,8 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "ป.",
-        fontSize: 11,
+        fontSize: 10,bold:true,
+        
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, true],
@@ -1062,7 +1112,8 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "ร.",
-        fontSize: 11,
+        fontSize: 10,bold:true,
+        
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, true],
@@ -1072,25 +1123,276 @@ exports.generatePdfPath2 = async (req, res) => {
       {},
     ];
 
+    let countlist = 0;
+
+    let ExtraTheoryCredits = 0;
+    let ExtraPracticalCredits = 0;
+
+
+    let SubTheoryCredits = 0;
+    let SubPracticalCredits = 0;
+
     const Sort = [];
 
+    Sort.push(
+      H1,
+      H2,
+      H3,
+    )
     SubjectSuccessInAllStructure.forEach((item) => {
-      Sort.push(
-        [
+      Sort.push([
+        {
+          text: `${item.sort} (${item.group_name})`,
+          border: [true, true, true, true],
+          margin: [0, 0, 0, 0],
+          bold: true,
+          fontSize: 10,
+          colSpan: 14,
+        },
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+      ]);
+      const subjects = item.subjects;
+      if (subjects.length === 0) {
+        Sort.push([
           {
-            text: item.sort + " (" + item.group_name + ") ",
+            text: `ไม่มีรายวิชาที่เทียบโอนได้`,
             border: [true, true, true, true],
-            margin: [10, 2, 0, 0],
-            bold: true,
-            fontSize: 11,
+            margin: [0, 0, 0, 0],
+            fontSize: 10,
             colSpan: 14,
+        },
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        ]);
+      } else {
+        subjects.forEach((sub) => {
+          SubTheoryCredits += sub.theory_credits
+          SubPracticalCredits += sub.practical_credits
+          const extraSubject = sub.extraSubject;
+          if (sub.extraSubject.length === 2) {
+            countlist++;
+          } else {
+            countlist++;
           }
-        ],
-      )
+          extraSubject.forEach((extra) => {
+            ExtraTheoryCredits += extra.theory_credits
+            ExtraPracticalCredits += extra.practical_credits
+            Sort.push([
+              {
+                text: `${countlist}`,
+                border: [true, true, true, true],
+                margin: [0, 0, 0, 0],
+                fontSize: 10,
+                alignment: "center",
+                rowSpan: sub.extraSubject.length,
+              },
+              {
+                text: `${extra.extraSubject_id}`,
+                border: [true, true, true, true],
+                margin: [0, 0, 0, 0],
+                alignment: "center",
+                fontSize: 10,
+              },
+              {
+                text: `${extra.extraSubject_nameTh}`,
+                border: [true, true, true, true],
+                margin: [0, 0, 8, 0],
+                fontSize: 10,
+              },
+              {
+                text: `${extra.theory_credits}`,
+                border: [true, true, true, true],
+                margin: [0, 0, 0, 0],
+                alignment: "center",
+                fontSize: 10,
+              },
+              {
+                text: `${extra.practical_credits}`,
+                border: [true, true, true, true],
+                margin: [0, 0, 0, 0],
+                alignment: "center",
+                fontSize: 10,
+              },
+              {
+                text: `${extra.total_credits}`,
+                border: [true, true, true, true],
+                margin: [0, 0, 0, 0],
+                alignment: "center",
+                fontSize: 10,
+              },
+              {
+                text: `${extra.grade}`,
+                border: [true, true, true, true],
+                margin: [0, 0, 0, 0],
+                alignment: "center",
+                fontSize: 10,
+              },
+              {
+                text: `${sub.subject_id}`,
+                border: [true, true, true, true],
+                margin: [0, 0, 0, 0],
+                alignment: "center",
+                fontSize: 10,
+                rowSpan: sub.extraSubject.length,
+              },
+              {
+                text: `${sub.subject_nameTh}`,
+                border: [true, true, true, true],
+                margin: [0, 0, 8, 0],
+                fontSize: 10,
+                rowSpan: sub.extraSubject.length,
+              },
+              {
+                text: `${sub.theory_credits}`,
+                border: [true, true, true, true],
+                margin: [0, 0, 0, 0],
+                alignment: "center",
+                fontSize: 10,
+                rowSpan: sub.extraSubject.length,
+              },
+              {
+                text: `${sub.practical_credits}`,
+                border: [true, true, true, true],
+                margin: [0, 0, 0, 0],
+                alignment: "center",
+                fontSize: 10,
+                rowSpan: sub.extraSubject.length,
+              },
+              {
+                text: `${sub.total_credits}`,
+                border: [true, true, true, true],
+                margin: [0, 0, 0, 0],
+                alignment: "center",
+                fontSize: 10,
+                rowSpan: sub.extraSubject.length,
+              },
+              {
+                text: "/",
+                border: [true, true, true, true],
+                margin: [0, 0, 0, 0],
+                alignment: "center",
+                fontSize: 10,
+                rowSpan: sub.extraSubject.length,
+              },
+              {
+                text: "",
+                border: [true, true, true, true],
+                margin: [0, 0, 0, 0],
+                alignment: "center",
+                fontSize: 10,
+                rowSpan: sub.extraSubject.length,
+              },
+            ]);
+          });
+        });
+      }
     });
 
+    const TotalCredit = [
+      {
+        text: "",
+        border: [true, true, true, true],
+        margin: [0, 0, 0, 0],
+        fontSize: 10,
+      },
+      {
+        text: "รวม",
+        border: [true, true, true, true],
+        alignment: "center",
+        colSpan: 2,
+        margin: [0, 0, 0, 0],
+        fontSize: 10,
+      },
+      {},
+      {
+        text: ExtraTheoryCredits,
+        border: [true, true, true, true],        alignment: "center",
+        margin: [0, 0, 0, 0],
+        fontSize: 10,
+      },
+      {
+        text: ExtraPracticalCredits,
+        border: [true, true, true, true],        alignment: "center",
+        margin: [0, 0, 0, 0],
+        fontSize: 10,
+      },
+      {
+        text: ExtraTheoryCredits+ExtraPracticalCredits,
+        border: [true, true, true, true],        alignment: "center",
+        margin: [0, 0, 0, 0],
+        fontSize: 10,
+      },
+      {
+        text: "",
+        border: [true, true, true, true],
+        margin: [0, 0, 0, 0],
+        fontSize: 10,
+      },
+      {
+        text: "รวม",
+        border: [true, true, true, true],
+        alignment: "center",
+        colSpan: 2,
+        margin: [0, 0, 0, 0],
+        fontSize: 10,
+      },
+      {},
+      {
+        text: SubTheoryCredits,
+        border: [true, true, true, true],        alignment: "center",
+        margin: [0, 0, 0, 0],
+        fontSize: 10,
+      },
+      {
+        text: SubPracticalCredits,
+        border: [true, true, true, true],        alignment: "center",
+        margin: [0, 0, 0, 0],
+        fontSize: 10,
+      },
+      {
+        text: SubTheoryCredits+SubPracticalCredits,
+        border: [true, true, true, true],        alignment: "center",
+        margin: [0, 0, 0, 0],
+        fontSize: 10,
+      },
+      {
+        text: "",
+        border: [true, true, true, true],
+        margin: [0, 0, 0, 0],
+        alignment: "center",
+        fontSize: 10,
+      },
+      {},
+    ]
+
+    Sort.push(TotalCredit)
+
     const documentDefinition = {
-      pageMargins: [40, 90, 40, 150],
+      pageSize: "A4",
+      pageMargins: [40, 90, 40, 90],
       header: function (currentPage, pageCount) {
         return [
           {
@@ -1159,8 +1461,10 @@ exports.generatePdfPath2 = async (req, res) => {
               width: "*",
               stack: [
                 {
-                  text: "ชื่อ - สกุล: .......{{ studentName }}....     รหัสนักศึกษา....{{ studentId }}......สาขาวิชา.....เทคโนโลยีธุรกิจดิจิทัล............",
-                  fontSize: 11,
+                  text: "ชื่อ - สกุล: "+dataStudent.fullname
+                  +"  รหัสนักศึกษา: " + dataStudent._id +
+                  "  สาขาวิชา เทคโนโลยีธุรกิจดิจิทัล",
+                  fontSize: 10,
                   font: "THSarabunNew",
                   margin: [0, 0, 0, 0],
                 },
@@ -1172,24 +1476,200 @@ exports.generatePdfPath2 = async (req, res) => {
         {
           table: {
             widths: [
-              "2%",
-              "8%",
-              "28%",
+              "3%",
+              "10%",
+              "27%",
               "2%",
               "2%",
               "2%",
               "2%", //เกรด
-              "8%",
+              "12%",
               "28%",
               "2%",
               "2%",
               "2%",
-              "10%",
-              "10%",
+              "6%",
+              "7%",
             ],
             body: Sort,
           },
           margin: [-30, 8, 0, 0],
+        },
+        {
+          table: {
+            widths: ["*", "*", "*","*"],
+            body: [
+              [
+                {
+                  text: "ลงชื่อ ........................................................... กรรมการการทเทียบโอน",
+                  margin: [2, 30, 0, 0],
+                  colSpan: 2,
+                  alignment: "center",
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+                {
+                  text: "ลงชื่อ ........................................................... กรรมการการทเทียบโอน",
+                  margin: [20, 30, 0, 0],
+                  colSpan: 2,
+                  alignment: "center",
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+              ],
+              [
+                {
+                  text: "(                                              )",
+                  margin: [35, 1, 0, 0],
+                  colSpan: 2,
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+                {
+                  text: "(                                               )",
+                  margin: [45, 1, 0, 0],
+                  colSpan: 2,
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+              ],
+              [
+                {
+                  text: "วันที่ ...........................................................................",
+                  margin: [20, 1, 0, 0],
+                  colSpan: 2,
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+                {
+                  text: "วันที่ ............................................................................",
+                  margin: [30, 1, 0, 0],
+                  colSpan: 2,
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+              ],
+              [
+                {
+                  text: "ลงชื่อ ........................................................... กรรมการการทเทียบโอน",
+                  margin: [2, 10, 0, 0],
+                  colSpan: 2,
+                  alignment: "center",
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+                {
+                  text: "ลงชื่อ ........................................................... กรรมการการทเทียบโอน",
+                  margin: [20, 10, 0, 0],
+                  colSpan: 2,
+                  alignment: "center",
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+              ],
+              [
+                {
+                  text: "(                                              )",
+                  margin: [35, 1, 0, 0],
+                  colSpan: 2,
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+                {
+                  text: "(                                               )",
+                  margin: [45, 1, 0, 0],
+                  colSpan: 2,
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+              ],
+              [
+                {
+                  text: "วันที่ ...........................................................................",
+                  margin: [20, 1, 0, 0],
+                  colSpan: 2,
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+                {
+                  text: "วันที่ ............................................................................",
+                  margin: [30, 1, 0, 0],
+                  colSpan: 2,
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+              ],
+              [
+                {
+                  text: "ลงชื่อ ........................................................... กรรมการการทเทียบโอน",
+                  margin: [2, 10, 0, 0],
+                  colSpan: 2,
+                  alignment: "center",
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+                {
+                  text: "ลงชื่อ ........................................................... คณบดี",
+                  margin: [20, 10, 0, 0],
+                  colSpan: 2,
+                  alignment: "center",
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+              ],
+              [
+                {
+                  text: "(                                              )",
+                  margin: [35, 1, 0, 0],
+                  colSpan: 2,
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+                {
+                  text: "(                                               )",
+                  margin: [65, 1, 0, 0],
+                  colSpan: 2,
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+              ],
+              [
+                {
+                  text: "วันที่ ...........................................................................",
+                  margin: [20, 1, 0, 0],
+                  colSpan: 2,
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+                {
+                  text: "วันที่ ............................................................................",
+                  margin: [50, 1, 0, 0],
+                  colSpan: 2,
+                  border: [false, false, false, false],
+                  fontSize: 11,
+                },
+                {},
+              ],
+              
+            ],
+          },
         },
       ],
       defaultStyle: {
