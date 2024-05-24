@@ -244,42 +244,6 @@ const ConfirmOrderTransfer = () => {
       <ParentCard
         title={
           <Stack direction="row" alignItems="center">
-            <Typography variant="h5">ข้อมูลผู้ตรวจสอบเบื้องต้น</Typography>
-          </Stack>
-        }
-      >
-        <Grid container>
-          {checkMan.map((checkMan) =>
-            checkMan._id === approveByid ? (
-              <React.Fragment key={checkMan._id}>
-                <Grid item xs={12} lg={6}>
-                  <CustomFormLabel>ชื่อนามสกุล</CustomFormLabel>
-                  <Typography>{checkMan.fullname || ''}</Typography>
-                </Grid>
-                <Grid item xs={12} lg={6}>
-                  <CustomFormLabel>สังกัดหลักสูตร</CustomFormLabel>
-                  {allCurriculum.some((curriculum) => checkMan.curriculum === curriculum._id) ? (
-                    allCurriculum.map((curriculum) =>
-                      checkMan.curriculum === curriculum._id ? (
-                        <Typography key={curriculum._id}>
-                          {curriculum.name || ''} ปี พ.ศ {curriculum.year || ''} (
-                          {curriculum.level || ''} {curriculum.time || ''} ปี)
-                        </Typography>
-                      ) : null,
-                    )
-                  ) : (
-                    <Typography>ไม่สังกัดหลักสูตร</Typography>
-                  )}
-                </Grid>
-              </React.Fragment>
-            ) : null,
-          )}
-        </Grid>
-      </ParentCard>
-      <Box marginY={3} />
-      <ParentCard
-        title={
-          <Stack direction="row" alignItems="center">
             <Typography variant="h5">ข้อมูลผู้ยืนยันการเทียบโอน</Typography>
           </Stack>
         }
@@ -304,7 +268,7 @@ const ConfirmOrderTransfer = () => {
                       ) : null,
                     )
                   ) : (
-                    <Typography>ไม่สังกัดหลักสูตร</Typography>
+                    <Typography>ไม่สังกัดหลักสูตร ({checkMan.role || ''})</Typography>
                   )}
                 </Grid>
               </React.Fragment>
@@ -312,6 +276,45 @@ const ConfirmOrderTransfer = () => {
           )}
         </Grid>
       </ParentCard>
+
+      <Box marginY={3} />
+      
+      <ParentCard
+        title={
+          <Stack direction="row" alignItems="center">
+            <Typography variant="h5">ข้อมูลผู้ตรวจสอบเบื้องต้น</Typography>
+          </Stack>
+        }
+      >
+        <Grid container>
+          {checkMan.map((checkMan) =>
+            checkMan._id === approveByid ? (
+              <React.Fragment key={checkMan._id}>
+                <Grid item xs={12} lg={6}>
+                  <CustomFormLabel>ชื่อนามสกุล</CustomFormLabel>
+                  <Typography>{checkMan.fullname || ''}</Typography>
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <CustomFormLabel>สังกัดหลักสูตร</CustomFormLabel>
+                  {allCurriculum.some((curriculum) => checkMan.curriculum === curriculum._id) ? (
+                    allCurriculum.map((curriculum) =>
+                      checkMan.curriculum === curriculum._id ? (
+                        <Typography key={curriculum._id}>
+                          {curriculum.name || ''} ปี พ.ศ {curriculum.year || ''} (
+                          {curriculum.level || ''} {curriculum.time || ''} ปี)
+                        </Typography>
+                      ) : null,
+                    )
+                  ) : (
+                    <Typography>ไม่สังกัดหลักสูตร  ({checkMan.role || ''}) </Typography>
+                  )}
+                </Grid>
+              </React.Fragment>
+            ) : null,
+          )}
+        </Grid>
+      </ParentCard>
+
       <Box marginY={3} />
       <ParentCard
         title={

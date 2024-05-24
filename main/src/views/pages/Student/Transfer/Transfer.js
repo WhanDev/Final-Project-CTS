@@ -21,7 +21,7 @@ const Transfer = () => {
     CheckUser();
   }, []);
 
-  return <>{user.status === 'รอการอนุมัติเทียบโอนผลการเรียน' ? <Mached /> : <Select />}</>;
+  return <>{user.status === 'รอการยืนยันการเทียบโอนเบื้องต้น' ? <Mached /> : <Select />}</>;
 };
 
 export default Transfer;

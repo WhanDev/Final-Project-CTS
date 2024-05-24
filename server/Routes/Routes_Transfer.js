@@ -9,7 +9,8 @@ const {
   TransferUpdate,
   TransferListEdit,
   TransferConfirmPath1,
-  TransferConfirmPath2
+  TransferConfirmPath2,
+  TransferDelete,
 } = require("../Controllers/Contr_Transfer");
 const { upload } = require("../Middleware/upload");
 
@@ -23,5 +24,6 @@ router.put("/transfer/:_id", TransferUpdate);
 router.get("/transfer/edit/:_id", TransferListEdit);
 router.post("/transfer/stutusPath1/:_id", TransferConfirmPath1);
 router.post("/transfer/stutusPath2/:_id", TransferConfirmPath2);
+router.delete("/transfer/:_id", TransferDelete);
 
 module.exports = router;

@@ -23,7 +23,7 @@ import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../../components/shared/ParentCard';
 import DialogAdd from './DialogAdd';
 
-import { TransferRead, TransferUpdate, TransferConfirmPath2 } from '../../../../function/transfer';
+import { TransferRead, TransferUpdate, TransferConfirmPath2,TransferDelete } from '../../../../function/transfer';
 import { read as readStudent } from '../../../../function/student';
 import { list as ListCurriculum } from '../../../../function/curriculum';
 import { listByStructure as AllSubject } from '../../../../function/subject';
@@ -260,6 +260,7 @@ const ApproveOrderTransfer = () => {
     Swal.fire({
       title: 'ต้องการบันทึกข้อมูลและยืนยันการเทียบโอนเบื้องต้นใช่หรือไม่?',
       icon: 'warning',
+      width: 'auto',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
@@ -269,15 +270,15 @@ const ApproveOrderTransfer = () => {
       if (result.isConfirmed) {
         try {
           await TransferUpdate(params._id, updatedData);
-          await TransferConfirmPath2(params._id, approveBy);
+          setHasChanges(false);
           Swal.fire({
             icon: 'success',
-            title: 'บันทึกข้อมูลสำเร็จ',
+            title: 'บันทึกการปรับปรุงการเทียบโอนสำเร็จ',
           });
         } catch (error) {
           Swal.fire({
             icon: 'error',
-            title: 'บันทึกข้อมูลไม่สำเร็จ',
+            title: 'บันทึกการปรับปรุงการเทียบโอนไม่สำเร็จ',
             text: error.response ? error.response.data : 'An error occurred',
           });
           console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);
@@ -290,6 +291,7 @@ const ApproveOrderTransfer = () => {
     Swal.fire({
       title: 'ยืนยันการเทียบโอนเพิ่มเติมใช่หรือไม่?',
       icon: 'warning',
+      width: 'auto',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
@@ -311,7 +313,7 @@ const ApproveOrderTransfer = () => {
 
             return updatedTransferList;
           });
-          setHasChanges(true);
+          setHasChanges(false);
           Swal.fire({
             icon: 'success',
             title: 'ยืนยันการเทียบโอนเพิ่มเติมสำเร็จ',
@@ -333,8 +335,9 @@ const ApproveOrderTransfer = () => {
       approveBy: user._id,
     };
     Swal.fire({
-      title: 'ต้องการยืนยันการเทียบโอนนี้ใช่หรือไม่?',
+      title: 'ต้องการยืนยันการเทียบโอน?',
       icon: 'warning',
+      width:'auto',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
@@ -353,6 +356,37 @@ const ApproveOrderTransfer = () => {
           Swal.fire({
             icon: 'error',
             title: 'ยืนยันการเทียบโอนไม่สำเร็จ',
+            text: error.response ? error.response.data : 'An error occurred',
+          });
+          console.error('เกิดข้อผิดพลาดในการลบรายการข้อมูล:', error);
+        }
+      }
+    });
+  };
+
+  const handleDelete = () => {
+    Swal.fire({
+      title: 'ข้อมูลจะหายถาวร! ต้องการยกเลิกรายการเทียบโอนของนักศึกษา?',
+      icon: 'warning',
+      width: 'auto',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ยืนยัน',
+      cancelButtonText: 'ยกเลิก',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await TransferDelete(params._id);
+          Swal.fire({
+            icon: 'success',
+            title: 'ยกเลิกรายการเทียบโอนของนักศึกษาสำเร็จ',
+          });
+          navigate(-1);
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'ยกเลิกรายการเทียบโอนของนักศึกษาไม่สำเร็จ',
             text: error.response ? error.response.data : 'An error occurred',
           });
           console.error('เกิดข้อผิดพลาดในการลบรายการข้อมูล:', error);
@@ -765,6 +799,9 @@ const ApproveOrderTransfer = () => {
                 ยืนยันผลการเทียบโอนถูกต้อง
               </Button>
             )}
+            <Button variant="contained" color="error" onClick={handleDelete}>
+              ยกเลิกรายการเทียบโอน
+            </Button>
             <Button variant="outlined" color="warning" onClick={handleBack}>
               ย้อนกลับ
             </Button>

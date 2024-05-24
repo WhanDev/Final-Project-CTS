@@ -23,3 +23,6 @@ export const TransferConfirmPath1 = async (id,data) =>
 
 export const TransferConfirmPath2 = async (id,data) =>
   await axios.post(process.env.REACT_APP_API + '/transfer/stutusPath2/' + id,data);
+
+export const TransferDelete = async (id) =>
+  await axios.delete(process.env.REACT_APP_API + '/transfer/' + id);
