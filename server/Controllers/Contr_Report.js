@@ -790,6 +790,7 @@ exports.generatePdfPath2 = async (req, res) => {
       .select("success")
       .exec();
 
+
     const SubjectSuccess = transferList.flatMap((item) =>
       item.success.map((successItem) => successItem)
     );
@@ -1446,7 +1447,7 @@ exports.generatePdfPath2 = async (req, res) => {
             {
               text: "กรณีไม่เสียค่าธรรมเนียม",
               decoration: "underline",
-              margin: [-40, 37, 0, 0],
+              margin: [-40, 33, 0, 0],
               fontSize: 14,
               bold: true,
               font: "THSarabunNew",
