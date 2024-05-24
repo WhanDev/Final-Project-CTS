@@ -790,7 +790,6 @@ exports.generatePdfPath2 = async (req, res) => {
       .select("success")
       .exec();
 
-
     const SubjectSuccess = transferList.flatMap((item) =>
       item.success.map((successItem) => successItem)
     );
@@ -897,7 +896,7 @@ exports.generatePdfPath2 = async (req, res) => {
       {
         text: "รายวิชาที่นำมาเทียบโอน",
         fontSize: 10,
-        bold:true,
+        bold: true,
         colSpan: 5,
         alignment: "center",
         font: "THSarabunNew",
@@ -915,7 +914,7 @@ exports.generatePdfPath2 = async (req, res) => {
       {
         text: "รายวิชาที่นำมาเทียบโอน",
         fontSize: 10,
-        bold:true,
+        bold: true,
         colSpan: 5,
         alignment: "center",
         font: "THSarabunNew",
@@ -929,7 +928,7 @@ exports.generatePdfPath2 = async (req, res) => {
       {
         text: "ผลการพิจารณา(√)",
         fontSize: 10,
-        bold:true,
+        bold: true,
         colSpan: 2,
         alignment: "center",
         font: "THSarabunNew",
@@ -942,7 +941,7 @@ exports.generatePdfPath2 = async (req, res) => {
       {
         text: "ที่",
         fontSize: 10,
-        bold:true,
+        bold: true,
         alignment: "center",
         font: "THSarabunNew",
         border: [true, false, true, false],
@@ -951,7 +950,7 @@ exports.generatePdfPath2 = async (req, res) => {
       {
         text: "รหัสวิชา",
         fontSize: 10,
-        bold:true,
+        bold: true,
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, false],
@@ -960,7 +959,7 @@ exports.generatePdfPath2 = async (req, res) => {
       {
         text: "ชื่อวิชา",
         fontSize: 10,
-        bold:true,
+        bold: true,
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, false],
@@ -969,7 +968,7 @@ exports.generatePdfPath2 = async (req, res) => {
       {
         text: "หน่วยกิต",
         fontSize: 10,
-        bold:true,
+        bold: true,
         colSpan: 3,
         alignment: "center",
         font: "THSarabunNew",
@@ -981,7 +980,7 @@ exports.generatePdfPath2 = async (req, res) => {
       {
         text: "เกรด",
         fontSize: 10,
-        bold:true,
+        bold: true,
         alignment: "center",
         rowSpan: 2,
         border: [true, false, true, true],
@@ -994,7 +993,7 @@ exports.generatePdfPath2 = async (req, res) => {
       {
         text: "รหัสวิชา",
         fontSize: 10,
-        bold:true,
+        bold: true,
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, false],
@@ -1003,7 +1002,7 @@ exports.generatePdfPath2 = async (req, res) => {
       {
         text: "ชื่อวิชา",
         fontSize: 10,
-        bold:true,
+        bold: true,
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, false],
@@ -1012,7 +1011,7 @@ exports.generatePdfPath2 = async (req, res) => {
       {
         text: "หน่วยกิต",
         fontSize: 10,
-        bold:true,
+        bold: true,
         colSpan: 3,
         alignment: "center",
         font: "THSarabunNew",
@@ -1024,7 +1023,7 @@ exports.generatePdfPath2 = async (req, res) => {
       {
         text: "เทียบได้",
         fontSize: 10,
-        bold:true,
+        bold: true,
         alignment: "center",
         rowSpan: 2,
         border: [true, false, true, true],
@@ -1033,7 +1032,7 @@ exports.generatePdfPath2 = async (req, res) => {
       {
         text: "บันทึกผล",
         fontSize: 10,
-        bold:true,
+        bold: true,
         alignment: "center",
         rowSpan: 2,
         border: [true, false, true, true],
@@ -1058,7 +1057,7 @@ exports.generatePdfPath2 = async (req, res) => {
       {
         text: "ท.",
         fontSize: 10,
-        bold:true,
+        bold: true,
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, true],
@@ -1067,7 +1066,7 @@ exports.generatePdfPath2 = async (req, res) => {
       {
         text: "ป.",
         fontSize: 10,
-        bold:true,
+        bold: true,
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, true],
@@ -1075,8 +1074,9 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "ร.",
-        fontSize: 10,bold:true,
-        
+        fontSize: 10,
+        bold: true,
+
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, true],
@@ -1095,8 +1095,9 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "ท.",
-        fontSize: 10,bold:true,
-        
+        fontSize: 10,
+        bold: true,
+
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, true],
@@ -1104,8 +1105,9 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "ป.",
-        fontSize: 10,bold:true,
-        
+        fontSize: 10,
+        bold: true,
+
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, true],
@@ -1113,8 +1115,9 @@ exports.generatePdfPath2 = async (req, res) => {
       },
       {
         text: "ร.",
-        fontSize: 10,bold:true,
-        
+        fontSize: 10,
+        bold: true,
+
         alignment: "center",
         font: "THSarabunNew",
         border: [false, false, true, true],
@@ -1129,17 +1132,12 @@ exports.generatePdfPath2 = async (req, res) => {
     let ExtraTheoryCredits = 0;
     let ExtraPracticalCredits = 0;
 
-
     let SubTheoryCredits = 0;
     let SubPracticalCredits = 0;
 
     const Sort = [];
 
-    Sort.push(
-      H1,
-      H2,
-      H3,
-    )
+    Sort.push(H1, H2, H3);
     SubjectSuccessInAllStructure.forEach((item) => {
       Sort.push([
         {
@@ -1173,25 +1171,25 @@ exports.generatePdfPath2 = async (req, res) => {
             margin: [0, 0, 0, 0],
             fontSize: 10,
             colSpan: 14,
-        },
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
+          },
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
         ]);
       } else {
         subjects.forEach((sub) => {
-          SubTheoryCredits += sub.theory_credits
-          SubPracticalCredits += sub.practical_credits
+          SubTheoryCredits += sub.theory_credits;
+          SubPracticalCredits += sub.practical_credits;
           const extraSubject = sub.extraSubject;
           if (sub.extraSubject.length === 2) {
             countlist++;
@@ -1199,8 +1197,8 @@ exports.generatePdfPath2 = async (req, res) => {
             countlist++;
           }
           extraSubject.forEach((extra) => {
-            ExtraTheoryCredits += extra.theory_credits
-            ExtraPracticalCredits += extra.practical_credits
+            ExtraTheoryCredits += extra.theory_credits;
+            ExtraPracticalCredits += extra.practical_credits;
             Sort.push([
               {
                 text: `${countlist}`,
@@ -1330,19 +1328,22 @@ exports.generatePdfPath2 = async (req, res) => {
       {},
       {
         text: ExtraTheoryCredits,
-        border: [true, true, true, true],        alignment: "center",
+        border: [true, true, true, true],
+        alignment: "center",
         margin: [0, 0, 0, 0],
         fontSize: 10,
       },
       {
         text: ExtraPracticalCredits,
-        border: [true, true, true, true],        alignment: "center",
+        border: [true, true, true, true],
+        alignment: "center",
         margin: [0, 0, 0, 0],
         fontSize: 10,
       },
       {
-        text: ExtraTheoryCredits+ExtraPracticalCredits,
-        border: [true, true, true, true],        alignment: "center",
+        text: ExtraTheoryCredits + ExtraPracticalCredits,
+        border: [true, true, true, true],
+        alignment: "center",
         margin: [0, 0, 0, 0],
         fontSize: 10,
       },
@@ -1363,19 +1364,22 @@ exports.generatePdfPath2 = async (req, res) => {
       {},
       {
         text: SubTheoryCredits,
-        border: [true, true, true, true],        alignment: "center",
+        border: [true, true, true, true],
+        alignment: "center",
         margin: [0, 0, 0, 0],
         fontSize: 10,
       },
       {
         text: SubPracticalCredits,
-        border: [true, true, true, true],        alignment: "center",
+        border: [true, true, true, true],
+        alignment: "center",
         margin: [0, 0, 0, 0],
         fontSize: 10,
       },
       {
-        text: SubTheoryCredits+SubPracticalCredits,
-        border: [true, true, true, true],        alignment: "center",
+        text: SubTheoryCredits + SubPracticalCredits,
+        border: [true, true, true, true],
+        alignment: "center",
         margin: [0, 0, 0, 0],
         fontSize: 10,
       },
@@ -1387,9 +1391,9 @@ exports.generatePdfPath2 = async (req, res) => {
         fontSize: 10,
       },
       {},
-    ]
+    ];
 
-    Sort.push(TotalCredit)
+    Sort.push(TotalCredit);
 
     const documentDefinition = {
       pageSize: "A4",
@@ -1462,9 +1466,12 @@ exports.generatePdfPath2 = async (req, res) => {
               width: "*",
               stack: [
                 {
-                  text: "ชื่อ - สกุล: "+dataStudent.fullname
-                  +"  รหัสนักศึกษา: " + dataStudent._id +
-                  "  สาขาวิชา เทคโนโลยีธุรกิจดิจิทัล",
+                  text:
+                    "ชื่อ - สกุล: " +
+                    dataStudent.fullname +
+                    "  รหัสนักศึกษา: " +
+                    dataStudent._id +
+                    "  สาขาวิชา เทคโนโลยีธุรกิจดิจิทัล",
                   fontSize: 10,
                   font: "THSarabunNew",
                   margin: [0, 0, 0, 0],
@@ -1498,7 +1505,7 @@ exports.generatePdfPath2 = async (req, res) => {
         },
         {
           table: {
-            widths: ["*", "*", "*","*"],
+            widths: ["*", "*", "*", "*"],
             body: [
               [
                 {
@@ -1668,14 +1675,15 @@ exports.generatePdfPath2 = async (req, res) => {
                 },
                 {},
               ],
-              
             ],
           },
         },
       ],
+
       defaultStyle: {
         font: "THSarabunNew",
       },
+
     };
 
     const pdfDoc = pdfMake.createPdf(documentDefinition);
@@ -1696,179 +1704,95 @@ exports.generatePdfPath2 = async (req, res) => {
   }
 };
 
+var today = new Date();
+var yyyy = today.getFullYear() + 543;
+
+function convertToDateThai(date) {
+  var month_th = [
+    "",
+    "มกราคม",
+    "กุมภาพันธ์",
+    "มีนาคม",
+    "เมษายน",
+    "พฤษภาคม",
+    "มิถุนายน",
+    "กรกฎาคม",
+    "สิงหาคม",
+    "กันยายน",
+    "ตุลาคม",
+    "พฤศจิกายน",
+    "ธันวาคม",
+  ];
+  return (result =
+    "วันที่  " +
+    date.getDate() +
+    " เดือน " +
+    month_th[date.getMonth() + 1] +
+    " พ.ศ. " +
+    (date.getFullYear() + 543));
+}
+var date = convertToDateThai(new Date());
+
 exports.generatePdfPath3 = async (req, res) => {
   try {
-    const student_id = '65342310180-5';
-    const dataStudent = await Student.findOne({ _id: student_id }).exec();
-    const TransferOrder_id = "TS-" + student_id;
-    const transferList = await TransferList.find({
-      transferOrder_id: TransferOrder_id,
-    })
-      .select("success")
-      .exec();
-
-    const allSubjects = transferList.flatMap((item) =>
-      item.success.map((successItem) => successItem.subject_id)
-    );
-
-    let AllSubject = [];
-    let TotalCredit = 0;
-
-    for (const subject_id of allSubjects) {
-      const subject = await Subject.findOne({
-        subject_id: subject_id,
-        structure_id: "CS-" + dataStudent.curriculum,
-      }).exec();
-
-      TotalCredit += subject.total_credits;
-
-      AllSubject.push({
-        subject_id: subject.subject_id,
-        total_credits: subject.total_credits,
-        structure_id: subject.structure_id,
-        group_id: subject.group_id,
-      });
-    }
-
-    const AllStructure = await Structure.find({
-      structure_id: "CS-" + dataStudent.curriculum,
-    })
-      .select("sort group_id group_name")
-      .exec();
-
-    let structureGroups = [];
-
-    AllStructure.forEach((structure) => {
-      const { sort, group_id, group_name } = structure;
-      if (!structureGroups[sort]) {
-        structureGroups[sort] = [];
-      }
-      structureGroups[sort].push({
-        group_id,
-        group_name,
-      });
-    });
-
-    let groupedSubjectsByGroup = [];
-
-    for (const [sort, groups] of Object.entries(structureGroups)) {
-      let sortTotalCredits = 0;
-
-      groups.forEach((group) => {
-        const { group_id, group_name } = group;
-
-        const subjectsInGroup = AllSubject.filter(
-          (subject) => subject.group_id === group_id
-        );
-
-        if (!groupedSubjectsByGroup[sort]) {
-          groupedSubjectsByGroup[sort] = [];
-        }
-
-        if (subjectsInGroup.length > 0) {
-          const totalCredits = subjectsInGroup.reduce(
-            (sum, subject) => sum + subject.total_credits,
-            0
-          );
-
-          sortTotalCredits += totalCredits;
-
-          const groupWithSubjects = {
-            group_id,
-            group_name,
-            credit: totalCredits,
-            subjects: subjectsInGroup.map((subject) => ({
-              subject_id: subject.subject_id,
-              total_credits: subject.total_credits,
-            })),
-          };
-
-          groupedSubjectsByGroup[sort].push(groupWithSubjects);
-        } else {
-          groupedSubjectsByGroup[sort].push({
-            group_id,
-            group_name,
-            credit: 0,
-            subjects: [],
-          });
-        }
-      });
-
-      groupedSubjectsByGroup[sort].totalCredits = sortTotalCredits;
-    }
-
-    const sortedOrder = [
-      "1. หมวดวิชาศึกษาทั่วไป",
-      "2. หมวดวิชาเฉพาะ",
-      "3. หมวดวิชาเลือกเสรี",
-    ];
-
-    // Map the sort key to the desired order
-    const sortedGroupedSubjectsByGroup = Object.entries(groupedSubjectsByGroup)
-      .map(([key, value]) => ({ sort: key, groups: value }))
-      .sort((a, b) => {
-        const orderA = sortedOrder.indexOf(
-          sortedOrder.find((order) => order.startsWith(a.sort))
-        );
-        const orderB = sortedOrder.indexOf(
-          sortedOrder.find((order) => order.startsWith(b.sort))
-        );
-        return orderA - orderB;
-      });
-
-    const textContent = [];
-
-    sortedGroupedSubjectsByGroup.forEach(({ sort, groups }) => {
-      // Adding sort header
-      textContent.push({
-        text: `${sort}`,
-        fontSize: 12,
-        margin: [53, 5, 0, 0],
-      });
-      textContent.push({
-        text: "จำนวน",
-        fontSize: 12,
-        margin: [290, -15, 0, 0],
-      });
-      textContent.push({
-        text: `${groups.totalCredits}`,
-        fontSize: 12,
-        margin: [320, -13.5, 0, 0],
-      });
-      textContent.push({
-        text: "หน่วยกิต",
-        fontSize: 12,
-        margin: [335, -13.5, 0, 0],
-      });
-
-      groups.forEach((group) => {
-        if (sort === "2. หมวดวิชาเฉพาะ") {
-          textContent.push({
-            text: `${group.group_id} ${group.group_name}`,
-            fontSize: 12,
-            margin: [82, 5, 0, 0],
-          });
-          textContent.push({
-            text: "จำนวน",
-            fontSize: 12,
-            margin: [290, -15, 0, 0],
-          });
-          textContent.push({
-            text: `${group.credit}`,
-            fontSize: 12,
-            margin: [320, -13.5, 0, 0],
-          });
-          textContent.push({
-            text: "หน่วยกิต",
-            fontSize: 12,
-            margin: [335, -13.5, 0, 0],
-          });
-        }
-      });
-    });
-
     const documentDefinition = {
       pageSize: "A4",
+      header: function(currentPage, pageCount) {
+        // ตรวจสอบหากเป็นหน้าแรกหรือไม่
+        if (currentPage > 1) {
+          // โค้ดส่วนหัว
+          return [
+            {
+              alignment: "justify",
+              table: {
+                widths: ["31%", "37.5%", "8%", "10%", "10%"],
+                body: [
+                  [
+                    {
+                      
+                      text: "รหัสนักศึกษา",
+                      fontSize: 12,
+                      bold: true,
+                      alignment: "center",
+                      border: [false, true, false, true],
+                    },
+                    {
+                      text: "ชื่อ-นามสกุล",
+                      fontSize: 12,
+                      bold: true,
+                      alignment: "center",
+                      border: [false, true, false, true],
+                    },
+                    {
+                      text: "หน่วยกิตบังคับ",
+                      fontSize: 12,
+                      bold: true,
+                      alignment: "center",
+                      border: [false, true, false, true],
+                    },
+                    {
+                      text: "เทียบโอนได้",
+                      fontSize: 12,
+                      bold: true,
+                      alignment: "center",
+                      border: [false, true, false, true],
+                    },
+                    {
+                      text: "เรียนเพิ่ม",
+                      fontSize: 12,
+                      bold: true,
+                      alignment: "center",
+                      border: [false, true, false, true],
+                    }
+                  ]
+                ]
+              },
+              margin: [25, 10, 0, 0]
+            }
+          ];
+        }
+      
+      },
       content: [
         //header
         {
@@ -1889,24 +1813,7 @@ exports.generatePdfPath3 = async (req, res) => {
                 },
                 {
                   text: "คณะบริหารธุรกิจและเทคโนโลยีสารสนเทศ",
-                  fontSize: 10,
-                  margin: [10, 5, 0, 40],
-                },
-              ],
-            },
-            {
-              width: "*",
-              stack: [
-                {
-                  text: "คบท-ทอ 01-1",
                   fontSize: 12,
-                  alignment: "right",
-                  margin: [10, 25, 0, 0],
-                },
-                {
-                  text: "(หน้า 1)",
-                  fontSize: 12,
-                  alignment: "right",
                   margin: [10, 5, 0, 40],
                 },
               ],
@@ -1915,514 +1822,264 @@ exports.generatePdfPath3 = async (req, res) => {
         },
         //newRows
         {
-          alignment: "justify",
-          columns: [
-            {
-              width: "*",
-              stack: [
-                {
-                  text: "ใบคำร้องขอเทียบโอนผลการเรียน",
-                  style: "header",
-                },
-                {
-                  text: "(เทียบรายวิชาและโอนหน่วยกิต)",
-                  fontSize: 16,
-                  font: "THSarabunNew",
-                  margin: [150, -10, 0, 10],
-                },
-              ],
-            },
-            {
-              text: "กรณีไม่เสียค่าธรรมเนียม",
-              decoration: "underline",
-              margin: [-40, -3, 0, 0],
-              fontSize: 16,
-              bold: true,
-              font: "THSarabunNew",
-            },
-          ],
+          text: "สรุปผลการเทียบโอนรายวิชารายบุคคล (แบบสรุป)",
+          style: "header",
         },
         //new row
         {
-          alignment: "justify",
-          columns: [
-            {
-              width: "*",
-              stack: [
-                {
-                  text: "เรื่อง",
-                  fontSize: 12,
-                  bold: true,
-                  margin: [0, 5, 0, 0],
-                },
-                {
-                  text: "เรียน",
-                  fontSize: 12,
-                  bold: true,
-                  margin: [0, 5, 0, 0],
-                },
-              ],
-            },
-            {
-              width: "*",
-              stack: [
-                {
-                  text: "ขออนุมัติผลการขอเทียบโอนผลการเรียน",
-                  fontSize: 12,
-                  margin: [-220, 5, 0, 0],
-                },
-                {
-                  text: "คณบดีคณะบริหารธุรกิจและเทคโนโลยีสารสนเทศ",
-                  fontSize: 12,
-                  margin: [-220, 5, 0, 0],
-                },
-              ],
-            },
-          ],
+          text: "หลักสูตตรบริหารธุรกิจบัณทิต",
+          fontSize: 14,
+          margin: [235, -5, 0, 0],
+          // color: 'blue',
         },
-        //new row
+        {
+          text: "สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล (หลักสูตร พ.ศ.2563)",
+          fontSize: 14,
+          margin: [190, 5, 0, 0],
+          // color: 'blue',
+        },
+        {
+          text: "คณะบริหารธุรกิจและเทคโนโลยีสารสนเทศ",
+          fontSize: 14,
+          margin: [208, 5, 0, 0],
+          // color: 'blue',
+        },
+        {
+          text: "มหาวิทยาลัยเทคทโนโลยีราชมงคลอีสาน วิทยาเขตขอนแก่น",
+          fontSize: 14,
+          margin: [180, 5, 0, 0],
+          // color: 'blue',
+        },
+        {
+          text: "รุ่นปีการศึกษา  " + yyyy,
+          fontSize: 14,
+          margin: [250, 5, 0, 0],
+          // color: 'blue',
+        },
+        {
+          text: "รายการ ณ " + date,
+          fontSize: 14,
+          margin: [197, 5, 0, 0],
+          // color: 'blue',
+        },
         {
           alignment: "justify",
-          columns: [
-            {
-              width: "*",
-              stack: [
-                {
-                  text: "ด้วยคณะกรรมการเทียบโอนผลการเรียนประจำสาขาวิชา..สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล (หลักสูตร พ.ศ.2563)",
-                  fontSize: 12,
-                  margin: [53, 8, 0, 0],
-                },
-                {
-                  text:
-                    "ได้ดำเนินการเทียบโอนผลการเรียน (เทียบรายวิชาและโอนหน่วยกิต) ของ " +
-                    dataStudent.fullname +
-                    " รหัสนักศึกษา " +
-                    dataStudent._id,
-                  fontSize: 12,
-                  margin: [0, 2, 0, 0],
-                },
-                {
-                  text: "นักศึกษาระดับ",
-                  fontSize: 12,
-                  margin: [10, 2, 0, 0],
-                },
-                {
-                  svg: iconSvgSquere,
-                  width: 14,
-                  height: 14,
-                  margin: [60, -14, 0, 0],
-                },
-                {
-                  text: "ปวส.",
-                  fontSize: 12,
-                  margin: [78, -14, 0, 0],
-                },
-                {
-                  svg: iconSvgSquereTook,
-                  width: 14,
-                  height: 14,
-                  margin: [100, -14, 0, 0],
-                },
-                {
-                  text: "ป. ตรี",
-                  fontSize: 12,
-                  margin: [118, -14, 0, 0],
-                },
-                {
-                  text: "สาขาวิชา เทคโนโลยีธุรกิจดิจิทัล ชั้นปีที่ 3",
-                  fontSize: 12,
-                  margin: [140, -13, 0, 0],
-                },
-                {
-                  svg: iconSvgSquereTook,
-                  width: 14,
-                  height: 14,
-                  margin: [380, -14, 0, 0],
-                },
-                {
-                  text: "ภาคปกติ",
-                  fontSize: 12,
-                  margin: [395, -14, 0, 0],
-                },
-                {
-                  svg: iconSvgSquere,
-                  width: 14,
-                  height: 14,
-                  margin: [440, -14, 0, 0],
-                },
-                {
-                  text: "ภาคสมทบ",
-                  fontSize: 12,
-                  margin: [455, -14, 0, 0],
-                },
-                {
-                  text: "ตามระเบียบมหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน ว่าด้วยการเทียบโอนผลการเรียน พ.ศ.2554 และประกาศมหาวิทยาลัย",
-                  fontSize: 12,
-                  margin: [53, 4, 0, 0],
-                },
-                {
-                  text: "เทคโนโลยีราชมงคลอีสาน เรื่องแนวปฏิบัติการเทียบโอนผลการเรียนจากการศึกาษาในระบบ และหรือการศึกษาตาม",
-                  fontSize: 12,
-                  margin: [0, 2, 0, 0],
-                },
-                {
-                  text: "อัธยาศัย เข้าสู่ระบบการศึกษาในระบบ พ.ศ. 2555 เรียบร้อยแล้ว โดยมีผลสรุปการเทียบโอนผลการเรียนแยกตามหมวดวิชาดังนี้",
-                  fontSize: 12,
-                  margin: [0, 2, 0, 0],
-                },
-              ],
-            },
-          ],
-        },
-        //new row
-        textContent,
-        //new row
-        {
-          alignment: "justify",
-          columns: [
-            {
-              width: "*",
-              stack: [
-                {
-                  text:
-                    "รวมหน่วยกิตที่เทียบโอนผลการเรียน (เทียบรายวิชาและโอนหน่วยกิต) จำนวน " +
-                    TotalCredit +
-                    " หน่วยกิต",
-                  fontSize: 12,
-                  margin: [53, 12, 0, 0],
-                },
-                {
-                  text: "(รายละเอียดรายวิชาที่ผ่านการเทียบโอน และผลการเทียบโอนดังแนบมาพร้อมนี้)",
-                  fontSize: 12,
-                  margin: [0, 2, 0, 0],
-                },
-                {
-                  text: "จึงเรียนมาเพื่อโปรดทราบ",
-                  fontSize: 12,
-                  margin: [53, 8, 0, 0],
-                },
-              ],
-            },
-          ],
-        },
-        //new row
-        {
-          alignment: "justify",
-          columns: [
-            {
-              width: "*",
-              stack: [
-                {
-                  text: "ลงชื่อ .................................................. กรรมการฯ",
-                  fontSize: 12,
-                  margin: [48, 15, 0, 0],
-                },
-                {
-                  text: "(                                      )",
-                  fontSize: 12,
-                  margin: [69, 4, 0, 0],
-                },
-                {
-                  text: "วันที่  ........................................................",
-                  fontSize: 12,
-                  margin: [50, 6, 0, 0],
-                },
-                {
-                  text: "ลงชื่อ .................................................. กรรมการฯ",
-                  fontSize: 12,
-                  margin: [300, -50, 0, 0],
-                },
-                {
-                  text: "(                                      )",
-                  fontSize: 12,
-                  margin: [320, 4, 0, 0],
-                },
-                {
-                  text: "วันที่  ........................................................",
-                  fontSize: 12,
-                  margin: [303, 6, 0, 0],
-                },
-              ],
-            },
-          ],
-        },
-        //new row
-        {
-          alignment: "justify",
-          columns: [
-            {
-              width: "*",
-              stack: [
-                {
-                  text: "ลงชื่อ .................................................. กรรมการฯ",
-                  fontSize: 12,
-                  margin: [48, 15, 0, 0],
-                },
-                {
-                  text: "(                                      )",
-                  fontSize: 12,
-                  margin: [69, 4, 0, 0],
-                },
-                {
-                  text: "วันที่  ........................................................",
-                  fontSize: 12,
-                  margin: [50, 6, 0, 0],
-                },
-                {
-                  text: "ลงชื่อ .................................................. กรรมการฯ",
-                  fontSize: 12,
-                  margin: [300, -50, 0, 0],
-                },
-                {
-                  text: "(                                      )",
-                  fontSize: 12,
-                  margin: [320, 4, 0, 0],
-                },
-                {
-                  text: "วันที่  ........................................................",
-                  fontSize: 12,
-                  margin: [303, 6, 0, 15],
-                },
-              ],
-            },
-          ],
-        },
-        //new row
-        {
           table: {
-            widths: ["*", "*"],
+            widths: ["30%", "40%", "13%", "10%", "10%"],
             body: [
               [
-                [
-                  {
-                    text: "1.ความเห็นของหัวหน้าสาขาวิชา",
-                    fontSize: 12,
-                    alignment: "left",
-                    bold: true,
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "........-เห็นควรโปรดพิจารณาอนุมัติ...........................................",
-                    fontSize: 12,
-                    alignment: "left",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "(ลงชื่อ)................................................หัวหน้าสาขาวิชา",
-                    fontSize: 12,
-                    alignment: "center",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "วันที่...............................................................",
-                    fontSize: 12,
-                    alignment: "center",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                ],
-                [
-                  {
-                    text: "4.ผลการพิจารณาของคณบดี",
-                    fontSize: 12,
-                    bold: true,
-                    alignment: "left",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    svg: iconSvgSquere,
-                    alignment: "left",
-                    width: 14,
-                    height: 14,
-                    margin: [25, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "อนุมัติ",
-                    fontSize: 12,
-                    alignment: "center",
-                    margin: [-140, -15, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    svg: iconSvgSquere,
-                    width: 14,
-                    height: 14,
-                    margin: [80, -12, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "ไม่อนุมัติ",
-                    fontSize: 12,
-                    alignment: "center",
-                    margin: [-20, -15, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "(ลงชื่อ)................................................คณบดี",
-                    fontSize: 12,
-                    alignment: "center",
-                    margin: [0, 4, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "วันที่...............................................................",
-                    fontSize: 12,
-                    alignment: "center",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                ],
+                {
+                  text: "รหัสนักศึกษา",
+                  fontSize: 12,
+                  bold: true,
+                  alignment: "center",
+                  border: [false, true, false, true],
+                },
+                {
+                  text: "ชื่อ-นามสกุล",
+                  fontSize: 12,
+                  bold: true,
+                  alignment: "center",
+                  border: [false, true, false, true],
+                },
+                {
+                  text: "หน่วยกิตบังคับ",
+                  fontSize: 12,
+                  bold: true,
+                  alignment: "center",
+                  border: [false, true, false, true],
+                },
+                {
+                  text: "เทียบโอนได้",
+                  fontSize: 12,
+                  bold: true,
+                  alignment: "center",
+                  border: [false, true, false, true],
+                },
+                {
+                  text: "เรียนเพิ่ม",
+                  fontSize: 12,
+                  bold: true,
+                  alignment: "center",
+                  border: [false, true, false, true],
+                },
               ],
               [
-                [
-                  {
-                    text: "2.ความเห็นของหัวหน้าสำนักงานคณบดี",
-                    fontSize: 12,
-                    alignment: "left",
-                    bold: true,
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
+                {
+                  table: {
+                    widths: ["*"],
+                    body: [
+                      [
+                        {
+                          text: "กลุ่มเรียน :",
+                          border: [true, true, true, true],
+                        },
+                       
+                      ],
+                    ],
                   },
-                  {
-                    text: "........................................................................................................",
-                    fontSize: 12,
-                    alignment: "left",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "(ลงชื่อ)................................................หัวหน้าสำนักงานคณบดี",
-                    fontSize: 12,
-                    alignment: "center",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "วันที่...............................................................",
-                    fontSize: 12,
-                    alignment: "center",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                ],
-                [
-                  {
-                    text: "5.ความเห็นของหัวหน้างานส่งเสริมวิชาการและงานทะเบียน",
-                    fontSize: 12,
-                    alignment: "left",
-                    bold: true,
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "........................................................................................................",
-                    fontSize: 12,
-                    alignment: "left",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "(ลงชื่อ)................................................หัวหน้างานส่งเสริมฯ",
-                    fontSize: 12,
-                    alignment: "center",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "วันที่...............................................................",
-                    fontSize: 12,
-                    alignment: "center",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                ],
+                  border: [false, false, false, false],
+                  margin: [0, 2, 0, 0],
+                },
+                {
+                    text: "",
+                    border: [false, false, false, false],
+                },
+              
+                {
+                    text: "",
+                    border: [false, false, false, false],
+                },
+              
+                {
+                    text: "",
+                    border: [false, false, false, false],
+                },
+              
+                {
+                    text: "",
+                    border: [false, false, false, false],
+                },
+              
               ],
               [
-                [
-                  {
-                    text: "3.ความเห็นของรองคณบดีฝ่ายวิชาการและวิจัย",
-                    fontSize: 12,
-                    alignment: "left",
-                    bold: true,
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "........................................................................................................",
-                    fontSize: 12,
-                    alignment: "left",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "(ลงชื่อ)................................................รองคณบดีฝ่ายวิชาการฯ",
-                    fontSize: 12,
-                    alignment: "center",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "วันที่...............................................................",
-                    fontSize: 12,
-                    alignment: "center",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                ],
-                [
-                  {
-                    text: "6.สำหรับเจ้าหน้าที่แผนกงานทะเบียนและวัดผล",
-                    fontSize: 12,
-                    alignment: "left",
-                    bold: true,
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "........................................................................................................",
-                    fontSize: 12,
-                    alignment: "left",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "(ลงชื่อ)................................................เจ้าหน้าที่งานทะเบียนฯ",
-                    fontSize: 12,
-                    alignment: "center",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                  {
-                    text: "วันที่...............................................................",
-                    fontSize: 12,
-                    alignment: "center",
-                    margin: [0, 2, 0, 0],
-                    border: [true, true, true, true],
-                  },
-                ],
+                {
+                  text: "a",
+                  fontSize: 12,
+                  bold: true,
+                  alignment: "center",
+                  border: [false, false, false, false],
+                },
+                {
+                  text: "b",
+                  alignment: "center",
+                  border: [false, false, false, false],
+                },
+                {
+                  text: "c",
+                  alignment: "center",
+                  border: [false, false, false, false],
+                },
+                {
+                  text: "d",
+                  alignment: "center",
+                  border: [false, false, false, false],
+                },
+                {
+                  text: "e",
+                  alignment: "center",
+                  border: [false, false, false, false],
+                },
               ],
+              [
+                {
+                  text: "",
+                  border: [false, false, false, false],
+                },
+                {
+                  table: {
+                    widths: ["*"],
+                    body: [
+                      [
+                        {
+                          text: "รวมจำนวนในกลุ่มเรียน ? คน",
+                          alignment: "center",
+                          border: [false, true, false, true],
+                        },
+                      ],
+                    ],
+                  },
+                  border: [false, false, false, false],
+                  margin: [0, 10, 0, 10],
+                  colSpan: 3,
+                },
+              
+                {
+                    
+                },
+              
+                {
+                    
+                },
+              
+                {
+                    text: "",
+                    border: [false, false, false, false],
+                },
+                
+              ],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+              ["Data6", "Data7", "Data8", "Data9", "Data10"],
+         
             ],
           },
-          margin: [0, -10, 0, 0],
+          margin: [0, 13, 0, 0],
         },
       ],
       styles: {
         header: {
           fontSize: 16,
           bold: true,
-          margin: [200, -20, 0, 10],
+          margin: [180, 0, 0, 10],
           font: "THSarabunNew",
-          alignment: "center",
+          // color: 'blue',
         },
       },
+
       defaultStyle: {
         font: "THSarabunNew",
       },
+      footer: function(currentPage, pageCount) {
+        return {
+          text: `หน้า:${currentPage }/${pageCount }`,
+          alignment: "right",
+          margin:[0, 0, 15, 0]
+        } 
+      }
     };
 
     const pdfDoc = pdfMake.createPdf(documentDefinition);
