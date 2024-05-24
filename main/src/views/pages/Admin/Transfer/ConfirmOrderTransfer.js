@@ -35,6 +35,7 @@ import { read as readStudent } from '../../../../function/student';
 import { list as ListCurriculum } from '../../../../function/curriculum';
 import { listByStructure as AllSubject } from '../../../../function/subject';
 import { list as AllExtraSubject } from '../../../../function/extar-subject';
+import { list as AllAdmin } from '../../../../function/admin';
 
 import axios from 'axios';
 
@@ -43,12 +44,23 @@ const ConfirmOrderTransfer = () => {
 
   const [transferList, setTransferList] = useState([]);
   const [transferOrder, setTransferOrder] = useState([]);
+  const [checkByid, setCheckBy] = useState({});
+  const [approveByid, setApproveBy] = useState({});
+  const [checkMan, setCheckMan] = useState([]);
+
+  const loadAllAdmin = async () => {
+    AllAdmin()
+      .then((res) => setCheckMan(res.data))
+      .catch((err) => console.log(err));
+  };
 
   const loadTransferRead = async (id) => {
     TransferRead(id)
       .then((res) => {
         setTransferList(res.data.transferList);
         setTransferOrder(res.data.readTransferOrder);
+        setCheckBy(res.data.readTransfer.checkBy);
+        setApproveBy(res.data.readTransfer.approveBy);
       })
       .catch((err) => console.log(err));
   };
@@ -114,6 +126,7 @@ const ConfirmOrderTransfer = () => {
     loadReadStudent(params._id);
     loadListCurriculum();
     loadAllExtraSubject();
+    loadAllAdmin()
   }, [params._id]);
 
   useEffect(() => {
@@ -126,149 +139,6 @@ const ConfirmOrderTransfer = () => {
 
   const handleViewPDF = () => {
     window.open(pdfURL, '_blank'); // เปิด URL ในแท็บใหม่
-  };
-
-  const handleDelete = (listIndex, successIndex) => {
-    Swal.fire({
-      title: 'ต้องการลบรายการนี้ใช่หรือไม่?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'ยืนยัน',
-      cancelButtonText: 'ยกเลิก',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          setTransferList((prevTransferList) => {
-            const updatedTransferList = [...prevTransferList];
-            const deletedItem = updatedTransferList[listIndex].success.splice(successIndex, 1)[0]; // Remove the deleted item and get it
-            deletedItem.extraSubject.forEach((extraSubject) => {
-              updatedTransferList[listIndex].unsuccess.push({
-                extraSubject: extraSubject.id,
-                grade: extraSubject.grade,
-                note: 'สามารถนำไปเทียบได้',
-              });
-            });
-            return updatedTransferList;
-          });
-        } catch (error) {
-          Swal.fire({
-            icon: 'error',
-            title: 'ลบรายการข้อมูลไม่สำเร็จ',
-            text: error.response ? error.response.data : 'An error occurred',
-          });
-          console.error('เกิดข้อผิดพลาดในการลบรายการข้อมูล:', error);
-        }
-      }
-    });
-  };
-
-  const navigate = useNavigate();
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-
-    const NewSuccess = transferList.map((list) =>
-      list.success.map((successItem) => ({
-        curriculum_id: successItem.curriculum_id,
-        mach_id: successItem.mach_id,
-        subject_id: successItem.subject_id,
-        machlist_id: successItem.machlist_id,
-        extraSubject: successItem.extraSubject.map((extraSubject) => ({
-          id: extraSubject.id,
-          grade: extraSubject.grade,
-        })),
-        note: successItem.note,
-      })),
-    );
-
-    const NewUnSuccess = transferList.map((list) =>
-      list.unsuccess.map((unsuccessItem) => ({
-        extraSubject: unsuccessItem.extraSubject,
-        grade: unsuccessItem.grade,
-        note: unsuccessItem.note,
-      })),
-    );
-
-    const updatedData = {
-      success: NewSuccess.flat(),
-      unsuccess: NewUnSuccess.flat(),
-    };
-
-    Swal.fire({
-      title: 'ต้องการบันทึกข้อมูลนี้ใช่หรือไม่?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'ยืนยัน',
-      cancelButtonText: 'ยกเลิก',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await TransferUpdate(params._id, updatedData);
-          Swal.fire({
-            icon: 'success',
-            title: 'บันทึกข้อมูลสำเร็จ',
-          });
-          navigate(-1);
-        } catch (error) {
-          Swal.fire({
-            icon: 'error',
-            title: 'บันทึกข้อมูลไม่สำเร็จ',
-            text: error.response ? error.response.data : 'An error occurred',
-          });
-          console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);
-        }
-      }
-    });
-  };
-
-  const handleAddSuccess = (newSuccessItem) => {
-    setTransferList((prevTransferList) => {
-      const updatedTransferList = [...prevTransferList];
-      updatedTransferList[0].success.push(newSuccessItem);
-
-      const extra = newSuccessItem.extraSubject;
-
-      updatedTransferList[0].unsuccess = updatedTransferList[0].unsuccess.filter(
-        (unsuccessItem) =>
-          !extra.some((extraSubject) => extraSubject.id === unsuccessItem.extraSubject),
-      );
-
-      return updatedTransferList;
-    });
-  };
-
-  const handleConfirm = () => {
-    Swal.fire({
-      title: 'ต้องการยืนยันการเทียบโอนนี้ใช่หรือไม่?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'ยืนยัน',
-      cancelButtonText: 'ยกเลิก',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await TransferConfirmPath2(params._id);
-          Swal.fire({
-            icon: 'success',
-            title: 'ยืนยันการเทียบโอนสำเร็จ',
-          });
-          navigate(-1);
-        } catch (error) {
-          Swal.fire({
-            icon: 'error',
-            title: 'ยืนยันการเทียบโอนไม่สำเร็จ',
-            text: error.response ? error.response.data : 'An error occurred',
-          });
-          console.error('เกิดข้อผิดพลาดในการลบรายการข้อมูล:', error);
-        }
-      }
-    });
   };
 
   const [isLoading, setIsLoading] = useState(false);
@@ -296,6 +166,32 @@ const ConfirmOrderTransfer = () => {
       setIsLoading(false);
     }
   };
+
+  const handleGeneratePdfPath2 = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get('http://localhost:5000/api/reportPath2/' + params._id, {
+        responseType: 'blob',
+      });
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+
+      // const fileName = 'ส่วนที่ 1 ใบคำร้องขอเทียบโอนผลการเรียน.pdf';
+
+      // const anchor = document.createElement('a');
+      // anchor.href = url;
+      // anchor.window.open = fileName;
+      // anchor.click();
+      // window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const navigate = useNavigate();
 
   const handleBack = () => {
     navigate(-1);
@@ -342,6 +238,78 @@ const ConfirmOrderTransfer = () => {
             <CustomFormLabel>การเทียบโอน</CustomFormLabel>
             <Typography color={'green'}>{student.status || ''}</Typography>
           </Grid>
+        </Grid>
+      </ParentCard>
+      <Box marginY={3} />
+      <ParentCard
+        title={
+          <Stack direction="row" alignItems="center">
+            <Typography variant="h5">ข้อมูลผู้ตรวจสอบเบื้องต้น</Typography>
+          </Stack>
+        }
+      >
+        <Grid container>
+          {checkMan.map((checkMan) =>
+            checkMan._id === approveByid ? (
+              <React.Fragment key={checkMan._id}>
+                <Grid item xs={12} lg={6}>
+                  <CustomFormLabel>ชื่อนามสกุล</CustomFormLabel>
+                  <Typography>{checkMan.fullname || ''}</Typography>
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <CustomFormLabel>สังกัดหลักสูตร</CustomFormLabel>
+                  {allCurriculum.some((curriculum) => checkMan.curriculum === curriculum._id) ? (
+                    allCurriculum.map((curriculum) =>
+                      checkMan.curriculum === curriculum._id ? (
+                        <Typography key={curriculum._id}>
+                          {curriculum.name || ''} ปี พ.ศ {curriculum.year || ''} (
+                          {curriculum.level || ''} {curriculum.time || ''} ปี)
+                        </Typography>
+                      ) : null,
+                    )
+                  ) : (
+                    <Typography>ไม่สังกัดหลักสูตร</Typography>
+                  )}
+                </Grid>
+              </React.Fragment>
+            ) : null,
+          )}
+        </Grid>
+      </ParentCard>
+      <Box marginY={3} />
+      <ParentCard
+        title={
+          <Stack direction="row" alignItems="center">
+            <Typography variant="h5">ข้อมูลผู้ยืนยันการเทียบโอน</Typography>
+          </Stack>
+        }
+      >
+        <Grid container>
+          {checkMan.map((checkMan) =>
+            checkMan._id === checkByid ? (
+              <React.Fragment key={checkMan._id}>
+                <Grid item xs={12} lg={6}>
+                  <CustomFormLabel>ชื่อนามสกุล</CustomFormLabel>
+                  <Typography>{checkMan.fullname || ''}</Typography>
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <CustomFormLabel>สังกัดหลักสูตร</CustomFormLabel>
+                  {allCurriculum.some((curriculum) => checkMan.curriculum === curriculum._id) ? (
+                    allCurriculum.map((curriculum) =>
+                      checkMan.curriculum === curriculum._id ? (
+                        <Typography key={curriculum._id}>
+                          {curriculum.name || ''} ปี พ.ศ {curriculum.year || ''} (
+                          {curriculum.level || ''} {curriculum.time || ''} ปี)
+                        </Typography>
+                      ) : null,
+                    )
+                  ) : (
+                    <Typography>ไม่สังกัดหลักสูตร</Typography>
+                  )}
+                </Grid>
+              </React.Fragment>
+            ) : null,
+          )}
         </Grid>
       </ParentCard>
       <Box marginY={3} />
@@ -618,7 +586,7 @@ const ConfirmOrderTransfer = () => {
             <Button variant="contained" color="primary" onClick={handleGeneratePdfPath1}>
               ใบคำร้องขอเทียบโอนผลการเรียน ส่วนที่ 1
             </Button>
-            <Button variant="contained" color="success">
+            <Button variant="contained" color="success" onClick={handleGeneratePdfPath2}>
               ใบคำร้องขอเทียบโอนผลการเรียน ส่วนที่ 2
             </Button>
             <Button variant="outlined" color="warning" onClick={handleBack}>
