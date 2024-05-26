@@ -63,12 +63,10 @@ const ManageTransfer = () => {
   }, []);
 
   const Status = [
-    { label: 'รอการยืนยันการเทียบโอนเบื้องต้น', value: 'รอการยืนยันการเทียบโอนเบื้องต้น' },
     {
       label: 'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร',
       value: 'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร',
     },
-    { label: 'ยืนยันการเทียบโอนถูกต้อง', value: 'ยืนยันการเทียบโอนถูกต้อง' },
   ];
 
   const [selectedStatus, setSelectedStatus] = useState([]);
@@ -193,32 +191,13 @@ const ManageTransfer = () => {
                                       <TableCell align="center">{student.institution}</TableCell>
                                       <TableCell align="center">{student.branch}</TableCell>
                                       <TableCell align="center">
-                                        {selectedStatus === 'รอการยืนยันการเทียบโอนเบื้องต้น' ? (
-                                          <IconButton
-                                            component={Link}
-                                            to={`/admin/manage/transfer/check/${item._id}`}
-                                            color="warning"
-                                          >
-                                            <IconFileDescription size="18" />
-                                          </IconButton>
-                                        ) : selectedStatus ===
-                                          'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร' ? (
-                                          <IconButton
-                                            component={Link}
-                                            to={`/admin/manage/transfer/approve/${item._id}`}
-                                            color="primary"
-                                          >
-                                            <IconFileDescription size="18" />
-                                          </IconButton>
-                                        ) : selectedStatus === 'ยืนยันการเทียบโอนถูกต้อง' ? (
-                                          <IconButton
-                                            component={Link}
-                                            to={`/admin/manage/transfer/confirm/${item._id}`}
-                                            color="success"
-                                          >
-                                            <IconFileDescription size="18" />
-                                          </IconButton>
-                                        ) : null}
+                                        <IconButton
+                                          component={Link}
+                                          to={`/lecturer/manage/transfer/approve/${item._id}`}
+                                          color="primary"
+                                        >
+                                          <IconFileDescription size="18" />
+                                        </IconButton>
                                       </TableCell>
                                     </React.Fragment>
                                   ) : null,

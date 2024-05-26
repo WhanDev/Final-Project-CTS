@@ -19,8 +19,6 @@ import {
   IconAlertCircle,
   IconFile,
   IconSearch,
-  IconTrash,
-  IconEdit,
 } from '@tabler/icons';
 import Swal from 'sweetalert2';
 
@@ -28,9 +26,8 @@ import PageContainer from '../../../../components/container/PageContainer';
 import CustomFormLabel from '../../../../components/forms/theme-elements/CustomFormLabel';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../../components/shared/ParentCard';
-import DialogAdd from './DialogAdd';
 
-import { TransferRead, TransferUpdate, TransferConfirmPath2 } from '../../../../function/transfer';
+import { TransferRead, TransferDelete, } from '../../../../function/transfer';
 import { read as readStudent } from '../../../../function/student';
 import { list as ListCurriculum } from '../../../../function/curriculum';
 import { listByStructure as AllSubject } from '../../../../function/subject';
@@ -141,10 +138,7 @@ const ConfirmOrderTransfer = () => {
     window.open(pdfURL, '_blank'); // เปิด URL ในแท็บใหม่
   };
 
-  const [isLoading, setIsLoading] = useState(false);
-
   const handleGeneratePdfPath1 = async () => {
-    setIsLoading(true);
     try {
       const response = await axios.get('http://localhost:5000/api/reportPath1/' + params._id, {
         responseType: 'blob',
@@ -163,12 +157,10 @@ const ConfirmOrderTransfer = () => {
     } catch (err) {
       console.error(err.message);
     } finally {
-      setIsLoading(false);
     }
   };
 
   const handleGeneratePdfPath2 = async () => {
-    setIsLoading(true);
     try {
       const response = await axios.get('http://localhost:5000/api/reportPath2/' + params._id, {
         responseType: 'blob',
@@ -187,7 +179,6 @@ const ConfirmOrderTransfer = () => {
     } catch (err) {
       console.error(err.message);
     } finally {
-      setIsLoading(false);
     }
   };
 
@@ -195,6 +186,38 @@ const ConfirmOrderTransfer = () => {
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  const handleDelete = () => {
+    Swal.fire({
+      title: 'ข้อมูลจะหายถาวร! ต้องการยกเลิกรายการเทียบโอนของนักศึกษา?',
+      icon: 'warning',
+      width: 'auto',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ยืนยัน',
+      cancelButtonText: 'ยกเลิก',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          console.log('ยกเลิกรายการเทียบโอนของนักศึกษา ข้อมูลจะหายถาวร!');
+          await TransferDelete(params._id);
+          Swal.fire({
+            icon: 'success',
+            title: 'ยกเลิกรายการเทียบโอนของนักศึกษาสำเร็จ',
+          });
+          navigate(-1);
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'ยกเลิกรายการเทียบโอนของนักศึกษาไม่สำเร็จ',
+            text: error.response ? error.response.data : 'An error occurred',
+          });
+          console.error('เกิดข้อผิดพลาดในการลบรายการข้อมูล:', error);
+        }
+      }
+    });
   };
 
   return (
@@ -591,6 +614,9 @@ const ConfirmOrderTransfer = () => {
             </Button>
             <Button variant="contained" color="success" onClick={handleGeneratePdfPath2}>
               ใบคำร้องขอเทียบโอนผลการเรียน ส่วนที่ 2
+            </Button>
+            <Button variant="contained" color="error" onClick={handleDelete}>
+              ยกเลิกรายการเทียบโอน
             </Button>
             <Button variant="outlined" color="warning" onClick={handleBack}>
               ย้อนกลับ

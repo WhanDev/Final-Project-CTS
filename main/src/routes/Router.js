@@ -115,6 +115,20 @@ const AddExtraSubjectOfficer = Loadable(
 const EditExtraSubjectOfficer = Loadable(
   lazy(() => import('../views/pages/Officer/ExtraSubject/EditExtraSubject')),
 );
+const ManageMachSubjectOfficer = Loadable(
+  lazy(() => import('../views/pages/Officer/MachSubject/ManageMachSubject')),
+);
+const ListMachSubjectOfficer = Loadable(
+  lazy(() => import('../views/pages/Officer/MachSubject/ListMachSubject')),
+);
+const AddMachSubjectListOfficer = Loadable(
+  lazy(() => import('../views/pages/Officer/MachSubject/AddMachSubjectList')),
+);
+const EditMachSubjectListOfficer = Loadable(
+  lazy(() => import('../views/pages/Officer/MachSubject/EditMachSubjectList')),
+);
+const ManageTransferOfficer = Loadable(lazy(() => import('../views/pages/Officer/Transfer/ManageTransfer')));
+const CheckOrderTransferOfficer = Loadable(lazy(() => import('../views/pages/Officer/Transfer/CheckOrderTransfer')));
 
 //Lecturer
 const IndexLecturer = Loadable(lazy(() => import('../views/pages/Lecturer/IndexLecturer')));
@@ -150,6 +164,22 @@ const AddExtraSubjectLecturer = Loadable(
 );
 const EditExtraSubjectLecturer = Loadable(
   lazy(() => import('../views/pages/Lecturer/ExtraSubject/EditExtraSubject')),
+);
+const ManageMachSubjectLecturer = Loadable(
+  lazy(() => import('../views/pages/Lecturer/MachSubject/ManageMachSubject')),
+);
+const ListMachSubjectLecturer = Loadable(
+  lazy(() => import('../views/pages/Lecturer/MachSubject/ListMachSubject')),
+);
+const AddMachSubjectListLecturer = Loadable(
+  lazy(() => import('../views/pages/Lecturer/MachSubject/AddMachSubjectList')),
+);
+const EditMachSubjectListLecturer= Loadable(
+  lazy(() => import('../views/pages/Lecturer/MachSubject/EditMachSubjectList')),
+);
+const ManageTransferLecturer = Loadable(lazy(() => import('../views/pages/Lecturer/Transfer/ManageTransfer')));
+const ApproveOrderTransferLecturer = Loadable(
+  lazy(() => import('../views/pages/Lecturer/Transfer/ApproveOrderTransfer')),
 );
 
 //Student
@@ -282,7 +312,7 @@ const Router = [
         path: '/officer/manage/curriculum/:_id/structure/edit/CS-:_id',
         element: <EditCurriculumOfficer />,
       },
-      //จัดการข้อมูลโครงสร้าง
+      // //จัดการข้อมูลโครงสร้าง
       {
         path: '/officer/manage/curriculum/:curriculum/structure/:structure_id',
         element: <ManageStructureOfficer />,
@@ -295,7 +325,7 @@ const Router = [
         path: '/officer/manage/curriculum/:curriculum/structure/:structure_id/edit/:_id',
         element: <EditStructureOfficer />,
       },
-      //จัดการข้อมูลรายวิชา
+      // //จัดการข้อมูลรายวิชา
       {
         path: '/officer/manage/curriculum/:curriculum/structure/:structure_id/group/:group_id/subject/add',
         element: <AddSubjectOfficer />,
@@ -313,6 +343,30 @@ const Router = [
       { path: '/officer/manage/extrasubject', element: <ManageExtraSubjectOfficer /> },
       { path: '/officer/manage/extrasubject/add', element: <AddExtraSubjectOfficer /> },
       { path: '/officer/manage/extrasubject/edit/:_id', element: <EditExtraSubjectOfficer /> },
+
+      //จัดการข้อมูลคู่เทียบรายวิชา
+      { path: '/officer/manage/machsubject', element: <ManageMachSubjectOfficer /> },
+      {
+        path: '/officer/manage/machsubject/curriculum/:curriculum/structure/:structure_id',
+        element: <ListMachSubjectOfficer />,
+      },
+      {
+        path: '/officer/manage/machsubject/curriculum/:curriculum/structure/:structure_id/:subject_id/add',
+        element: <AddMachSubjectListOfficer />,
+      },
+      {
+        path: '/officer/manage/machsubject/curriculum/:curriculum/structure/:structure_id/:subject_id/:_id/edit',
+        element: <EditMachSubjectListOfficer />,
+      },
+      //จัดการข้อมูลเทียบโอน ManageTransfer
+      {
+        path: '/officer/manage/transfer',
+        element: <ManageTransferOfficer />,
+      },
+      {
+        path: '/officer/manage/transfer/check/:_id',
+        element: <CheckOrderTransferOfficer />,
+      },
     ],
   },
   {
@@ -351,6 +405,31 @@ const Router = [
       { path: '/lecturer/manage/extrasubject', element: <ManageExtraSubjectLecturer /> },
       { path: '/lecturer/manage/extrasubject/add', element: <AddExtraSubjectLecturer /> },
       { path: '/lecturer/manage/extrasubject/edit/:_id', element: <EditExtraSubjectLecturer /> },
+
+      //จัดการข้อมูลคู่เทียบรายวิชา
+      { path: '/lecturer/manage/machsubject', element: <ManageMachSubjectLecturer /> },
+      {
+        path: '/lecturer/manage/machsubject/curriculum/:curriculum/structure/:structure_id',
+        element: <ListMachSubjectLecturer />,
+      },
+      {
+        path: '/lecturer/manage/machsubject/curriculum/:curriculum/structure/:structure_id/:subject_id/add',
+        element: <AddMachSubjectListLecturer />,
+      },
+      {
+        path: '/lecturer/manage/machsubject/curriculum/:curriculum/structure/:structure_id/:subject_id/:_id/edit',
+        element: <EditMachSubjectListLecturer />,
+      },
+
+      //จัดการข้อมูลเทียบโอน ManageTransfer
+      {
+        path: '/lecturer/manage/transfer',
+        element: <ManageTransferLecturer />,
+      },
+      {
+        path: '/lecturer/manage/transfer/approve/:_id',
+        element: <ApproveOrderTransferLecturer />,
+      },
     ],
   },
   {

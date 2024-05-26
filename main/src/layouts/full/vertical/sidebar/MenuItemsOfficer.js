@@ -1,9 +1,10 @@
 import {
   IconListNumbers,
-  IconUserCircle,
+  IconRoute,
   IconAlbum,
   IconLayoutDashboard,
   IconUsers,
+  IconLayersIntersect
 } from '@tabler/icons';
 
 import { uniqueId } from 'lodash';
@@ -37,6 +38,18 @@ const MenuItemsAdmin = [
     title: 'รายวิชานอกหลักสูตร',
     icon: IconListNumbers,
     href: '/officer/manage/extrasubject',
+  },
+  {
+    id: uniqueId(),
+    title: 'คู่เทียบ',
+    icon: IconRoute,
+    href: '/officer/manage/machsubject',
+  },
+  {
+    id: uniqueId(),
+    title: 'เทียบโอน',
+    icon: IconLayersIntersect,
+    href: '/officer/manage/transfer',
   },
 ];
 

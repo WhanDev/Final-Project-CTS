@@ -392,7 +392,7 @@ const ListMachSubject = () => {
                                                               color="info"
                                                               component={Link}
                                                               to={
-                                                                '/admin/manage/machsubject/curriculum/' +
+                                                                '/officer/manage/machsubject/curriculum/' +
                                                                 params.curriculum +
                                                                 '/structure/' +
                                                                 params.structure_id +
@@ -436,7 +436,7 @@ const ListMachSubject = () => {
                                                         color="info"
                                                         component={Link}
                                                         to={
-                                                          '/admin/manage/machsubject/curriculum/' +
+                                                          '/officer/manage/machsubject/curriculum/' +
                                                           params.curriculum +
                                                           '/structure/' +
                                                           params.structure_id +
@@ -474,7 +474,7 @@ const ListMachSubject = () => {
                                                       color="info"
                                                       component={Link}
                                                       to={
-                                                        '/admin/manage/machsubject/curriculum/' +
+                                                        '/officer/manage/machsubject/curriculum/' +
                                                         params.curriculum +
                                                         '/structure/' +
                                                         params.structure_id +

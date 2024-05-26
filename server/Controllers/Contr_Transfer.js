@@ -733,8 +733,8 @@ exports.TransferConfirmPath2 = async (req, res) => {
   }
 };
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 exports.TransferDelete = async (req, res) => {
   try {
@@ -747,39 +747,47 @@ exports.TransferDelete = async (req, res) => {
       { new: true }
     );
 
-    const removedTransfer = await Transfer.findOneAndDelete({ _id: Transfer_id }).exec();
-    const removedTransferOrder = await TransferOrder.findOneAndDelete({ _id: TransferOrder_id }).exec();
+    const removedTransfer = await Transfer.findOneAndDelete({
+      _id: Transfer_id,
+    }).exec();
+    const removedTransferOrder = await TransferOrder.findOneAndDelete({
+      _id: TransferOrder_id,
+    }).exec();
 
     if (removedTransferOrder && removedTransferOrder.file) {
-      const fileName = 'TransferOrder-'+Transfer_id+'.pdf';
-      const filePath = path.join(__dirname, '../uploads', fileName);
+      const fileName = "TransferOrder-" + Transfer_id + ".pdf";
+      const filePath = path.join(__dirname, "../uploads", fileName);
 
       fs.access(filePath, fs.constants.F_OK, (err) => {
         if (err) {
-          console.error('ไม่พบไฟล์', filePath);
+          console.error("ไม่พบไฟล์", filePath);
         } else {
           fs.unlink(filePath, (err) => {
             if (err) {
-              console.error('เกิดข้อผิดพลาด', filePath);
+              console.error("เกิดข้อผิดพลาด", filePath);
             } else {
-              console.log('File deleted successfully:', filePath);
+              console.log("ลบไฟล์สำเร็จ", filePath);
             }
           });
         }
       });
     }
 
-    const removedTransferList = await TransferList.findOneAndDelete({ transferOrder_id: TransferOrder_id }).exec();
+    const removedTransferList = await TransferList.findOneAndDelete({
+      transferOrder_id: TransferOrder_id,
+    }).exec();
 
     res.json({
-      message: 'รายการเทียบโอนถูกลบเรียบร้อยแล้ว',
+      message: "รายการเทียบโอนถูกลบเรียบร้อยแล้ว",
       removedStudent,
       removedTransfer,
       removedTransferOrder,
-      removedTransferList
+      removedTransferList,
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
   }
 };

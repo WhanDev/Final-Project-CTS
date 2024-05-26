@@ -26,27 +26,38 @@ import DialogAdd from './DialogAdd';
 import {
   TransferRead,
   TransferUpdate,
-  TransferConfirmPath1,
+  TransferConfirmPath2,
   TransferDelete,
 } from '../../../../function/transfer';
 import { read as readStudent } from '../../../../function/student';
 import { list as ListCurriculum } from '../../../../function/curriculum';
 import { listByStructure as AllSubject } from '../../../../function/subject';
 import { list as AllExtraSubject } from '../../../../function/extar-subject';
+import { list as AllAdmin } from '../../../../function/admin';
 import { currentUser } from '../../../../function/auth';
 
-const CheckOrderTransfer = () => {
+const ApproveOrderTransfer = () => {
   const params = useParams();
 
   const [transferList, setTransferList] = useState([]);
   const [transferOrder, setTransferOrder] = useState([]);
   const [hasChanges, setHasChanges] = useState(false);
 
+  const [checkByid, setCheckBy] = useState({});
+  const [checkMan, setCheckMan] = useState([]);
+
+  const loadAllAdmin = async () => {
+    AllAdmin()
+      .then((res) => setCheckMan(res.data))
+      .catch((err) => console.log(err));
+  };
+
   const loadTransferRead = async (id) => {
     TransferRead(id)
       .then((res) => {
         setTransferList(res.data.transferList);
         setTransferOrder(res.data.readTransferOrder);
+        setCheckBy(res.data.readTransfer.checkBy);
       })
       .catch((err) => console.log(err));
   };
@@ -112,6 +123,7 @@ const CheckOrderTransfer = () => {
     loadReadStudent(params._id);
     loadListCurriculum();
     loadAllExtraSubject();
+    loadAllAdmin();
   }, [params._id]);
 
   useEffect(() => {
@@ -119,6 +131,8 @@ const CheckOrderTransfer = () => {
       loadAllSubject(structure_id);
     }
   }, [student.curriculum]);
+
+  const pdfURL = 'http://localhost:5000/api/pdf/' + transferOrder.file; // URL ของไฟล์ PDF
 
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
@@ -136,8 +150,6 @@ const CheckOrderTransfer = () => {
   useEffect(() => {
     checkUser();
   }, []);
-
-  const pdfURL = 'http://localhost:5000/api/pdf/' + transferOrder.file; // URL ของไฟล์ PDF
 
   const handleViewPDF = () => {
     window.open(pdfURL, '_blank'); // เปิด URL ในแท็บใหม่
@@ -322,11 +334,11 @@ const CheckOrderTransfer = () => {
   };
 
   const handleConfirm = () => {
-    const checkBy = {
-      checkBy: user._id,
+    const approveBy = {
+      approveBy: user._id,
     };
     Swal.fire({
-      title: 'ต้องการยืนยันการเทียบโอนนี้ใช่หรือไม่?',
+      title: 'ต้องการยืนยันการเทียบโอน?',
       icon: 'warning',
       width: 'auto',
       showCancelButton: true,
@@ -337,7 +349,7 @@ const CheckOrderTransfer = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await TransferConfirmPath1(params._id, checkBy);
+          await TransferConfirmPath2(params._id, approveBy);
           Swal.fire({
             icon: 'success',
             title: 'ยืนยันการเทียบโอนสำเร็จ',
@@ -397,6 +409,7 @@ const CheckOrderTransfer = () => {
       description="ข้อมูลเทียบโอนผลการเรียนเบื้องต้น"
     >
       <Breadcrumb title="ข้อมูลเทียบโอนผลการเรียนเบื้องต้น" />
+      
       {/* ข้อมูลนักศึกษา */}
       <ParentCard title={
           <Stack direction="row" alignItems="center">
@@ -443,7 +456,46 @@ const CheckOrderTransfer = () => {
           </Grid>
         </Grid>
       </ParentCard>
-      
+
+      <Box marginY={3} />
+
+      {/* ข้อมูลผู้ตรวจสอบเบื้องต้น */}
+      <ParentCard
+        title={
+          <Stack direction="row" alignItems="center">
+            <Typography variant="h5">ข้อมูลผู้ตรวจสอบเบื้องต้น</Typography>
+          </Stack>
+        }
+      >
+        <Grid container>
+          {checkMan.map((checkMan) =>
+            checkMan._id === checkByid ? (
+              <React.Fragment key={checkMan._id}>
+                <Grid item xs={12} lg={6}>
+                  <CustomFormLabel>ชื่อนามสกุล</CustomFormLabel>
+                  <Typography>{checkMan.fullname || ''}</Typography>
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <CustomFormLabel>สังกัดหลักสูตร</CustomFormLabel>
+                  {allCurriculum.some((curriculum) => checkMan.curriculum === curriculum._id) ? (
+                    allCurriculum.map((curriculum) =>
+                      checkMan.curriculum === curriculum._id ? (
+                        <Typography key={curriculum._id}>
+                          {curriculum.name || ''} ปี พ.ศ {curriculum.year || ''} (
+                          {curriculum.level || ''} {curriculum.time || ''} ปี)
+                        </Typography>
+                      ) : null,
+                    )
+                  ) : (
+                    <Typography>ไม่สังกัดหลักสูตร</Typography>
+                  )}
+                </Grid>
+              </React.Fragment>
+            ) : null,
+          )}
+        </Grid>
+      </ParentCard>
+
       <Box marginY={3} />
       {/* ใบรับรองการศึกษา */}
       <ParentCard
@@ -776,4 +828,4 @@ const CheckOrderTransfer = () => {
   );
 };
 
-export default CheckOrderTransfer;
+export default ApproveOrderTransfer;

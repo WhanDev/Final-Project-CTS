@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 
 import PageContainer from '../../../../components/container/PageContainer';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
+import ChildCard from 'src/components/shared/ChildCard';
+import ListReport from './ListReport';
 
 import axios from 'axios';
 
@@ -16,7 +18,7 @@ const ManageReport = () => {
       const url = window.URL.createObjectURL(blob);
       window.open(url, '_blank');
 
-      // const fileName = 'ส่วนที่ 1 ใบคำร้องขอเทียบโอนผลการเรียน.pdf';
+      // const fileName = 'ส่วนที่ 3 ใบคำร้องขอเทียบโอนผลการเรียน.pdf';
 
       // const anchor = document.createElement('a');
       // anchor.href = url;
@@ -30,8 +32,14 @@ const ManageReport = () => {
   };
 
   return (
-    <PageContainer title="รายงาน" description="รายงาน">
-      <Breadcrumb title="รายงาน" />
+    <PageContainer title="รายงานคำร้องขอเทียบโอนผลการเรียน" description="รายงานคำร้องขอเทียบโอนผลการเรียน">
+      <Breadcrumb title="รายงานคำร้องขอเทียบโอนผลการเรียน" />
+      <ChildCard>
+        <Box mt={2}>
+          <ListReport />
+        </Box>
+      </ChildCard>
+      <Box mt={5} />
       <Button variant="contained" color="primary" onClick={handleGeneratePdfPath3}>
         ใบคำร้องขอเทียบโอนผลการเรียน ส่วนที่ 3
       </Button>
