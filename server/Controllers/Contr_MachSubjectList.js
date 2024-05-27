@@ -31,12 +31,10 @@ exports.create = async (req, res) => {
         extraSubject_id,
       });
 
-      res
-        .status(201)
-        .json({
-          message: "เพิ่มข้อมูลสำเร็จ!",
-          data: { createMachSubject, createMachSubjectList },
-        });
+      res.status(201).json({
+        message: "เพิ่มข้อมูลสำเร็จ!",
+        data: { createMachSubject, createMachSubjectList },
+      });
     }
   } catch (err) {
     console.error(err);
@@ -98,13 +96,36 @@ exports.update = async (req, res) => {
   }
 };
 
+const { TransferList } = require("../Models/Model_Transfer");
+
 exports.remove = async (req, res) => {
   try {
     const _id = req.params._id;
-    const removedMachSubjectList = await MachSubjectList.findOneAndDelete({
+
+    const machList = await MachSubjectList.findById(_id).exec();
+
+    if (!machList) {
+      return res.status(404).json({ message: "ไม่พบข้อมูลที่ต้องการลบ" });
+    }
+
+    const relatedTransferList = await TransferList.find({
+      "success.machlist_id": machList._id,
+    }).exec();
+
+    if (relatedTransferList.length > 0) {
+      return res.status(403).json({
+        message: "ไม่สามารถลบข้อมูลที่มีความสัมพันธ์กับข้อมูลอื่นได้",
+        relatedTransferList,
+      });
+    }
+    const removedTransferList = await MachSubjectList.findOneAndDelete({
       _id: _id,
     }).exec();
-    res.json({ message: "ลบข้อมูลสำเร็จ!", data: removedMachSubjectList });
+
+    res.json({
+      message: "ลบข้อมูลสำเร็จ!",
+      removedTransferList,
+    });
   } catch (err) {
     console.error(err);
     res

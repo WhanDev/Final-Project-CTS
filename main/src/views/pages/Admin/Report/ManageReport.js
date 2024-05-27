@@ -40,9 +40,9 @@ const ManageReport = () => {
         </Box>
       </ChildCard>
       <Box mt={5} />
-      <Button variant="contained" color="primary" onClick={handleGeneratePdfPath3}>
+      {/* <Button variant="contained" color="primary" onClick={handleGeneratePdfPath3}>
         ใบคำร้องขอเทียบโอนผลการเรียน ส่วนที่ 3
-      </Button>
+      </Button> */}
     </PageContainer>
   );
 };

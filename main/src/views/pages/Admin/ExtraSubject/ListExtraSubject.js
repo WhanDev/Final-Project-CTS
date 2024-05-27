@@ -167,7 +167,7 @@ const ListExtraSubject = () => {
         confirmButtonText: 'ยืนยัน',
         cancelButtonText: 'ยกเลิก',
       });
-
+  
       if (result.isConfirmed) {
         const extrasubject = await readExtraSubject(_id);
         if (extrasubject.data.createBy === user.curriculum) {
@@ -187,9 +187,15 @@ const ListExtraSubject = () => {
         }
       }
     } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: error.response.data.message,
+      });
       console.error(error);
     }
   };
+  
 
   return (
     <>

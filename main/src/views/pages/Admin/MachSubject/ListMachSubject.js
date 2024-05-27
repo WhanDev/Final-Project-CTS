@@ -106,25 +106,32 @@ const ListMachSubject = () => {
   };
 
   const handleRemoveMachSubjectList = async (_id) => {
-    Swal.fire({
-      title: 'ต้องการลบข้อมูลนี้ใช่หรือไม่?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'ยืนยัน',
-      cancelButtonText: 'ยกเลิก',
-    }).then((result) => {
+    try {
+      const result = await Swal.fire({
+        title: 'ต้องการลบข้อมูลนี้ใช่หรือไม่?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+      });
+  
       if (result.isConfirmed) {
+        await RemoveMachSubjectList(_id);
         Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-        RemoveMachSubjectList(_id).then((res) => {
-          console.log(res);
-          loadDataAllMachsubjectList();
-          loadDataAllExtraSubject();
-        });
+        loadDataAllMachsubjectList();
+        loadDataAllExtraSubject();
       }
-    });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: error.response?.data?.message || 'เกิดข้อผิดพลาดในการลบข้อมูล',
+      });
+    }
   };
+  
 
   useEffect(
     () => {
@@ -139,8 +146,6 @@ const ListMachSubject = () => {
     [params.curriculum],
     [],
   );
-
-  console.log(machSubjectList);
 
   return (
     <>

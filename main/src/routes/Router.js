@@ -65,7 +65,9 @@ const EditMachSubjectList = Loadable(
   lazy(() => import('../views/pages/Admin/MachSubject/EditMachSubjectList')),
 );
 const ManageTransfer = Loadable(lazy(() => import('../views/pages/Admin/Transfer/ManageTransfer')));
-const CheckOrderTransfer = Loadable(lazy(() => import('../views/pages/Admin/Transfer/CheckOrderTransfer')));
+const CheckOrderTransfer = Loadable(
+  lazy(() => import('../views/pages/Admin/Transfer/CheckOrderTransfer')),
+);
 const ApproveOrderTransfer = Loadable(
   lazy(() => import('../views/pages/Admin/Transfer/ApproveOrderTransfer')),
 );
@@ -127,8 +129,12 @@ const AddMachSubjectListOfficer = Loadable(
 const EditMachSubjectListOfficer = Loadable(
   lazy(() => import('../views/pages/Officer/MachSubject/EditMachSubjectList')),
 );
-const ManageTransferOfficer = Loadable(lazy(() => import('../views/pages/Officer/Transfer/ManageTransfer')));
-const CheckOrderTransferOfficer = Loadable(lazy(() => import('../views/pages/Officer/Transfer/CheckOrderTransfer')));
+const ManageTransferOfficer = Loadable(
+  lazy(() => import('../views/pages/Officer/Transfer/ManageTransfer')),
+);
+const CheckOrderTransferOfficer = Loadable(
+  lazy(() => import('../views/pages/Officer/Transfer/CheckOrderTransfer')),
+);
 
 //Lecturer
 const IndexLecturer = Loadable(lazy(() => import('../views/pages/Lecturer/IndexLecturer')));
@@ -174,10 +180,12 @@ const ListMachSubjectLecturer = Loadable(
 const AddMachSubjectListLecturer = Loadable(
   lazy(() => import('../views/pages/Lecturer/MachSubject/AddMachSubjectList')),
 );
-const EditMachSubjectListLecturer= Loadable(
+const EditMachSubjectListLecturer = Loadable(
   lazy(() => import('../views/pages/Lecturer/MachSubject/EditMachSubjectList')),
 );
-const ManageTransferLecturer = Loadable(lazy(() => import('../views/pages/Lecturer/Transfer/ManageTransfer')));
+const ManageTransferLecturer = Loadable(
+  lazy(() => import('../views/pages/Lecturer/Transfer/ManageTransfer')),
+);
 const ApproveOrderTransferLecturer = Loadable(
   lazy(() => import('../views/pages/Lecturer/Transfer/ApproveOrderTransfer')),
 );

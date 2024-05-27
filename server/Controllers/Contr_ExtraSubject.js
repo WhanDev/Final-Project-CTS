@@ -10,7 +10,7 @@ exports.create = async (req, res) => {
       description,
       theory_credits,
       practical_credits,
-      createBy
+      createBy,
     } = req.body;
 
     if (
@@ -18,7 +18,7 @@ exports.create = async (req, res) => {
       !extraSubject_nameTh ||
       !extraSubject_nameEn ||
       (isNaN(theory_credits) && theory_credits !== "") ||
-      (isNaN(practical_credits) && practical_credits !== "")||
+      (isNaN(practical_credits) && practical_credits !== "") ||
       !createBy
     ) {
       return res.status(400).send("กรุณากรอกข้อมูลให้ครบ");
@@ -34,7 +34,7 @@ exports.create = async (req, res) => {
       theory_credits,
       practical_credits,
       total_credits,
-      createBy
+      createBy,
     }).save();
     res
       .status(201)
@@ -104,16 +104,36 @@ exports.update = async (req, res) => {
   }
 };
 
+const MachSubjectList = require("../Models/Model_MachSubjectList");
+
 //ลบข้อมูลรายวิชา
 exports.remove = async (req, res) => {
   try {
     // code
     const _id = req.params._id;
-    
+
+    const extraSubject = await ExtraSubject.findById(_id).exec();
+
+    if (!extraSubject) {
+      return res.status(404).json({ message: "ไม่พบข้อมูลที่ต้องการลบ" });
+    }
+
+    const relatedMachSubjectList = await MachSubjectList.find({
+      extraSubject_id: extraSubject.extraSubject_id,
+    }).exec();
+
+    if (relatedMachSubjectList.length > 0) {
+      return res.status(403).json({
+        message: "ไม่สามารถลบข้อมูลที่มีความสัมพันธ์กับข้อมูลอื่นได้",
+        data: relatedMachSubjectList,
+      });
+    }
+
     const removedExtraSubject = await ExtraSubject.findOneAndDelete({
       _id: _id,
     }).exec();
-    res.json({ message: "ลบข้อมูลสำเร็จ!", data: removedExtraSubject });
+
+    res.json({ message: "ลบข้อมูลสำเร็จ!", data: removedExtraSubject,extraSubject });
   } catch (err) {
     console.error(err);
     res

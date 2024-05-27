@@ -185,17 +185,10 @@ const exceljs = require("exceljs");
 
 exports.downloadTemplate = async (req, res) => {
   try {
-
     const workbook = new exceljs.Workbook();
     const sheet = workbook.addWorksheet("Sheet 1");
 
-    sheet.addRow([
-      "_id",
-      "password",
-      "fullname",
-      "institution",
-      "branch",
-    ]);
+    sheet.addRow(["_id", "password", "fullname", "institution", "branch"]);
     sheet.addRow([
       "รหัสนักศึกษา",
       "รหัสผ่าน",
@@ -221,51 +214,56 @@ exports.downloadTemplate = async (req, res) => {
 
 exports.uploadExcel = async (req, res) => {
   try {
-    const {curriculum,year,studentsData} = req.body;
+    const { curriculum, year, studentsData } = req.body;
 
     if (!Array.isArray(studentsData) || studentsData.length === 0) {
       return res.status(400).json({ message: "ไม่พบข้อมูลนักศึกษา" });
     }
 
-    const bulkOperations = await Promise.all(studentsData.map(async (data) => {
-      const existingStudent = await Student.findOne({ _id: data[0] });
+    const bulkOperations = await Promise.all(
+      studentsData.map(async (data) => {
+        const existingStudent = await Student.findOne({ _id: data[0] });
 
-      if (existingStudent) {
-        return null;
-      }
+        if (existingStudent) {
+          return null;
+        }
 
-      const hashedPassword = await bcrypt.hash(String(data[1]), 10);
+        const hashedPassword = await bcrypt.hash(String(data[1]), 10);
 
-      return {
-        updateOne: {
-          filter: { _id: data[0] },
-          update: {
-            $set: {
-              _id: data[0],
-              password: hashedPassword,
-              fullname: data[2],
-              curriculum: curriculum,
-              year: year,
-              institution: data[3],
-              branch: data[4],
+        return {
+          updateOne: {
+            filter: { _id: data[0] },
+            update: {
+              $set: {
+                _id: data[0],
+                password: hashedPassword,
+                fullname: data[2],
+                curriculum: curriculum,
+                year: year,
+                institution: data[3],
+                branch: data[4],
+              },
             },
+            upsert: true,
           },
-          upsert: true,
-        },
-      };
-    }));
+        };
+      })
+    );
 
     const validOperations = bulkOperations.filter((op) => op !== null);
 
     if (validOperations.length > 0) {
       const result = await Student.bulkWrite(validOperations);
-      res.status(201).json({ message: "เพิ่มข้อมูลนักศึกษาสำเร็จ!", data: result });
+      res
+        .status(201)
+        .json({ message: "เพิ่มข้อมูลนักศึกษาสำเร็จ!", data: result });
     } else {
       res.status(400).json({ message: "รหัสนักศึกษาซ้ำ!" });
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในระบบ!", error: err.message });
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในระบบ!", error: err.message });
   }
 };
-

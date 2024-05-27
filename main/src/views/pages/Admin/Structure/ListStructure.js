@@ -19,7 +19,7 @@ import {
   IconSquarePlus,
   IconEditCircle,
   IconCircleMinus,
-  IconArrowBackUp
+  IconArrowBackUp,
 } from '@tabler/icons';
 import Swal from 'sweetalert2';
 
@@ -95,23 +95,31 @@ const ListStructure = () => {
   };
 
   const handleRemoveByStructure = async (_id) => {
-    Swal.fire({
-      title: 'ต้องการลบข้อมูลนี้ใช่หรือไม่?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'ยืนยัน',
-      cancelButtonText: 'ยกเลิก',
-    }).then((result) => {
+    try {
+      const result = await Swal.fire({
+        title: 'ต้องการลบข้อมูลนี้ใช่หรือไม่?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+      });
+  
       if (result.isConfirmed) {
+        await removeByStructure(_id);
         Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-        removeByStructure(_id).then(() => {
-          loadByStructure(params.structure_id);
-        });
+        loadByStructure(params.structure_id);
       }
-    });
-  };
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'ลบข้อมูลไม่สำเร็จ',
+        text: error.response?.data?.message || 'เกิดข้อผิดพลาดในการลบข้อมูล',
+      });
+      console.error(error);
+    }
+  };  
 
   const navigate = useNavigate();
 
@@ -125,7 +133,11 @@ const ListStructure = () => {
         <Grid item sm={12}>
           <ParentCard
             title={
-              <Stack spacing={1} direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between">
+              <Stack
+                spacing={1}
+                direction={{ xs: 'column', sm: 'row' }}
+                justifyContent="space-between"
+              >
                 <Button
                   variant="outlined"
                   color="error"

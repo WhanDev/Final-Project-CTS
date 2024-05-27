@@ -25,13 +25,11 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setTestTransfer } from '../../../../store/testTransfer';
 import Swal from 'sweetalert2';
-import { currentUser } from '../../../../function/auth';
 import CustomSelect from '../../../../components/forms/theme-elements/CustomSelect';
 import { list as AllCurriculum } from '../../../../function/curriculum';
 import {
   listYear as AllStudentYear,
   listCurriculumAndYear as AllStudentCurriculumAndYear,
-  remove as removeStudent,
 } from '../../../../function/student';
 
 import axios from 'axios';
@@ -300,14 +298,14 @@ const Select = () => {
     setSelectedStudentYear(e.target.value);
   };
 
-  console.log(selected)
+  console.log(selected);
 
   const handleGeneratePdfPath1 = async (id) => {
     const data = {
-      students:selected
-    }
+      students: selected,
+    };
     try {
-      const response = await axios.post('http://localhost:5000/api/reportPath1S/',data, {
+      const response = await axios.post('http://localhost:5000/api/reportPath1S/', data, {
         responseType: 'blob',
       });
       const blob = new Blob([response.data], { type: 'application/pdf' });
@@ -329,10 +327,10 @@ const Select = () => {
 
   const handleGeneratePdfPath2 = async (id) => {
     const data = {
-      students:selected
-    }
+      students: selected,
+    };
     try {
-      const response = await axios.post('http://localhost:5000/api/reportPath2S/',data, {
+      const response = await axios.post('http://localhost:5000/api/reportPath2S/', data, {
         responseType: 'blob',
       });
       const blob = new Blob([response.data], { type: 'application/pdf' });

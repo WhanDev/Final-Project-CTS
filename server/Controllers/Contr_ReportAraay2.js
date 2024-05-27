@@ -321,7 +321,7 @@ exports.generatePdfPath2S = async (req, res) => {
           text: "ร.",
           fontSize: 10,
           bold: true,
-  
+
           alignment: "center",
           font: "THSarabunNew",
           border: [false, false, true, true],
@@ -342,7 +342,7 @@ exports.generatePdfPath2S = async (req, res) => {
           text: "ท.",
           fontSize: 10,
           bold: true,
-  
+
           alignment: "center",
           font: "THSarabunNew",
           border: [false, false, true, true],
@@ -352,7 +352,7 @@ exports.generatePdfPath2S = async (req, res) => {
           text: "ป.",
           fontSize: 10,
           bold: true,
-  
+
           alignment: "center",
           font: "THSarabunNew",
           border: [false, false, true, true],
@@ -362,7 +362,7 @@ exports.generatePdfPath2S = async (req, res) => {
           text: "ร.",
           fontSize: 10,
           bold: true,
-  
+
           alignment: "center",
           font: "THSarabunNew",
           border: [false, false, true, true],
@@ -671,7 +671,7 @@ exports.generatePdfPath2S = async (req, res) => {
             font: "THSarabunNew",
           },
         ],
-      },)
+      });
 
       content.push({
         alignment: "justify",
@@ -693,7 +693,7 @@ exports.generatePdfPath2S = async (req, res) => {
             ],
           },
         ],
-      },)
+      });
 
       content.push({
         table: {
@@ -892,7 +892,7 @@ exports.generatePdfPath2S = async (req, res) => {
             ],
           ],
         },
-      },)
+      });
 
       content.push({
         text: "",

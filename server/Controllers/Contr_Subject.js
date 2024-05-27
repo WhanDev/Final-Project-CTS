@@ -118,7 +118,9 @@ exports.read = async (req, res) => {
 exports.readSubject_id = async (req, res) => {
   try {
     const subject_id = req.params.subject_id;
-    const readSubject = await Subject.findOne({ subject_id: subject_id }).exec();
+    const readSubject = await Subject.findOne({
+      subject_id: subject_id,
+    }).exec();
     res.json(readSubject);
   } catch (err) {
     console.error(err);
@@ -154,15 +156,50 @@ exports.update = async (req, res) => {
   }
 };
 
+const MachSubjectList = require("../Models/Model_MachSubjectList");
+const MachSubject = require("../Models/Model_MatchSubject");
+
 //ลบข้อมูลรายวิชา
 exports.remove = async (req, res) => {
   try {
     // code
     const _id = req.params._id;
+
+    const subject = await Subject.findById(_id).exec();
+
+    if (!Subject) {
+      return res.status(404).json({ message: "ไม่พบข้อมูลที่ต้องการลบ" });
+    }
+
+    const relatedMachSubject = await MachSubject.find({
+      subject_id: subject.subject_id,
+    }).exec();
+
+    const strcurriculum = subject.structure_id;
+    const curriculum = strcurriculum.replace("CS-", "");
+
+    const relatedMachSubjectList = await MachSubjectList.find({
+      machSubject_id: "MS" + curriculum + "-" + subject.subject_id,
+    }).exec();
+
+    if (relatedMachSubjectList.length > 0 || relatedMachSubject.length > 0) {
+      return res.status(403).json({
+        message: "ไม่สามารถลบข้อมูลที่มีความสัมพันธ์กับข้อมูลอื่นได้",
+        relatedMachSubject,
+        relatedMachSubjectList,
+      });
+    }
+
     const removedSubject = await Subject.findOneAndDelete({
       _id: _id,
     }).exec();
-    res.json({ message: "ลบข้อมูลสำเร็จ!", data: removedSubject });
+
+    res.json({
+      message: "ลบข้อมูลสำเร็จ!",
+      removedSubject,
+      relatedMachSubject,
+      relatedMachSubjectList,
+    });
   } catch (err) {
     console.error(err);
     res
