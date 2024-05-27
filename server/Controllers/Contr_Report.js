@@ -1426,6 +1426,7 @@ exports.generatePdfPath2 = async (req, res) => {
                 margin: [30, 23, 0, 0],
               },
               {
+                // text: `คบท-ทอ 01-1\n(หน้า ${currentPage + 1}/${pageCount + 1})`,
                 text: `คบท-ทอ 01-1\n(หน้า ${currentPage + 1}/${pageCount + 1})`,
                 fontSize: 12,
                 alignment: "right",
@@ -1492,7 +1493,7 @@ exports.generatePdfPath2 = async (req, res) => {
             },
           ],
         },
-        //newRows
+        // newRows
         {
           table: {
             widths: [

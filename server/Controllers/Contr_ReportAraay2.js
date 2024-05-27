@@ -540,7 +540,7 @@ exports.generatePdfPath2S = async (req, res) => {
                 },
               ]);
             });
-          });
+          },);
         }
       });
 
@@ -688,7 +688,7 @@ exports.generatePdfPath2S = async (req, res) => {
                   "  สาขาวิชา เทคโนโลยีธุรกิจดิจิทัล",
                 fontSize: 10,
                 font: "THSarabunNew",
-                margin: [0, 0, 0, 0],
+                margin: [15, 0, 0, 10],
               },
             ],
           },
@@ -715,8 +715,7 @@ exports.generatePdfPath2S = async (req, res) => {
           ],
           body: Sort,
         },
-        margin: [-30, 8, 0, 0],
-      });
+      },);
 
       content.push({
         table: {
@@ -911,6 +910,7 @@ exports.generatePdfPath2S = async (req, res) => {
       pageSize: "A4",
       pageMargins: [40, 90, 40, 90],
       header: function (currentPage, pageCount) {
+        var adjustedPage = (currentPage % 2) || 2;
         return [
           {
             columns: [
@@ -926,7 +926,7 @@ exports.generatePdfPath2S = async (req, res) => {
                 margin: [30, 23, 0, 0],
               },
               {
-                text: `คบท-ทอ 01-1\n(หน้า ${currentPage + 1}/${pageCount + 1})`,
+                text: `คบท-ทอ 01-1\n(หน้า ${adjustedPage + 1 }/3)`,
                 fontSize: 12,
                 alignment: "right",
                 margin: [0, 23, 10, 0],
@@ -948,6 +948,7 @@ exports.generatePdfPath2S = async (req, res) => {
       },
       defaultStyle: {
         font: "THSarabunNew",
+        
       },
     };
 
