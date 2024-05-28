@@ -57,31 +57,7 @@ const IndexAdmin = () => {
   return (
     <>
       <PageContainer title="หน้าหลัก" description="หน้าหลัก">
-        <Box
-          display="flex"
-          flexDirection="column"
-          textAlign="center"
-          justifyContent="center"
-          padding={5}
-        >
-          {/* <Typography
-            variant="h1"
-            fontWeight={400}
-            sx={{
-              fontSize: {
-                md: '30px',
-              },
-            }}
-            marginBottom={2}
-          >
-            แอดมิน <br/>
-            ระบบดิจิทัลสำหรับการเทียบโอนผลการเรียน
-          </Typography> */}
           <WelcomeCard />
-          {/* <Typography variant="h5" fontWeight={400} color={'primary'}>
-            Credit Transfer System <br />
-          </Typography> */}
-        </Box>
       </PageContainer>
     </>
   );

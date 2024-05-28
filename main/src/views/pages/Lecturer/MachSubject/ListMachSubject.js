@@ -15,10 +15,7 @@ import {
 } from '@mui/material';
 import { Stack } from '@mui/system';
 import {
-  IconTrash,
-  IconEdit,
   IconCirclePlus,
-  IconSquarePlus,
   IconEditCircle,
   IconCircleMinus,
   IconArrowBackUp,
@@ -32,10 +29,7 @@ import ChildCard from '../../../../components/shared/ChildCard';
 import DialogSubject from '../Subject/DialogSubject';
 import { listByCurriculm } from '../../../../function/structure';
 import { listByStructure } from '../../../../function/subject';
-import {
-  listByCurriculum as AllMachsubject,
-  remove as RemoveMachSubject,
-} from '../../../../function/machsubject';
+import { listByCurriculum as AllMachsubject } from '../../../../function/machsubject';
 import {
   list as AllMachsubjectList,
   remove as RemoveMachSubjectList,
@@ -45,8 +39,27 @@ import { list as AllExtraSubject } from '../../../../function/extar-subject';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
+import { currentUser } from '../../../../function/auth';
+
 const ListMachSubject = () => {
-  const params = useParams();
+  const token = localStorage.getItem('token');
+  const [user, setUser] = useState({});
+
+  const curriculum_id = user.curriculum;
+  const structure_id = 'CS-' + curriculum_id;
+
+  const checkUser = async () => {
+    try {
+      const res = await currentUser(token);
+      setUser(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+  }, []);
 
   const [curriculum, setDataCurriculum] = useState([]);
 
@@ -72,12 +85,6 @@ const ListMachSubject = () => {
   };
 
   const sort = ['1. หมวดวิชาศึกษาทั่วไป', '2. หมวดวิชาเฉพาะ', '3. หมวดวิชาเลือกเสรี'];
-
-  const navigate = useNavigate();
-
-  const handleBack = () => {
-    navigate(-1);
-  };
 
   const [open, setOpen] = useState({});
 
@@ -128,43 +135,24 @@ const ListMachSubject = () => {
 
   useEffect(
     () => {
-      loadByCurriculum(params.curriculum);
-      loadByStructure(params.structure_id);
-      loadDataMachsubject(params.curriculum);
+      loadByCurriculum(curriculum_id);
+      loadByStructure(structure_id);
+      loadDataMachsubject(curriculum_id);
       loadDataAllMachsubjectList();
       loadDataAllExtraSubject();
     },
-    [params.curriculum],
-    [params.structure_id],
-    [params.curriculum],
+    [curriculum_id],
+    [structure_id],
+    [curriculum_id],
     [],
   );
-
-  console.log(machSubjectList);
 
   return (
     <>
       <Breadcrumb title="จัดการคู่เทียบโอนรายวิชา" />
       <Grid container spacing={3}>
         <Grid item sm={12}>
-          <ParentCard
-            title={
-              <Stack
-                spacing={1}
-                direction={{ xs: 'column', sm: 'row' }}
-                justifyContent="space-between"
-              >
-                <Button
-                  variant="outlined"
-                  color="error"
-                  startIcon={<IconArrowBackUp width={18} />}
-                  onClick={handleBack}
-                >
-                  ย้อนกลับ
-                </Button>
-              </Stack>
-            }
-          >
+          <ParentCard>
             {sort.map((category) => (
               <React.Fragment key={category}>
                 {/* ชื่อหมวด */}
@@ -393,9 +381,9 @@ const ListMachSubject = () => {
                                                               component={Link}
                                                               to={
                                                                 '/lecturer/manage/machsubject/curriculum/' +
-                                                                params.curriculum +
+                                                                curriculum_id +
                                                                 '/structure/' +
-                                                                params.structure_id +
+                                                                structure_id +
                                                                 '/' +
                                                                 subjectItem.subject_id +
                                                                 '/' +
@@ -437,9 +425,9 @@ const ListMachSubject = () => {
                                                         component={Link}
                                                         to={
                                                           '/lecturer/manage/machsubject/curriculum/' +
-                                                          params.curriculum +
+                                                          curriculum_id +
                                                           '/structure/' +
-                                                          params.structure_id +
+                                                          structure_id +
                                                           '/' +
                                                           subjectItem.subject_id +
                                                           '/add'
@@ -475,9 +463,9 @@ const ListMachSubject = () => {
                                                       component={Link}
                                                       to={
                                                         '/lecturer/manage/machsubject/curriculum/' +
-                                                        params.curriculum +
+                                                        curriculum_id +
                                                         '/structure/' +
-                                                        params.structure_id +
+                                                        structure_id +
                                                         '/' +
                                                         subjectItem.subject_id +
                                                         '/add'

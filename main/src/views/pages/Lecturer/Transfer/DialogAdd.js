@@ -28,7 +28,6 @@ import { listByStructure as AllSubject } from '../../../../function/subject';
 import { list as AllExtraSubject } from '../../../../function/extar-subject';
 import { read as readStudent } from '../../../../function/student';
 import { list as AllMatchSubjectList } from '../../../../function/machsubjectlist';
-import { TransferRead } from '../../../../function/transfer';
 
 const DialogAdd = ({ onAddSuccess, transferList }) => {
   const [open, setOpen] = useState(false);
@@ -57,17 +56,9 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
     (msList) => !msList.extraSubject_id.some((id) => ExtraSubjectInSuccess.includes(id)),
   );
 
-  const filteredMatchSubjectList = MatchSubjectList.filter(
+  const filteredMatchSubjectList = CutExtraSubject.filter(
     (item) => item.machSubject_id === 'MS' + student.curriculum + '-' + selectedSubject,
   );
-
-  // const loadTransferRead = async (id) => {
-  //   TransferRead(id)
-  //     .then((res) => {
-  //       setTransferList(res.data.transferList);
-  //     })
-  //     .catch((err) => console.log(err));
-  // };
 
   useEffect(() => {
     const loadReadStudent = async (id) => {
@@ -110,7 +101,6 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
     loadDataAllSubject(structure_id);
     loadDataAllExtraSubject();
     loadAllMatchSubjectList();
-    // loadTransferRead(params._id);
   }, [params._id, structure_id]);
 
   const handleClickOpen = (scrollType) => () => {
@@ -217,7 +207,7 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
                         <Table>
                           <TableHead>
                             <TableRow>
-                              <TableCell width={'10%'} />
+                              <TableCell width={'10%'} align="center"></TableCell>
                               <TableCell width={'30%'} align="center">
                                 <Typography>รหัสวิชา</Typography>
                               </TableCell>
@@ -233,34 +223,49 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
                             {filteredMatchSubjectList.length > 0 ? (
                               filteredMatchSubjectList.map((item) => (
                                 <TableRow key={item._id}>
-                                  <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                    <TableCell width={'10%'} align="center">
-                                      <Radio {...controlProps(item._id)} />
-                                    </TableCell>
-                                    <TableCell width={'90%'} colSpan={4}>
-                                      {item.extraSubject_id.map((extra) => (
-                                        <React.Fragment key={extra}>
-                                          {CutExtraSubject.filter(
+                                  <TableCell width={'10%'} align="center">
+                                    <Radio {...controlProps(item._id)} sx={{ paddingX: 0 }} />
+                                  </TableCell>
+                                  <TableCell width={'90%'} colSpan={3} sx={{ paddingX: 0 }}>
+                                    {item.extraSubject_id.map((extra) => (
+                                      <React.Fragment key={extra}>
+                                        <Stack
+                                          direction="row"
+                                          justifyContent="space-between"
+                                          alignItems="center"
+                                        >
+                                          {ExtraSubject.filter(
                                             (subject) => subject.extraSubject_id === extra,
                                           ).map((subject) => (
-                                            <TableRow key={subject.extraSubject_id}>
-                                              <TableCell width={'30%'} align="center">
+                                            <>
+                                              <TableCell
+                                                width={'30%'}
+                                                align="center"
+                                                sx={{ paddingX: 0, borderBottom: 'none' }}
+                                              >
                                                 <Typography>{subject.extraSubject_id}</Typography>
                                               </TableCell>
-                                              <TableCell width={'50%'}>
+                                              <TableCell
+                                                width={'50%'}
+                                                sx={{ paddingX: 0, borderBottom: 'none' }}
+                                              >
                                                 <Typography>
                                                   {subject.extraSubject_nameTh}
                                                 </Typography>
                                               </TableCell>
-                                              <TableCell width={'10%'} align="center">
+                                              <TableCell
+                                                width={'10%'}
+                                                align="center"
+                                                sx={{ paddingX: 0, borderBottom: 'none' }}
+                                              >
                                                 <Typography>{subject.total_credits}</Typography>
                                               </TableCell>
-                                            </TableRow>
+                                            </>
                                           ))}
-                                        </React.Fragment>
-                                      ))}
-                                    </TableCell>
-                                  </Stack>
+                                        </Stack>
+                                      </React.Fragment>
+                                    ))}
+                                  </TableCell>
                                 </TableRow>
                               ))
                             ) : (
@@ -286,7 +291,7 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
           <Button color="error" onClick={handleClose}>
             ยกเลิก
           </Button>
-          <Button color="primary" onClick={handleSave}>
+          <Button color="primary" onClick={handleSave} disabled={!selectedValue}>
             ยืนยัน
           </Button>
         </DialogActions>

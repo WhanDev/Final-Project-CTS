@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Typography, Card, CardContent, Grid } from '@mui/material';
-import welcomeImg from 'src/assets/images/backgrounds/welcome-bg2.png';
+import welcomeImg from 'src/assets/images/Welcome.png';
 import { currentUser } from 'src/function/auth';
 
 
@@ -26,7 +26,7 @@ const WelcomeCard = () => {
     <Card elevation={0} sx={{ backgroundColor: (theme) => theme.palette.primary.light, py: 0 }}>
       <CardContent sx={{ py: 2 }}>
         <Grid container spacing={3} justifyContent="space-between">
-          <Grid item sm={6} display="flex" alignItems="center">
+          <Grid item sm={8} display="flex" alignItems="center">
             <Box
               sx={{
                 textAlign: {
@@ -35,18 +35,16 @@ const WelcomeCard = () => {
                 },
               }}
             >
-              <Typography variant="h3">ยินดีต้อนรับ {user.role} {user.fullname} !!</Typography>
-              <Typography variant="subtitle2" my={2} color="textSecondary">
-                ยินดีต้อนรับเข้าสู่ระบบสำหรับเทียบโอนผลการเรียน หี ควย แตด
+              <Typography variant="h3" my={2} color="primary">
+                ยินดีต้อนรับเข้าสู่ระบบสำหรับเทียบโอนผลการเรียน
               </Typography>
-              {/* <Button variant="contained" color="primary">
-                Check
-              </Button> */}
+              <Typography variant="h6">สิทธิ์ผู้ใช้งาน: {user.role === 'แอดมิน' ? 'ผู้ดูแลระบบ' : user.role} ({user.fullname})</Typography>
+
             </Box>
           </Grid>
-          <Grid item sm={5}>
+          <Grid item sm={3} display="flex" justifyContent="center">
             <Box mb="-90px">
-              <img src={welcomeImg} alt={welcomeImg} width={'300px'} />
+              <img src={welcomeImg} alt={welcomeImg} width={'250px'} />
             </Box>
           </Grid>
         </Grid>

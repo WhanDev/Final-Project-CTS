@@ -22,128 +22,114 @@ import ParentCard from '../../../../components/shared/ParentCard';
 import ChildCard from 'src/components/shared/ChildCard';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 
-import { TransferListAdmin } from '../../../../function/transfer';
 import { list as AllStudent } from '../../../../function/student';
-import { list as AllCurriculum } from '../../../../function/curriculum';
+import { currentUser } from '../../../../function/auth';
 
 const ManageTransfer = () => {
-  const [transfer, setTransfer] = useState([]);
-
-  const loadAllTransfer = async () => {
-    TransferListAdmin()
-      .then((res) => setTransfer(res.data))
-      .catch((err) => console.log(err));
-  };
-
   const [allStudent, setAllStudent] = useState([]);
+  const [allYear, setAllYear] = useState([]);
+
+  const [selectedCurriculum, setSelectedCurriculum] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState(null);
+
+  const token = localStorage.getItem('token');
+
+  const checkUser = async () => {
+    try {
+      const res = await currentUser(token);
+      setSelectedCurriculum(res.data.curriculum);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const loadAllStudent = async () => {
-    AllStudent()
-      .then((res) => setAllStudent(res.data))
-      .catch((err) => console.log(err));
-  };
+    try {
+      const res = await AllStudent();
+      setAllStudent(res.data);
 
-  const [allCurriculum, setAllCurriculum] = useState([]);
-
-  const loadAllCurriculum = async () => {
-    AllCurriculum()
-      .then((res) => setAllCurriculum(res.data))
-      .catch((err) => console.log(err));
-  };
-
-  const [selectedCurriculum, setSelectedCurriculum] = useState([]);
-  const handleCurriculumChange = (event, value) => {
-    setSelectedCurriculum(value);
+      const years = Array.from(new Set(res.data.map(student => student.year)));
+      setAllYear(years.map(year => ({ label: year, value: year })));
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
-    loadAllTransfer();
     loadAllStudent();
-    loadAllCurriculum();
+    checkUser()
   }, []);
 
+  const handleYearChange = (event, value) => {
+    setSelectedYear(value);
+    setSelectedStatus(null); // Reset status when year changes
+  };
+
+  const handleStatusChange = (event, value) => {
+    setSelectedStatus(value);
+  };
+
   const Status = [
-    {
-      label: 'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร',
-      value: 'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร',
-    },
+    { label: 'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร', value: 'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร' },
+    { label: 'ยืนยันการเทียบโอนถูกต้อง', value: 'ยืนยันการเทียบโอนถูกต้อง' },
   ];
 
-  const [selectedStatus, setSelectedStatus] = useState([]);
-  const handleStatus = (event, value) => {
-    setSelectedStatus(value.value);
-  };
+  const filteredTransfer = allStudent.filter(item => 
+    item.curriculum === selectedCurriculum &&
+    item.year === selectedYear?.value &&
+    item.status === selectedStatus?.value
+  );
+
 
   return (
     <PageContainer title="จัดการข้อมูลเทียบโอน" description="จัดการข้อมูลเทียบโอน">
       <Breadcrumb title="จัดการข้อมูลเทียบโอน" />
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} lg={6}>
-          <ParentCard title="เลือกหลักสูตร">
+          <ParentCard title="รุ่นปี">
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
               <Autocomplete
                 fullWidth
-                id="subject_id"
-                name="subject_id"
+                id="year_id"
+                name="year_id"
                 disableClearable
-                options={allCurriculum.map((option) => ({
-                  label:
-                    'หลักสูตร ' +
-                    option.name +
-                    ' ปี พ.ศ ' +
-                    option.year +
-                    ' (' +
-                    option.level +
-                    ' ' +
-                    option.time +
-                    ' ปี)',
-                  value: option._id,
-                }))}
+                options={allYear}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder="กรอกรหัสหลักสูตร/ชื่อหลักสูตร"
-                    variant="outlined"
-                    fullWidth
-                  />
+                  <TextField {...params} placeholder="เลือกรุ่นปี" variant="outlined" fullWidth />
                 )}
-                onChange={handleCurriculumChange}
-                value={selectedCurriculum}
+                onChange={handleYearChange}
+                value={selectedYear}
                 sx={{ mr: 1 }}
+                disabled={!selectedCurriculum} // Disable if no curriculum selected
               />
             </Stack>
           </ParentCard>
         </Grid>
         <Grid item xs={12} sm={6} lg={6}>
-          <ParentCard title="เลือกสถานะเทียบโอน">
+          <ParentCard title="สถานะเทียบโอน">
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
               <Autocomplete
                 fullWidth
-                id="subject_id"
-                name="subject_id"
+                id="status_id"
+                name="status_id"
                 disableClearable
-                options={Status.map((option) => ({
-                  label: option.label,
-                  value: option.value,
-                }))}
+                options={Status}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder="กรอกรหัสหลักสูตร/ชื่อหลักสูตร"
-                    variant="outlined"
-                    fullWidth
-                  />
+                  <TextField {...params} placeholder="เลือกสถานะเทียบโอน" variant="outlined" fullWidth />
                 )}
-                onChange={handleStatus}
+                onChange={handleStatusChange}
                 value={selectedStatus}
                 sx={{ mr: 1 }}
+                disabled={!selectedYear}
               />
             </Stack>
           </ParentCard>
         </Grid>
       </Grid>
 
-      <Box m={3} />
+      <Box mt={3}/>
+
       <ParentCard title="ข้อมูลนักศึกษาที่ทำการเทียบโอนเบื้องต้นแล้ว">
         <ChildCard>
           <Box>
@@ -163,61 +149,40 @@ const ManageTransfer = () => {
                     <TableCell align="center">
                       <Typography variant="h6">สาขาวิชา</Typography>
                     </TableCell>
-
                     <TableCell align="center">
                       <Typography variant="h6">เพิ่มเติม</Typography>
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {selectedCurriculum.value !== undefined &&
-                    selectedCurriculum.value !== null &&
-                    (transfer.length > 0 ? (
-                      transfer.map((item, index) => (
-                        <TableRow key={index} hover>
-                          {item.status === selectedStatus && (
-                            <React.Fragment>
-                              {allStudent.filter(
-                                (student) =>
-                                  student._id === item._id &&
-                                  student.curriculum === selectedCurriculum.value,
-                              ).length > 0 ? (
-                                allStudent.map((student) =>
-                                  student._id === item._id &&
-                                  student.curriculum === selectedCurriculum.value ? (
-                                    <React.Fragment key={student._id}>
-                                      <TableCell align="center">{student._id}</TableCell>
-                                      <TableCell align="center">{student.fullname}</TableCell>
-                                      <TableCell align="center">{student.institution}</TableCell>
-                                      <TableCell align="center">{student.branch}</TableCell>
-                                      <TableCell align="center">
-                                        <IconButton
-                                          component={Link}
-                                          to={`/lecturer/manage/transfer/approve/${item._id}`}
-                                          color="primary"
-                                        >
-                                          <IconFileDescription size="18" />
-                                        </IconButton>
-                                      </TableCell>
-                                    </React.Fragment>
-                                  ) : null,
-                                )
-                              ) : (
-                                <TableCell align="center" colSpan={5}>
-                                  <Typography>
-                                    ไม่มีข้อมูลนักศึกษาที่ทำการเทียบโอนในหลักสูตรนี้
-                                  </Typography>
-                                </TableCell>
-                              )}
-                            </React.Fragment>
+                  {filteredTransfer.length > 0 ? (
+                    filteredTransfer.map((item, index) => (
+                      <TableRow key={index} hover>
+                        <TableCell align="center">{item._id}</TableCell>
+                        <TableCell align="center">{item.fullname}</TableCell>
+                        <TableCell align="center">{item.institution}</TableCell>
+                        <TableCell align="center">{item.branch}</TableCell>
+                        <TableCell align="center">
+                          {selectedStatus.value === 'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร' && (
+                            <IconButton component={Link} to={`/lecturer/manage/transfer/approve/${item._id}`} color="primary">
+                              <IconFileDescription size="18" />
+                            </IconButton>
                           )}
-                        </TableRow>
-                      ))
-                    ) : (
+                          {selectedStatus.value === 'ยืนยันการเทียบโอนถูกต้อง' && (
+                            <IconButton component={Link} to={`/lecturer/manage/transfer/confirm/${item._id}`} color="success">
+                              <IconFileDescription size="18" />
+                            </IconButton>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
                       <TableCell align="center" colSpan={5}>
                         <Typography>ไม่มีข้อมูลนักศึกษาที่ทำการเทียบโอน</Typography>
                       </TableCell>
-                    ))}
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>

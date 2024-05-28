@@ -207,9 +207,7 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
                         <Table>
                           <TableHead>
                             <TableRow>
-                              <TableCell width={'10%'} align="center">
-                                <Radio />
-                              </TableCell>
+                              <TableCell width={'10%'} align="center"></TableCell>
                               <TableCell width={'30%'} align="center">
                                 <Typography>รหัสวิชา</Typography>
                               </TableCell>

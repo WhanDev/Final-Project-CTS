@@ -21,7 +21,7 @@ const Transfer = () => {
     CheckUser();
   }, []);
 
-  return <>{user.status === 'รอการยืนยันการเทียบโอนเบื้องต้น' ? <Mached /> : <Select />}</>;
+  return <>{user.status === 'ยังไม่ดำเนินการเทียบโอนเบื้องต้น' ? <Select /> : <Mached />}</>;
 };
 
 export default Transfer;

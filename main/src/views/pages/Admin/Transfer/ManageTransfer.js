@@ -38,7 +38,6 @@ const ManageTransfer = () => {
       const res = await AllStudent();
       setAllStudent(res.data);
 
-      // Extract unique years from the student data
       const years = Array.from(new Set(res.data.map(student => student.year)));
       setAllYear(years.map(year => ({ label: year, value: year })));
     } catch (err) {

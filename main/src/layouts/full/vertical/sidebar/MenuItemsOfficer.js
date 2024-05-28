@@ -4,7 +4,8 @@ import {
   IconAlbum,
   IconLayoutDashboard,
   IconUsers,
-  IconLayersIntersect
+  IconLayersIntersect,
+  IconClipboardText
 } from '@tabler/icons';
 
 import { uniqueId } from 'lodash';
@@ -50,6 +51,12 @@ const MenuItemsAdmin = [
     title: 'เทียบโอน',
     icon: IconLayersIntersect,
     href: '/officer/manage/transfer',
+  },
+  {
+    id: uniqueId(),
+    title: 'รายงาน',
+    icon: IconClipboardText,
+    href: '/officer/manage/report',
   },
 ];
 
