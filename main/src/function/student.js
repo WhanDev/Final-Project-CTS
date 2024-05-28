@@ -34,3 +34,6 @@ export const remove = async (id) =>
 
 export const importExcel = async (data) =>
   await axios.post(process.env.REACT_APP_API + '/student/upload', data);
+
+export const changePassword = async (id,data) =>
+  await axios.post(process.env.REACT_APP_API + '/student/'+ id + '/changePassword/',data)

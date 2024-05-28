@@ -199,6 +199,7 @@ const TransferStudent = Loadable(lazy(() => import('../views/pages/Student/Trans
 const TransferCheckStudent = Loadable(lazy(() => import('../views/pages/Student/Transfer/Check')));
 const TransferMachStudent = Loadable(lazy(() => import('../views/pages/Student/Transfer/Mach')));
 const StudentProfile = Loadable(lazy(() => import('../views/pages/Student/StudentProfile')));
+const ChangePassStudent = Loadable(lazy(() => import('../views/pages/Student/ChangePassStudent')));
 const StudentProfileEdit = Loadable(
   lazy(() => import('../views/pages/Student/StudentProfileEdit')),
 );
@@ -450,6 +451,7 @@ const Router = [
       { path: '/student/mach', element: <TransferMachStudent /> },
       { path: '/student/profile', element: <StudentProfile /> },
       { path: '/student/profile/edit', element: <StudentProfileEdit /> },
+      { path: '/student/profile/changePassword', element: <ChangePassStudent /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },

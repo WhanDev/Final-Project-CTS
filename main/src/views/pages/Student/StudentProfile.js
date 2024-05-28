@@ -47,6 +47,10 @@ const StudentProfile = () => {
     navigate('/student/profile/edit');
   };
 
+  const handleChangePass = () => {
+    navigate('/student/profile/changePassword');
+  }
+
   return (
     <PageContainer title="ข้อมูลนักศึกษา" description="this is Add Admin">
       <Breadcrumb title="ข้อมูลนักศึกษา" />
@@ -90,6 +94,9 @@ const StudentProfile = () => {
               <Stack spacing={1} direction="row">
                 <Button variant="outlined" color="warning" onClick={handleEdit}>
                   แก้ไข
+                </Button>
+                <Button variant="outlined" color="success" onClick={handleChangePass}>
+                  เปลี่ยนรหัสผ่าน
                 </Button>
               </Stack>
             </Stack>

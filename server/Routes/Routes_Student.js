@@ -12,6 +12,7 @@ const {
   remove,
   downloadTemplate,
   uploadExcel,
+  changePassword
 } = require("../Controllers/Contr_Student");
 const multer = require("multer");
 const storage = multer.memoryStorage();
@@ -29,5 +30,6 @@ router.put("/student/", updatedStudent);
 router.delete("/student/:_id", remove);
 router.post("/student/template", downloadTemplate);
 router.post("/student/upload", uploadExcel);
+router.post("/student/:_id/changePassword", changePassword);
 
 module.exports = router;
