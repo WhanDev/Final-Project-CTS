@@ -3,6 +3,9 @@ import axios from 'axios';
 export const testTransfer = async (data) =>
   await axios.post(process.env.REACT_APP_API + '/transfer/test', data);
 
+export const CutStructure = async (curriculum) =>
+  await axios.get(process.env.REACT_APP_API + '/transfer/curriculum/' + curriculum);
+
 export const SaveTransfer = async (data) =>
   await axios.post(process.env.REACT_APP_API + '/transfer', data);
 
@@ -18,11 +21,14 @@ export const TransferRead = async (id) =>
 export const TransferUpdate = async (id, data) =>
   await axios.put(process.env.REACT_APP_API + '/transfer/' + id, data);
 
-export const TransferConfirmPath1 = async (id,data) =>
-  await axios.post(process.env.REACT_APP_API + '/transfer/stutusPath1/' + id,data);
+export const TransferConfirmPath1 = async (id, data) =>
+  await axios.post(process.env.REACT_APP_API + '/transfer/stutusPath1/' + id, data);
 
-export const TransferConfirmPath2 = async (id,data) =>
-  await axios.post(process.env.REACT_APP_API + '/transfer/stutusPath2/' + id,data);
+export const TransferConfirmPath2 = async (id, data) =>
+  await axios.post(process.env.REACT_APP_API + '/transfer/stutusPath2/' + id, data);
+
+export const TransferRevert = async (id) =>
+  await axios.post(process.env.REACT_APP_API + '/transfer/revert/' + id);
 
 export const TransferDelete = async (id) =>
   await axios.delete(process.env.REACT_APP_API + '/transfer/' + id);
