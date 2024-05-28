@@ -20,15 +20,15 @@ import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../../components/shared/ParentCard';
 import CustomFormLabel from '../../../../components/forms/theme-elements/CustomFormLabel';
 
-import { useSelector } from 'react-redux';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { updateSuccess } from '../../../../store/testTransfer';
 import { listByStructure } from '../../../../function/subject';
 import { list } from '../../../../function/extar-subject';
 import { currentUser } from '../../../../function/auth';
-import { SaveTransfer, UploadFile } from '../../../../function/transfer';
+import { SaveTransfer, UploadFile, CutStructure } from '../../../../function/transfer';
 import { read as readCurriculum } from '../../../../function/curriculum';
 
-import { IconCircleX, IconCircleCheck, IconFile, IconUser } from '@tabler/icons';
+import { IconCircleX, IconCircleCheck, IconFile, IconUser, IconTrash } from '@tabler/icons';
 import Swal from 'sweetalert2';
 
 const Mach = () => {
@@ -44,6 +44,7 @@ const Mach = () => {
   const [total_credits, setTotalCredits] = React.useState(0);
   const [allExtra, setAllExtra] = React.useState([]);
   const [curriculum, setCurriculum] = React.useState({});
+  const [cutStructure, setCutStructure] = useState([]);
 
   const loadCurriculum = async (curriculumRedux) => {
     try {
@@ -65,6 +66,9 @@ const Mach = () => {
 
       const responseExtra = await list();
       setAllExtra(responseExtra.data);
+
+      const responseCut = await CutStructure(curriculumRedux);
+      setCutStructure(responseCut.data);
     } catch (error) {
       console.error('เกิดข้อผิดพลาด:', error);
     }
@@ -104,16 +108,11 @@ const Mach = () => {
     checkUser();
   }, []);
 
-  const [selectedFile, setSelectedFile] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setSelectedFile(file);
-  };
-
   const handleFileCancel = (event) => {
     setSelectedFile(null);
   };
+
+  console.log(success);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -163,6 +162,75 @@ const Mach = () => {
   const handleBack = () => {
     navigate(-1);
   };
+
+  const dispatch = useDispatch();
+
+  const handleDeleteSuccess = (subjectId) => {
+    Swal.fire({
+      title: 'ต้องการลบรายการนี้ใช่หรือไม่?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ยืนยัน',
+      cancelButtonText: 'ยกเลิก',
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          const newSuccess = success.filter((item) => item.subject_id !== subjectId);
+          dispatch(updateSuccess(newSuccess));
+          Swal.fire({
+            icon: 'success',
+            title: 'ลบรายการสำเร็จ',
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        }
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'ลบรายการข้อมูลไม่สำเร็จ',
+          text: error.response ? error.response.data : 'An error occurred',
+        });
+        console.error('เกิดข้อผิดพลาดในการลบรายการข้อมูล:', error);
+      });
+  };
+
+  const [isFileAttached, setIsFileAttached] = useState(false); // สถานะสำหรับการแนบไฟล์
+  const [hasExceededCredits, setHasExceededCredits] = useState(false); // สถานะสำหรับการตรวจสอบหน่วยกิต
+  const [selectedFile, setSelectedFile] = useState(null); // เก็บไฟล์ที่ถูกเลือก
+
+  const checkCreditExceedance = () => {
+    const exceeded = cutStructure.some((item) => {
+      const totalCredits = Array.isArray(item.subject)
+        ? item.subject.reduce((total, subject) => {
+            const matchedItem = success.find(
+              (successItem) => successItem.subject_id === subject.subject_id,
+            );
+            if (matchedItem) {
+              const subjectItem = allSubject.find(
+                (sub) => sub.subject_id === matchedItem.subject_id,
+              );
+              return total + (subjectItem ? subjectItem.total_credits : 0);
+            }
+            return total;
+          }, 0)
+        : 0;
+      return totalCredits > item.structure.credit;
+    });
+    setHasExceededCredits(exceeded);
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+    setIsFileAttached(!!file); // ใช้ !! เพื่อเปลี่ยนค่าเป็น boolean
+  };
+
+  useEffect(() => {
+    checkCreditExceedance();
+  }, [success]);
 
   return (
     <PageContainer title="ผลการเทียบโอนหน่วยเบี้องต้น" description="ผลการเทียบโอนหน่วยเบี้องต้น">
@@ -224,33 +292,19 @@ const Mach = () => {
       <ParentCard
         title={
           <Stack direction="row" alignItems="center">
-            <Typography variant="h5">รายวิชาที่สามารถเทียบโอนได้ </Typography>
+            <Typography variant="h5">รายวิชาที่สามารถเทียบโอนได้</Typography>
             <IconButton>
               <IconCircleCheck width={20} color={'green'} />
             </IconButton>
           </Stack>
         }
       >
-        <Grid container spacing={3}>
+        <Grid container>
           <Grid item xs={12} sm={12} lg={12}>
             <TableContainer>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center" width={'50%'} sx={{ paddingX: 0 }}>
-                      <Typography variant="h5">รายวิชาในหลักสูตร</Typography>
-                      <Stack direction="row" justifyContent="space-between" alignItems="center">
-                        <TableCell align="center" width={'30%'} sx={{ border: 0 }}>
-                          <Typography variant="h6">รหัสวิชา</Typography>
-                        </TableCell>
-                        <TableCell width={'50%'} sx={{ border: 0 }}>
-                          <Typography variant="h6">ชื่อวิชา</Typography>
-                        </TableCell>
-                        <TableCell align="center" width={'20%'} sx={{ border: 0 }}>
-                          <Typography variant="h6">หน่วยกิต</Typography>
-                        </TableCell>
-                      </Stack>
-                    </TableCell>
                     <TableCell align="center" width={'50%'} sx={{ paddingX: 0 }}>
                       <Typography variant="h5">รายวิชาที่นำมาเทียบ</Typography>
                       <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -268,97 +322,217 @@ const Mach = () => {
                         </TableCell>
                       </Stack>
                     </TableCell>
+                    <TableCell align="center" width={'50%'} sx={{ paddingX: 0 }}>
+                      <Typography variant="h5">รายวิชาในหลักสูตร</Typography>
+                      <Stack direction="row" justifyContent="space-between" alignItems="center">
+                        <TableCell align="center" width={'30%'} sx={{ border: 0 }}>
+                          <Typography variant="h6">รหัสวิชา</Typography>
+                        </TableCell>
+                        <TableCell width={'50%'} sx={{ border: 0 }}>
+                          <Typography variant="h6">ชื่อวิชา</Typography>
+                        </TableCell>
+                        <TableCell align="center" width={'20%'} sx={{ border: 0 }}>
+                          <Typography variant="h6">หน่วยกิต</Typography>
+                        </TableCell>
+                        <TableCell width={'10%'} sx={{ border: 0 }} />
+                      </Stack>
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {success.length > 0 ? (
-                    success.map((item, index) => {
-                      const subject = allSubject.find(
-                        (option) => option.subject_id === item.subject_id,
-                      );
-                      if (subject) {
-                        return (
-                          <TableRow key={index} sx={{ borderBottom: '0.5px solid #e6e6e6' }} hover>
-                            <TableCell align="center" width={'50%'} sx={{ paddingX: 0 }}>
-                              <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                                alignItems="center"
-                              >
-                                <TableCell align="center" width={'30%'} sx={{ borderBottom: 0 }}>
-                                  <Typography>{subject.subject_id}</Typography>
-                                </TableCell>
-                                {allSubject
-                                  .filter(
-                                    (subjectItem) => subjectItem.subject_id === item.subject_id,
-                                  )
-                                  .map((subjectItem) => (
-                                    <React.Fragment key={subjectItem.subject_id}>
-                                      <TableCell width={'50%'} sx={{ borderBottom: 0 }}>
-                                        <Typography>{subjectItem.subject_nameTh}</Typography>
-                                        <Typography>({subjectItem.subject_nameEn})</Typography>
-                                      </TableCell>
-                                      <TableCell
-                                        align="center"
-                                        width={'20%'}
-                                        sx={{ borderBottom: 0 }}
-                                      >
-                                        <Typography>{subjectItem.total_credits}</Typography>
-                                      </TableCell>
-                                    </React.Fragment>
-                                  ))}
-                              </Stack>
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              width={'50%'}
-                              sx={{ paddingX: 0, borderLeft: '0.5px solid #e6e6e6' }}
-                            >
-                              {item.extra_id.map((extra_id) => {
-                                const extra = allExtra.find(
-                                  (option) => option.extraSubject_id === extra_id.id,
+                  {cutStructure.map((item) => {
+                    const totalCredits = Array.isArray(item.subject)
+                      ? item.subject.reduce((total, subject) => {
+                          const matchedItem = success.find(
+                            (successItem) => successItem.subject_id === subject.subject_id,
+                          );
+                          if (matchedItem) {
+                            const subjectItem = allSubject.find(
+                              (sub) => sub.subject_id === matchedItem.subject_id,
+                            );
+                            return total + (subjectItem ? subjectItem.total_credits : 0);
+                          }
+                          return total;
+                        }, 0)
+                      : 0;
+
+                    return (
+                      <React.Fragment key={item.structure._id}>
+                        <TableRow>
+                          <TableCell colSpan={2}>
+                            <Typography fontWeight={500}>
+                              {item.structure.sort} ({item.structure.group_name}){' '}
+                              {item.structure.credit} หน่วยกิต
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                        {Array.isArray(item.subject) && item.subject.length > 0 ? (
+                          item.subject.some((subject) =>
+                            success.some(
+                              (successItem) => successItem.subject_id === subject.subject_id,
+                            ),
+                          ) ? (
+                            <>
+                              {item.subject.map((subject) => {
+                                const matchedItems = success.filter(
+                                  (successItem) => successItem.subject_id === subject.subject_id,
                                 );
-                                if (extra) {
-                                  return (
-                                    <TableRow key={extra_id} sx={{ borderBottom: 'none' }}>
-                                      <TableCell align="center" width="15%">
-                                        <Typography>{extra.extraSubject_id}</Typography>
-                                      </TableCell>
-                                      <TableCell width="25%">
-                                        <Typography>{extra.extraSubject_nameTh}</Typography>
-                                        <Typography color="green">
-                                          ({extra.extraSubject_nameEn})
-                                        </Typography>
-                                      </TableCell>
-                                      <TableCell align="center" width="10%">
-                                        <Typography>{extra.total_credits}</Typography>
-                                      </TableCell>
-                                      <TableCell align="center" width="10%">
-                                        <Typography>{extra_id.grade}</Typography>
-                                      </TableCell>
-                                    </TableRow>
-                                  );
-                                }
+
+                                return (
+                                  <React.Fragment key={subject._id}>
+                                    {matchedItems.length > 0 &&
+                                      matchedItems.map((matchedItem, index) => (
+                                        <TableRow
+                                          key={index}
+                                          sx={{ borderBottom: '0.5px solid #e6e6e6' }}
+                                          hover
+                                        >
+                                          <TableCell
+                                            align="center"
+                                            width={'50%'}
+                                            sx={{
+                                              paddingX: 0,
+                                              borderRight: '0.5px solid #e6e6e6',
+                                            }}
+                                          >
+                                            {matchedItem.extra_id.map((extra_id) => {
+                                              const extra = allExtra.find(
+                                                (option) => option.extraSubject_id === extra_id.id,
+                                              );
+                                              return extra ? (
+                                                <TableRow
+                                                  key={extra_id.id}
+                                                  sx={{ borderBottom: 'none' }}
+                                                >
+                                                  <TableCell align="center" width="15%">
+                                                    <Typography>{extra.extraSubject_id}</Typography>
+                                                  </TableCell>
+                                                  <TableCell width="25%">
+                                                    <Typography>
+                                                      {extra.extraSubject_nameTh}
+                                                    </Typography>
+                                                    <Typography>
+                                                      ({extra.extraSubject_nameEn})
+                                                    </Typography>
+                                                  </TableCell>
+                                                  <TableCell align="center" width="10%">
+                                                    <Typography>{extra.total_credits}</Typography>
+                                                  </TableCell>
+                                                  <TableCell align="center" width="10%">
+                                                    <Typography>{extra_id.grade}</Typography>
+                                                  </TableCell>
+                                                </TableRow>
+                                              ) : null;
+                                            })}
+                                          </TableCell>
+                                          <TableCell
+                                            align="center"
+                                            width={'50%'}
+                                            sx={{ paddingX: 0 }}
+                                          >
+                                            <Stack
+                                              direction="row"
+                                              justifyContent="space-between"
+                                              alignItems="center"
+                                            >
+                                              <TableCell
+                                                align="center"
+                                                width={'30%'}
+                                                sx={{ borderBottom: 0 }}
+                                              >
+                                                <Typography>{subject.subject_id}</Typography>
+                                              </TableCell>
+                                              {allSubject
+                                                .filter(
+                                                  (subjectItem) =>
+                                                    subjectItem.subject_id ===
+                                                    matchedItem.subject_id,
+                                                )
+                                                .map((subjectItem) => (
+                                                  <React.Fragment key={subjectItem.subject_id}>
+                                                    <TableCell
+                                                      width={'50%'}
+                                                      sx={{ borderBottom: 0 }}
+                                                    >
+                                                      <Typography>
+                                                        {subjectItem.subject_nameTh}
+                                                      </Typography>
+                                                      <Typography color="green">
+                                                        ({subjectItem.subject_nameEn})
+                                                      </Typography>
+                                                    </TableCell>
+                                                    <TableCell
+                                                      align="center"
+                                                      width={'20%'}
+                                                      sx={{ borderBottom: 0 }}
+                                                    >
+                                                      <Typography>
+                                                        {subjectItem.total_credits}
+                                                      </Typography>
+                                                    </TableCell>
+                                                    {totalCredits > item.structure.credit && (
+                                                      <TableCell
+                                                        width={'10%'}
+                                                        sx={{ borderBottom: 0 }}
+                                                      >
+                                                        <IconButton
+                                                          color={'error'}
+                                                          onClick={() =>
+                                                            handleDeleteSuccess(subject.subject_id)
+                                                          }
+                                                        >
+                                                          <IconTrash width={25} />
+                                                        </IconButton>
+                                                      </TableCell>
+                                                    )}
+                                                  </React.Fragment>
+                                                ))}
+                                            </Stack>
+                                          </TableCell>
+                                        </TableRow>
+                                      ))}
+                                  </React.Fragment>
+                                );
                               })}
+                              <TableRow>
+                                <TableCell colSpan={4}>
+                                  <Typography
+                                    fontWeight={500}
+                                    align="right"
+                                    color={totalCredits > item.structure.credit ? 'red' : 'initial'}
+                                  >
+                                    หน่วยกิตทั้งหมดในหมวดนี้ {totalCredits} หน่วยกิต
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                            </>
+                          ) : (
+                            <TableRow>
+                              <TableCell align="center" colSpan={4}>
+                                <Typography align="center">
+                                  ไม่มีรายวิชาที่สามารถเทียบโอนได้ในหมวดนี้
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          )
+                        ) : (
+                          <TableRow>
+                            <TableCell align="center" colSpan={4}>
+                              <Typography align="center">
+                                ไม่มีรายวิชาที่สามารถเทียบโอนได้
+                              </Typography>
                             </TableCell>
                           </TableRow>
-                        );
-                      } else {
-                        return null;
-                      }
-                    })
-                  ) : (
-                    <TableRow>
-                      <TableCell align="center" colSpan={5}>
-                        <Typography align="center">ไม่มีรายวิชาที่สามารถเทียบโอนได้</Typography>
-                      </TableCell>
-                    </TableRow>
-                  )}
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>
           </Grid>
         </Grid>
+
         <Grid item xs={12} sm={12} lg={12}>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="end" mt={2}>
             <Stack spacing={1} direction="row">
@@ -369,11 +543,12 @@ const Mach = () => {
           </Stack>
         </Grid>
       </ParentCard>
+
       <Box m={3} />
       <ParentCard
         title={
           <Stack direction="row" alignItems="center">
-            <Typography variant="h5">รายวิชาที่ไม่สามารถนำมาเทียบโอนได้</Typography>
+            <Typography variant="h5">รายวิชาจากใบ รบ. ของนักศึกษาที่เหลือ</Typography>
             <IconButton>
               <IconCircleX width={20} color={'red'} />
             </IconButton>
@@ -506,7 +681,12 @@ const Mach = () => {
             <Button variant="outlined" color="warning" onClick={handleBack}>
               ย้อนกลับ
             </Button>
-            <Button variant="contained" color="success" onClick={handleSave}>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleSave}
+              disabled={!isFileAttached || hasExceededCredits}
+            >
               บันทึก
             </Button>
           </Stack>

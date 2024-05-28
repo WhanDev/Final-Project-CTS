@@ -5,8 +5,12 @@ const testTransferSlice = createSlice({
   initialState: {
     value: 'testTransfer',
     data: [],
+    testResultTransfer: { success: [] }, // Add testResultTransfer and its success field
   },
   reducers: {
+    updateSuccess: (state, action) => {
+      state.testResultTransfer.success = action.payload; // Update the success field correctly
+    },
     setTestTransfer: (state, action) => {
       state.testTransfer = action.payload;
     },
@@ -19,6 +23,7 @@ const testTransferSlice = createSlice({
   },
 });
 
-export const { setTestTransfer,setTestResultTransfer,clearTestTransfer } = testTransferSlice.actions;
+export const { setTestTransfer, setTestResultTransfer, clearTestTransfer, updateSuccess } =
+  testTransferSlice.actions;
 
 export default testTransferSlice.reducer;

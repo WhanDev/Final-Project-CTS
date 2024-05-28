@@ -56,7 +56,6 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
   const CutExtraSubject = MatchSubjectList.filter(
     (msList) => !msList.extraSubject_id.some((id) => ExtraSubjectInSuccess.includes(id)),
   );
-  console.log(CutExtraSubject);
 
   const filteredMatchSubjectList = MatchSubjectList.filter(
     (item) => item.machSubject_id === 'MS' + student.curriculum + '-' + selectedSubject,
@@ -71,7 +70,6 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
   // };
 
   useEffect(() => {
-    
     const loadReadStudent = async (id) => {
       try {
         const res = await readStudent(id);
@@ -141,7 +139,7 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
   const handleSave = () => {
     const filteredMatchSubjectList = MatchSubjectList.filter((item) => item._id === selectedValue);
     const listExtra = filteredMatchSubjectList.flatMap((item) => item.extraSubject_id);
-  
+
     const success = {
       curriculum_id: student.curriculum,
       mach_id: 'MS' + student.curriculum + '-' + selectedSubject,
@@ -153,13 +151,12 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
       })),
       note: 'เทียบโอนเพิ่มเติม',
     };
-  
+
     onAddSuccess(success);
     setOpen(false);
     setSelectedValue(null);
     setSelectedSubject(null);
   };
-  
 
   return (
     <>
@@ -236,30 +233,34 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
                             {filteredMatchSubjectList.length > 0 ? (
                               filteredMatchSubjectList.map((item) => (
                                 <TableRow key={item._id}>
-                                  <TableCell width={'10%'} align="center">
-                                    <Radio {...controlProps(item._id)} />
-                                  </TableCell>
-                                  <TableCell width={'90%'} colSpan={4}>
-                                    {item.extraSubject_id.map((extra) => (
-                                      <React.Fragment key={extra}>
-                                        {ExtraSubject.filter(
-                                          (subject) => subject.extraSubject_id === extra,
-                                        ).map((subject) => (
-                                          <TableRow key={subject.extraSubject_id}>
-                                            <TableCell width={'30%'} align="center">
-                                              <Typography>{subject.extraSubject_id}</Typography>
-                                            </TableCell>
-                                            <TableCell width={'50%'}>
-                                              <Typography>{subject.extraSubject_nameTh}</Typography>
-                                            </TableCell>
-                                            <TableCell width={'10%'} align="center">
-                                              <Typography>{subject.total_credits}</Typography>
-                                            </TableCell>
-                                          </TableRow>
-                                        ))}
-                                      </React.Fragment>
-                                    ))}
-                                  </TableCell>
+                                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                    <TableCell width={'10%'} align="center">
+                                      <Radio {...controlProps(item._id)} />
+                                    </TableCell>
+                                    <TableCell width={'90%'} colSpan={4}>
+                                      {item.extraSubject_id.map((extra) => (
+                                        <React.Fragment key={extra}>
+                                          {CutExtraSubject.filter(
+                                            (subject) => subject.extraSubject_id === extra,
+                                          ).map((subject) => (
+                                            <TableRow key={subject.extraSubject_id}>
+                                              <TableCell width={'30%'} align="center">
+                                                <Typography>{subject.extraSubject_id}</Typography>
+                                              </TableCell>
+                                              <TableCell width={'50%'}>
+                                                <Typography>
+                                                  {subject.extraSubject_nameTh}
+                                                </Typography>
+                                              </TableCell>
+                                              <TableCell width={'10%'} align="center">
+                                                <Typography>{subject.total_credits}</Typography>
+                                              </TableCell>
+                                            </TableRow>
+                                          ))}
+                                        </React.Fragment>
+                                      ))}
+                                    </TableCell>
+                                  </Stack>
                                 </TableRow>
                               ))
                             ) : (

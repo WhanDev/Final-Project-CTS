@@ -11,46 +11,41 @@ exports.TestTransfer = async (req, res) => {
       structure_id: structure_id,
     });
 
-    let AllSubjectByCurriculum = [];
-
-    if (SubjectByCurriculum.length > 0) {
-      SubjectByCurriculum.forEach((subject) => {
-        AllSubjectByCurriculum.push({
-          subject_id: subject.subject_id,
-          subject_nameTh: subject.subject_nameTh,
-          subject_nameEn: subject.subject_nameEn,
-        });
-      });
-    } else {
+    if (SubjectByCurriculum.length === 0) {
       return res.status(404).json({ message: "ไม่พบรายวิชาในหลักสูตร" });
     }
+
+    let AllSubjectByCurriculum = SubjectByCurriculum.map((subject) => ({
+      subject_id: subject.subject_id,
+      subject_nameTh: subject.subject_nameTh,
+      subject_nameEn: subject.subject_nameEn,
+      group_id: subject.group_id,
+    }));
 
     const [, structureIdNumber] = structure_id.split("-");
 
     let AllMatchSubject = [];
 
-    for (let i = 0; i < AllSubjectByCurriculum.length; i++) {
-      const MatchSubjectBySubjectId = await MatchSubject.find({
-        _id:
-          "MS" + structureIdNumber + "-" + AllSubjectByCurriculum[i].subject_id,
+    for (let subject of AllSubjectByCurriculum) {
+      const matchSubject = await MatchSubject.find({
+        _id: "MS" + structureIdNumber + "-" + subject.subject_id,
       });
 
-      if (MatchSubjectBySubjectId.length > 0) {
-        const MachSubjectList = await MatchSubjectList.find({
-          machSubject_id: MatchSubjectBySubjectId[0]._id,
+      if (matchSubject.length > 0) {
+        const machSubjectList = await MatchSubjectList.find({
+          machSubject_id: matchSubject[0]._id,
         });
 
-        const extraSubjectIds = MachSubjectList.map((listItem) => {
-          return {
-            id: listItem._id,
-            count: listItem.extraSubject_id.length,
-            list: listItem.extraSubject_id,
-          };
-        });
+        const extraSubjectIds = machSubjectList.map((listItem) => ({
+          id: listItem._id,
+          count: listItem.extraSubject_id.length,
+          list: listItem.extraSubject_id,
+        }));
 
         AllMatchSubject.push({
-          subject_id: MatchSubjectBySubjectId[0].subject_id,
-          machSubject_id: MatchSubjectBySubjectId[0]._id,
+          subject_id: matchSubject[0].subject_id,
+          group_id: matchSubject[0].group_id,
+          machSubject_id: matchSubject[0]._id,
           extraSubject_id: extraSubjectIds,
         });
       }
@@ -65,24 +60,24 @@ exports.TestTransfer = async (req, res) => {
     let ungrade = [];
     let unsuccess = [];
     let ResultFound = [];
-    let success = [];
     let perSuccess = [];
     let perFinalSuccess = [];
 
-    for (const extraSubject of extraSubjects) {
-      const validGrades = ["A", "B+", "B", "C+", "C"]; // รายการเกรดที่ถือว่าถูกต้อง
+    for (let extraSubject of extraSubjects) {
+      const validGrades = ["A", "B+", "B", "C+", "C"];
       if (extraSubject.grade >= 2 || validGrades.includes(extraSubject.grade)) {
         const extraSubjectId = extraSubject.id;
         let found = false;
 
-        for (const matchSubject of AllMatchSubject) {
-          for (const extraSubjectItem of matchSubject.extraSubject_id) {
+        for (let matchSubject of AllMatchSubject) {
+          for (let extraSubjectItem of matchSubject.extraSubject_id) {
             if (extraSubjectItem.list.includes(extraSubjectId)) {
               ResultFound.push({
                 id: extraSubject.id,
                 grade: extraSubject.grade,
                 machSubject_id: extraSubjectItem.id,
                 subject_id: matchSubject.subject_id,
+                group_id: matchSubject.group_id,
                 result: "พบในรายการคู่เทียบโอน",
               });
               found = true;
@@ -110,18 +105,15 @@ exports.TestTransfer = async (req, res) => {
     const machSubjectIdsInResultFound = [];
 
     ResultFound.forEach((result) => {
-      const { id, grade, machSubject_id, subject_id } = result;
-      if (machSubjectCount[machSubject_id]) {
-        machSubjectCount[machSubject_id]++;
-      } else {
-        machSubjectCount[machSubject_id] = 1;
-      }
-
+      const { id, grade, machSubject_id, subject_id, group_id } = result;
+      machSubjectCount[machSubject_id] =
+        (machSubjectCount[machSubject_id] || 0) + 1;
       machSubjectIdsInResultFound.push({
         id,
         grade,
         machSubject_id,
         subject_id,
+        group_id,
       });
     });
 
@@ -144,6 +136,7 @@ exports.TestTransfer = async (req, res) => {
                   curriculum_id: structureIdNumber,
                   mach_id: matchSubject.machSubject_id,
                   subject_id: foundMatch.subject_id,
+                  group_id: foundMatch.group_id,
                   machlist_id: machSubjectId,
                   extra_id: extraSubjectId.extraSubject_id.map((id) => ({
                     id: id,
@@ -176,14 +169,14 @@ exports.TestTransfer = async (req, res) => {
 
     let unsuccessNew = [];
 
-    for (const machId in duplicateMachIds) {
+    for (let machId in duplicateMachIds) {
       const entries = duplicateMachIds[machId];
       const extraIdCounts = entries.map((entry) => entry.extra_id.length);
       const maxExtraIdCount = Math.min(...extraIdCounts);
 
       entries.forEach((entry) => {
         if (entry.extra_id.length > maxExtraIdCount) {
-          entry.extra_id.map((extra) => {
+          entry.extra_id.forEach((extra) => {
             unsuccessNew.push({
               extra_id: extra.id,
               grade: extra.grade,
@@ -210,7 +203,7 @@ exports.TestTransfer = async (req, res) => {
         }
       });
 
-      for (const machId in duplicateMachIds) {
+      for (let machId in duplicateMachIds) {
         const entries = duplicateMachIds[machId];
         if (entries.length > 1) {
           entries.forEach((entry) => {
@@ -225,11 +218,8 @@ exports.TestTransfer = async (req, res) => {
     findDuplicateMachIds(perFinalSuccess);
 
     const findDuplicateExtraIds = (duplicate, unDuplicate) => {
-      const extractExtraIds = (entries) => {
-        return entries.flatMap((entry) =>
-          entry.extra_id.map((extra) => extra.id)
-        );
-      };
+      const extractExtraIds = (entries) =>
+        entries.flatMap((entry) => entry.extra_id.map((extra) => extra.id));
 
       const duplicateExtraIds = extractExtraIds(duplicate);
       const unDuplicateExtraIds = extractExtraIds(unDuplicate);
@@ -253,24 +243,19 @@ exports.TestTransfer = async (req, res) => {
 
     let FinalPerSuccess = duplicate.concat(unDuplicate);
 
-    let FinalSuccess = FinalPerSuccess.sort((a, b) => {
-      if (a.mach_id < b.mach_id) {
-        return -1;
-      }
-      if (a.mach_id > b.mach_id) {
-        return 1;
-      }
-      return 0;
-    });
+    let FinalSuccess = FinalPerSuccess.sort((a, b) =>
+      a.mach_id < b.mach_id ? -1 : a.mach_id > b.mach_id ? 1 : 0
+    );
 
     let FinalUnsuccess = [];
 
     const updatedUnsuccess = (FinalSuccess) => {
-      const updatedUnsuccess = unsuccess.filter((un) => {
-        return !FinalSuccess.some((fs) =>
-          fs.extra_id.some((extra) => extra.id === un.extra_id)
-        );
-      });
+      const updatedUnsuccess = unsuccess.filter(
+        (un) =>
+          !FinalSuccess.some((fs) =>
+            fs.extra_id.some((extra) => extra.id === un.extra_id)
+          )
+      );
 
       const distinctItems = updatedUnsuccess.filter(
         (item, index, self) =>
@@ -285,11 +270,12 @@ exports.TestTransfer = async (req, res) => {
     let FinalUnsuccessNew = [];
 
     const updatedUnsuccessNew = (FinalSuccess) => {
-      const updatedUnsuccess = unsuccessNew.filter((un) => {
-        return !FinalSuccess.some((fs) =>
-          fs.extra_id.some((extra) => extra.id === un.extra_id)
-        );
-      });
+      const updatedUnsuccess = unsuccessNew.filter(
+        (un) =>
+          !FinalSuccess.some((fs) =>
+            fs.extra_id.some((extra) => extra.id === un.extra_id)
+          )
+      );
 
       const distinctItems = updatedUnsuccess.filter(
         (item, index, self) =>
@@ -353,11 +339,11 @@ exports.TestTransfer = async (req, res) => {
 
       const ResultFoundNew = [];
 
-      for (const extraSubject of allUnsuccess) {
+      for (let extraSubject of allUnsuccess) {
         const extraSubjectId = extraSubject.extra_id;
 
-        for (const matchSubject of allMatchSubject) {
-          for (const extraSubjectItem of matchSubject.extraSubject_id) {
+        for (let matchSubject of allMatchSubject) {
+          for (let extraSubjectItem of matchSubject.extraSubject_id) {
             if (extraSubjectItem.list.includes(extraSubjectId)) {
               ResultFoundNew.push({
                 id: extraSubjectId,
@@ -376,12 +362,8 @@ exports.TestTransfer = async (req, res) => {
 
       ResultFoundNew.forEach((result) => {
         const { id, grade, machSubject_id, subject_id } = result;
-        if (machSubjectCountNew[machSubject_id]) {
-          machSubjectCountNew[machSubject_id]++;
-        } else {
-          machSubjectCountNew[machSubject_id] = 1;
-        }
-
+        machSubjectCountNew[machSubject_id] =
+          (machSubjectCountNew[machSubject_id] || 0) + 1;
         machSubjectIdsInResultFoundNew.push({
           id,
           grade,
@@ -424,13 +406,14 @@ exports.TestTransfer = async (req, res) => {
         })
       );
 
-      const filteredUnsuccess = allUnsuccess.filter((unsuccessItem) => {
-        return !perSuccessLast.some((successItem) =>
-          successItem.extra_id.some(
-            (extra) => extra.id === unsuccessItem.extra_id
+      const filteredUnsuccess = allUnsuccess.filter(
+        (unsuccessItem) =>
+          !perSuccessLast.some((successItem) =>
+            successItem.extra_id.some(
+              (extra) => extra.id === unsuccessItem.extra_id
+            )
           )
-        );
-      });
+      );
 
       perUnsuccessLast = filteredUnsuccess;
     };
@@ -598,6 +581,48 @@ exports.TransferRead = async (req, res) => {
     };
 
     res.json(responseData);
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
+  }
+};
+
+const Structure = require("../Models/Model_Structure");
+
+exports.CutStructure = async (req, res) => {
+  try {
+    let curriculum = req.params.curriculum;
+
+    const listStructure = await Structure.find({
+      curriculum: curriculum,
+    })
+      .sort({
+        sort: 1,
+        group_id: 1,
+      })
+      .select("sort group_id group_name credit")
+      .exec();
+
+    const structure_id = "CS-" + curriculum;
+    let cutStructure = [];
+
+    for (let i = 0; i < listStructure.length; i++) {
+      const subject = await Subject.find({
+        structure_id: structure_id,
+        group_id: listStructure[i].group_id,
+      }).select("subject_id total_credits");
+
+      if (subject.length > 0) {
+        cutStructure.push({
+          structure: listStructure[i],
+          subject: subject,
+        });
+      }
+    }
+
+    res.json(cutStructure);
   } catch (err) {
     console.error(err);
     res
@@ -783,6 +808,43 @@ exports.TransferDelete = async (req, res) => {
       removedTransfer,
       removedTransferOrder,
       removedTransferList,
+    });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
+  }
+};
+
+//TransferRevert
+exports.TransferRevert = async (req, res) => {
+  try {
+    const student_id = req.params._id;
+    const approve_id = "";
+
+    const updatedStatusTransfer = await Transfer.findOneAndUpdate(
+      { _id: student_id },
+      { $set: { approveBy: approve_id, status: "รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร" } },
+      { new: true } // This option returns the updated document
+    );
+
+    const updatedStatusStudent = await Student.findOneAndUpdate(
+      { _id: student_id },
+      { $set: { status: "รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร" } },
+      { new: true } // This option returns the updated document
+    );
+
+    if (!updatedStatusTransfer || !updatedStatusStudent) {
+      return res
+        .status(404)
+        .json({ message: "ไม่พบข้อมูลนักเรียนหรือการโอนย้าย" });
+    }
+
+    res.json({
+      message: "อัปโหลดสถานะสำเร็จ",
+      updatedStatusTransfer,
+      updatedStatusStudent,
     });
   } catch (err) {
     console.error(err);
