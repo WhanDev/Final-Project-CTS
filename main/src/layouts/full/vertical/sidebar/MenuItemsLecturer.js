@@ -5,6 +5,7 @@ import {
   IconUsers,
   IconRoute,
   IconLayersIntersect,
+  IconClipboardText
 } from '@tabler/icons';
 
 import { uniqueId } from 'lodash';
@@ -50,6 +51,12 @@ const MenuItemsLecturer = [
     title: 'เทียบโอน',
     icon: IconLayersIntersect,
     href: '/lecturer/manage/transfer',
+  },
+  {
+    id: uniqueId(),
+    title: 'รายงาน',
+    icon: IconClipboardText,
+    href: '/lecturer/manage/report',
   },
 ];
 

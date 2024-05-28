@@ -210,7 +210,7 @@ const ApproveOrderTransfer = () => {
     });
   };
 
-  const handleDeleteSuccess = (listIndex, successIndex) => {
+  const handleDeleteSuccess = (successItem) => {
     Swal.fire({
       title: 'ต้องการลบรายการนี้ใช่หรือไม่?',
       icon: 'warning',
@@ -224,7 +224,11 @@ const ApproveOrderTransfer = () => {
         try {
           setTransferList((prevTransferList) => {
             const updatedTransferList = [...prevTransferList];
-            const deletedItem = updatedTransferList[listIndex].success.splice(successIndex, 1)[0]; // Remove the deleted item and get it
+            const listIndex = updatedTransferList.findIndex((list) =>
+              list.success.includes(successItem)
+            );
+            const successIndex = updatedTransferList[listIndex].success.indexOf(successItem);
+            const deletedItem = updatedTransferList[listIndex].success.splice(successIndex, 1)[0];
             deletedItem.extraSubject.forEach((extraSubject) => {
               updatedTransferList[listIndex].unsuccess.push({
                 extraSubject: extraSubject.id,
@@ -795,7 +799,7 @@ const ApproveOrderTransfer = () => {
                                               <IconButton
                                                 color={'error'}
                                                 onClick={() =>
-                                                  handleDeleteSuccess(listIndex, successIndex)
+                                                  handleDeleteSuccess(successItem)
                                                 }
                                               >
                                                 <IconTrash width={25} />

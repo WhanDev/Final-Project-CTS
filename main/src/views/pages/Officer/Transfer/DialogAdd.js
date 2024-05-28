@@ -28,7 +28,6 @@ import { listByStructure as AllSubject } from '../../../../function/subject';
 import { list as AllExtraSubject } from '../../../../function/extar-subject';
 import { read as readStudent } from '../../../../function/student';
 import { list as AllMatchSubjectList } from '../../../../function/machsubjectlist';
-import { TransferRead } from '../../../../function/transfer';
 
 const DialogAdd = ({ onAddSuccess, transferList }) => {
   const [open, setOpen] = useState(false);
@@ -56,22 +55,12 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
   const CutExtraSubject = MatchSubjectList.filter(
     (msList) => !msList.extraSubject_id.some((id) => ExtraSubjectInSuccess.includes(id)),
   );
-  console.log(CutExtraSubject);
 
-  const filteredMatchSubjectList = MatchSubjectList.filter(
+  const filteredMatchSubjectList = CutExtraSubject.filter(
     (item) => item.machSubject_id === 'MS' + student.curriculum + '-' + selectedSubject,
   );
 
-  // const loadTransferRead = async (id) => {
-  //   TransferRead(id)
-  //     .then((res) => {
-  //       setTransferList(res.data.transferList);
-  //     })
-  //     .catch((err) => console.log(err));
-  // };
-
   useEffect(() => {
-    
     const loadReadStudent = async (id) => {
       try {
         const res = await readStudent(id);
@@ -112,7 +101,6 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
     loadDataAllSubject(structure_id);
     loadDataAllExtraSubject();
     loadAllMatchSubjectList();
-    // loadTransferRead(params._id);
   }, [params._id, structure_id]);
 
   const handleClickOpen = (scrollType) => () => {
@@ -141,7 +129,7 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
   const handleSave = () => {
     const filteredMatchSubjectList = MatchSubjectList.filter((item) => item._id === selectedValue);
     const listExtra = filteredMatchSubjectList.flatMap((item) => item.extraSubject_id);
-  
+
     const success = {
       curriculum_id: student.curriculum,
       mach_id: 'MS' + student.curriculum + '-' + selectedSubject,
@@ -153,13 +141,12 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
       })),
       note: 'เทียบโอนเพิ่มเติม',
     };
-  
+
     onAddSuccess(success);
     setOpen(false);
     setSelectedValue(null);
     setSelectedSubject(null);
   };
-  
 
   return (
     <>
@@ -220,7 +207,7 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
                         <Table>
                           <TableHead>
                             <TableRow>
-                              <TableCell width={'10%'} />
+                              <TableCell width={'10%'} align="center"></TableCell>
                               <TableCell width={'30%'} align="center">
                                 <Typography>รหัสวิชา</Typography>
                               </TableCell>
@@ -237,26 +224,45 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
                               filteredMatchSubjectList.map((item) => (
                                 <TableRow key={item._id}>
                                   <TableCell width={'10%'} align="center">
-                                    <Radio {...controlProps(item._id)} />
+                                    <Radio {...controlProps(item._id)} sx={{ paddingX: 0 }} />
                                   </TableCell>
-                                  <TableCell width={'90%'} colSpan={4}>
+                                  <TableCell width={'90%'} colSpan={3} sx={{ paddingX: 0 }}>
                                     {item.extraSubject_id.map((extra) => (
                                       <React.Fragment key={extra}>
-                                        {ExtraSubject.filter(
-                                          (subject) => subject.extraSubject_id === extra,
-                                        ).map((subject) => (
-                                          <TableRow key={subject.extraSubject_id}>
-                                            <TableCell width={'30%'} align="center">
-                                              <Typography>{subject.extraSubject_id}</Typography>
-                                            </TableCell>
-                                            <TableCell width={'50%'}>
-                                              <Typography>{subject.extraSubject_nameTh}</Typography>
-                                            </TableCell>
-                                            <TableCell width={'10%'} align="center">
-                                              <Typography>{subject.total_credits}</Typography>
-                                            </TableCell>
-                                          </TableRow>
-                                        ))}
+                                        <Stack
+                                          direction="row"
+                                          justifyContent="space-between"
+                                          alignItems="center"
+                                        >
+                                          {ExtraSubject.filter(
+                                            (subject) => subject.extraSubject_id === extra,
+                                          ).map((subject) => (
+                                            <>
+                                              <TableCell
+                                                width={'30%'}
+                                                align="center"
+                                                sx={{ paddingX: 0, borderBottom: 'none' }}
+                                              >
+                                                <Typography>{subject.extraSubject_id}</Typography>
+                                              </TableCell>
+                                              <TableCell
+                                                width={'50%'}
+                                                sx={{ paddingX: 0, borderBottom: 'none' }}
+                                              >
+                                                <Typography>
+                                                  {subject.extraSubject_nameTh}
+                                                </Typography>
+                                              </TableCell>
+                                              <TableCell
+                                                width={'10%'}
+                                                align="center"
+                                                sx={{ paddingX: 0, borderBottom: 'none' }}
+                                              >
+                                                <Typography>{subject.total_credits}</Typography>
+                                              </TableCell>
+                                            </>
+                                          ))}
+                                        </Stack>
                                       </React.Fragment>
                                     ))}
                                   </TableCell>
@@ -285,7 +291,7 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
           <Button color="error" onClick={handleClose}>
             ยกเลิก
           </Button>
-          <Button color="primary" onClick={handleSave}>
+          <Button color="primary" onClick={handleSave} disabled={!selectedValue}>
             ยืนยัน
           </Button>
         </DialogActions>

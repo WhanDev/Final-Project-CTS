@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { Box, Typography } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
 import WelcomeCard from 'src/components/dashboards/ecommerce/WelcomeCard';
 import { currentUser } from '../../../function/auth';
@@ -16,7 +15,6 @@ const IndexAdmin = () => {
   const CheckTokenUser = async () => {
     try {
       const res = await currentUser(idToken);
-      console.log(res);
 
       dispatch(
         login({
@@ -26,7 +24,6 @@ const IndexAdmin = () => {
           token: idToken,
         }),
       );
-      console.log(res.data.role);
 
       switch (res.data.role) {
         case 'แอดมิน':
@@ -57,31 +54,7 @@ const IndexAdmin = () => {
   return (
     <>
       <PageContainer title="หน้าหลัก" description="หน้าหลัก">
-        <Box
-          display="flex"
-          flexDirection="column"
-          textAlign="center"
-          justifyContent="center"
-          padding={5}
-        >
-          <Typography
-            variant="h1"
-            fontWeight={400}
-            sx={{
-              fontSize: {
-                md: '30px',
-              },
-            }}
-            marginBottom={2}
-          >
-            {/* เจ้าหน้าที่ <br/>
-            ระบบดิจิทัลสำหรับการเทียบโอนผลการเรียน */}
-            <WelcomeCard/>
-          </Typography>
-          <Typography variant="h5" fontWeight={400} color={'primary'}>
-            Credit Transfer System <br />
-          </Typography>
-        </Box>
+        <WelcomeCard />
       </PageContainer>
     </>
   );

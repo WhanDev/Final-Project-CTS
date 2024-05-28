@@ -135,6 +135,10 @@ const ManageTransferOfficer = Loadable(
 const CheckOrderTransferOfficer = Loadable(
   lazy(() => import('../views/pages/Officer/Transfer/CheckOrderTransfer')),
 );
+const ApproveOrderTransferOfficer = Loadable(
+  lazy(() => import('../views/pages/Officer/Transfer/ApproveOrderTransfer')),
+);
+const ManageReportOfficer = Loadable(lazy(() => import('../views/pages/Officer/Report/ManageReport')));
 
 //Lecturer
 const IndexLecturer = Loadable(lazy(() => import('../views/pages/Lecturer/IndexLecturer')));
@@ -189,6 +193,10 @@ const ManageTransferLecturer = Loadable(
 const ApproveOrderTransferLecturer = Loadable(
   lazy(() => import('../views/pages/Lecturer/Transfer/ApproveOrderTransfer')),
 );
+const ConfirmOrderTransferLecturer = Loadable(
+  lazy(() => import('../views/pages/Lecturer/Transfer/ConfirmOrderTransfer')),
+);
+const ManageReportLecturer = Loadable(lazy(() => import('../views/pages/Lecturer/Report/ManageReport')));
 
 //Student
 const IndexStudent = Loadable(lazy(() => import('../views/pages/Student/IndexStudent')));
@@ -211,11 +219,8 @@ const TestTransfer = Loadable(lazy(() => import('../views/pages/Tester/TestTrans
 const TestCheck = Loadable(lazy(() => import('../views/pages/Tester/TestCheck')));
 const MachTestTransfer = Loadable(lazy(() => import('../views/pages/Tester/MachTestTransfer')));
 const Curriculum = Loadable(lazy(() => import('../views/pages/Curriculum/ManageCurriculum')));
-const ShowCurriculum = Loadable(lazy(() => import('../views/pages/Curriculum/ListCurriculum')));
 const Structure = Loadable(lazy(() => import('../views/pages/Curriculum/ManageStructure')));
-const ShowStructure = Loadable(lazy(() => import('../views/pages/Curriculum/ListStructure')));
 
-const EnhancedTable = Loadable(lazy(() => import('../views/tables/EnhancedTable')));
 
 const Router = [
   {
@@ -375,6 +380,15 @@ const Router = [
         path: '/officer/manage/transfer/check/:_id',
         element: <CheckOrderTransferOfficer />,
       },
+      {
+        path: '/officer/manage/transfer/approve/:_id',
+        element: <ApproveOrderTransferOfficer />,
+      },
+      //รายงาน
+      {
+        path: '/officer/manage/report',
+        element: <ManageReportOfficer />,
+      },
     ],
   },
   {
@@ -437,6 +451,15 @@ const Router = [
       {
         path: '/lecturer/manage/transfer/approve/:_id',
         element: <ApproveOrderTransferLecturer />,
+      },
+      {
+        path: '/lecturer/manage/transfer/confirm/:_id',
+        element: <ConfirmOrderTransferLecturer />,
+      },
+      //รายงาน
+      {
+        path: '/lecturer/manage/report',
+        element: <ManageReportLecturer />,
       },
     ],
   },
