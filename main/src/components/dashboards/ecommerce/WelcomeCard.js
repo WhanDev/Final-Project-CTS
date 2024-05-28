@@ -1,9 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, Typography, Card, CardContent, Grid } from '@mui/material';
-
 import welcomeImg from 'src/assets/images/backgrounds/welcome-bg2.png';
+import { currentUser } from 'src/function/auth';
+
 
 const WelcomeCard = () => {
+  const token = localStorage.getItem('token');
+  const [user, setUser] = useState({});
+
+  const checkUser = async () => {
+    try {
+      const res = await currentUser(token);
+      setUser(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+
   return (
     <Card elevation={0} sx={{ backgroundColor: (theme) => theme.palette.primary.light, py: 0 }}>
       <CardContent sx={{ py: 2 }}>
@@ -17,13 +35,13 @@ const WelcomeCard = () => {
                 },
               }}
             >
-              <Typography variant="h5">Welcome back Mathew!</Typography>
+              <Typography variant="h3">ยินดีต้อนรับ {user.role} {user.fullname} !!</Typography>
               <Typography variant="subtitle2" my={2} color="textSecondary">
-                You have earned 54% more than last month which is great thing.
+                ยินดีต้อนรับเข้าสู่ระบบสำหรับเทียบโอนผลการเรียน หี ควย แตด
               </Typography>
-              <Button variant="contained" color="primary">
+              {/* <Button variant="contained" color="primary">
                 Check
-              </Button>
+              </Button> */}
             </Box>
           </Grid>
           <Grid item sm={5}>

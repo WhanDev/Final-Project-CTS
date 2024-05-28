@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Box, Typography } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
-
+import WelcomeCard from 'src/components/dashboards/ecommerce/WelcomeCard';
 import { currentUser } from '../../../function/auth';
 import { login } from '../../../store/userSlice';
 
@@ -64,7 +64,7 @@ const IndexAdmin = () => {
           justifyContent="center"
           padding={5}
         >
-          <Typography
+          {/* <Typography
             variant="h1"
             fontWeight={400}
             sx={{
@@ -76,10 +76,11 @@ const IndexAdmin = () => {
           >
             แอดมิน <br/>
             ระบบดิจิทัลสำหรับการเทียบโอนผลการเรียน
-          </Typography>
-          <Typography variant="h5" fontWeight={400} color={'primary'}>
+          </Typography> */}
+          <WelcomeCard />
+          {/* <Typography variant="h5" fontWeight={400} color={'primary'}>
             Credit Transfer System <br />
-          </Typography>
+          </Typography> */}
         </Box>
       </PageContainer>
     </>

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Box, Typography } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
-
+import WelcomeCard from 'src/components/dashboards/ecommerce/WelcomeCard';
 import { currentUser } from '../../../function/auth';
 import { login } from '../../../store/userSlice';
 
@@ -74,11 +74,12 @@ const IndexLecturer = () => {
             }}
             marginBottom={2}
           >
-            อาจารย์ <br />
-            ระบบดิจิทัลสำหรับการเทียบโอนผลการเรียน
+            {/* อาจารย์ <br />
+            ระบบดิจิทัลสำหรับการเทียบโอนผลการเรียน */}
+            <WelcomeCard/>
           </Typography>
           <Typography variant="h5" fontWeight={400} color={'primary'}>
-            Credit Transfer System <br />
+            {/* Credit Transfer System <br /> */}
           </Typography>
         </Box>
       </PageContainer>
