@@ -7,9 +7,8 @@ import WelcomeCard from 'src/components/dashboards/ecommerce/WelcomeCard';
 import { currentUser } from '../../../function/auth';
 import { login } from '../../../store/userSlice';
 
-import icon3 from '../../../assets/images/svgs/icon-briefcase.svg';
-import icon5 from '../../../assets/images/svgs/icon-favorites.svg';
-import icon6 from '../../../assets/images/svgs/icon-speech-bubble.svg'; 
+import icon3 from '../../../assets/images/svgs/clock-check.svg';
+import icon5 from '../../../assets/images/svgs/user-check.svg';
 
 import { dataDashboard } from '../../../function/admin';
 
