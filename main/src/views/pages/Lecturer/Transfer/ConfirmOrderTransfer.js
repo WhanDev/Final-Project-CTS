@@ -296,7 +296,7 @@ const ConfirmOrderTransfer = () => {
                     )
                   ) : (
                     <Typography>
-                      ไม่สังกัดหลักสูตร ({checkMan.role === 'แอดมิน' ? 'ผู้ดูแลระบบ' : ''})
+                      ไม่สังกัดหลักสูตร ({checkMan.role === 'แอดมิน' ? 'ผู้ดูแลระบบ' : checkMan.role })
                     </Typography>
                   )}
                 </Grid>
@@ -336,7 +336,7 @@ const ConfirmOrderTransfer = () => {
                     )
                   ) : (
                     <Typography>
-                      ไม่สังกัดหลักสูตร ({checkMan.role === 'แอดมิน' ? 'ผู้ดูแลระบบ' : ''})
+                      ไม่สังกัดหลักสูตร ({checkMan.role === 'แอดมิน' ? 'ผู้ดูแลระบบ' : checkMan.role })
                     </Typography>
                   )}
                 </Grid>
