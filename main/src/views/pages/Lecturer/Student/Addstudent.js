@@ -1,20 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Button, MenuItem } from '@mui/material';
+import { Grid, Button } from '@mui/material';
 import Swal from 'sweetalert2';
 
 import Breadcrumb from '../../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from '../../../../components/container/PageContainer';
 import CustomTextField from '../../../../components/forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../../../components/forms/theme-elements/CustomFormLabel';
-import CustomSelect from '../../../../components/forms/theme-elements/CustomSelect';
 import ParentCard from '../../../../components/shared/ParentCard';
 import { Stack } from '@mui/system';
 
 import { create as createStudent } from '../../../../function/student';
-import { list as lsitCurriculum } from '../../../../function/curriculum';
+import { currentUser } from '../../../../function/auth';
 
 const AddStudent = () => {
+  const token = localStorage.getItem('token');
+  const [user, setUser] = useState({});
+
+  const checkUser = async () => {
+    try {
+      const res = await currentUser(token);
+      setUser(res.data);
+      setCurriculum(res.data.curriculum);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+  }, []);
 
   const [dataStudent, setDataStudent] = useState({});
 
@@ -27,25 +42,7 @@ const AddStudent = () => {
 
   const [curriculum, setCurriculum] = useState('');
 
-  const handleCurriculumChange = (e) => {
-    setCurriculum(e.target.value);
-  };
-
-  const [curriculumList, setCurriculumList] = useState([]);
-
-  const loadCurriculums = async () => {
-    try {
-      const response = await lsitCurriculum();
-      const data = response.data;
-      setCurriculumList(data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  useEffect(() => {
-    loadCurriculums();
-  }, []);
+  console.log(curriculum)
 
   const navigate = useNavigate();
 
@@ -88,8 +85,8 @@ const AddStudent = () => {
       title="เพิ่มข้อมูลนักศึกษา | จัดการข้อมูลนักศึกษา"
       description="this is Add Admin"
     >
-      <Breadcrumb title={<>หลักสูตร ปี รุ่นปี</>} />
-      <ParentCard title="เพิ่มข้อมูลนักศึกษา">
+      <Breadcrumb title="เพิ่มข้อมูลนักศึกษา" />
+      <ParentCard>
         <form encType="multipart/form-data" onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} lg={12}>
@@ -124,23 +121,6 @@ const AddStudent = () => {
                 required
                 fullWidth
               />
-
-              <CustomFormLabel>หลักสูตร</CustomFormLabel>
-              <CustomSelect
-                labelId="curriculum"
-                id="curriculum"
-                name="curriculum"
-                value={curriculum}
-                onChange={handleCurriculumChange}
-                required
-                fullWidth
-              >
-                {curriculumList.map((item) => (
-                  <MenuItem key={item._id} value={item._id}>
-                    {item._id} | {item.name}
-                  </MenuItem>
-                ))}
-              </CustomSelect>
 
               <CustomFormLabel>รุ่นปี</CustomFormLabel>
               <CustomTextField

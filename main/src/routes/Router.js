@@ -14,8 +14,6 @@ const AuthRole = Loadable(lazy(() => import('../views/authentication/AuthRole'))
 const LoginStudent = Loadable(lazy(() => import('../views/authentication/LoginStudent')));
 const LoginAdmin = Loadable(lazy(() => import('../views/authentication/LoginAdmin')));
 
-const Error = Loadable(lazy(() => import('../views/authentication/Error')));
-
 // IndexPage
 const IndexPage = Loadable(lazy(() => import('../views/pages/Index/IndexPage')));
 
@@ -475,14 +473,12 @@ const Router = [
       { path: '/student/profile', element: <StudentProfile /> },
       { path: '/student/profile/edit', element: <StudentProfileEdit /> },
       { path: '/student/profile/changePassword', element: <ChangePassStudent /> },
-      { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },
   {
     path: '/',
     element: <BlankLayout />,
     children: [
-      { path: '/auth/404', element: <Error /> },
       { path: '/AuthRole', element: <AuthRole /> },
       { path: '/Login/Student', element: <LoginStudent /> },
       { path: '/Login/Admin', element: <LoginAdmin /> },
@@ -497,7 +493,6 @@ const Router = [
       { path: '/curriculum', element: <Curriculum /> },
       { path: '/curriculum/:curriculum/structure/:structure_id', element: <Structure /> },
       { path: '/', element: <IndexPage /> },
-      { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },
 ];

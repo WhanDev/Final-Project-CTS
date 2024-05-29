@@ -40,6 +40,9 @@ const CheckOrderTransfer = () => {
   const params = useParams();
 
   const [transferList, setTransferList] = useState([]);
+
+  console.log(Array(transferList));
+
   const [transferOrder, setTransferOrder] = useState([]);
   const [hasChanges, setHasChanges] = useState(false);
   const [cutStructure, setCutStructure] = useState([]);
@@ -213,7 +216,7 @@ const CheckOrderTransfer = () => {
           setTransferList((prevTransferList) => {
             const updatedTransferList = [...prevTransferList];
             const listIndex = updatedTransferList.findIndex((list) =>
-              list.success.includes(successItem)
+              list.success.includes(successItem),
             );
             const successIndex = updatedTransferList[listIndex].success.indexOf(successItem);
             const deletedItem = updatedTransferList[listIndex].success.splice(successIndex, 1)[0];
@@ -238,7 +241,6 @@ const CheckOrderTransfer = () => {
       }
     });
   };
-  
 
   const handleDeleteUnSuccess = (listIndex, unsuccessIndex) => {
     Swal.fire({
@@ -290,7 +292,6 @@ const CheckOrderTransfer = () => {
           id: extraSubject.id,
           grade: extraSubject.grade,
         })),
-        note: successItem.note,
       })),
     );
 
@@ -643,7 +644,13 @@ const CheckOrderTransfer = () => {
                                         <TableCell
                                           align="center"
                                           width={'50%'}
-                                          sx={{ paddingX: 0 }}
+                                          sx={{
+                                            paddingX: 0,
+                                            borderLeft:
+                                              successItem.note === 'เทียบโอนเพิ่มเติม'
+                                                ? '5px solid blue'
+                                                : undefined,
+                                          }}
                                         >
                                           {successItem.extraSubject.map((extra) => (
                                             <Stack
@@ -745,9 +752,7 @@ const CheckOrderTransfer = () => {
                                             >
                                               <IconButton
                                                 color={'error'}
-                                                onClick={() =>
-                                                  handleDeleteSuccess(successItem)
-                                                }
+                                                onClick={() => handleDeleteSuccess(successItem)}
                                               >
                                                 <IconTrash width={25} />
                                               </IconButton>
@@ -808,6 +813,9 @@ const CheckOrderTransfer = () => {
               </Typography>
             </Stack>
           </Stack>
+          <Typography fontWeight={300} fontSize={20} color="blue" align="right" mt={1}>
+            รายการเทียบโอนเพิ่มเติม*
+          </Typography>
         </Grid>
       </ParentCard>
 

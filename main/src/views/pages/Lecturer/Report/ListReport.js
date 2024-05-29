@@ -21,9 +21,6 @@ import {
 } from '@mui/material';
 import CustomCheckbox from '../../../../components/forms/theme-elements/CustomCheckbox';
 import { IconTrash } from '@tabler/icons';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setTestTransfer } from '../../../../store/testTransfer';
 import Swal from 'sweetalert2';
 import CustomSelect from '../../../../components/forms/theme-elements/CustomSelect';
 import { list as AllCurriculum } from '../../../../function/curriculum';
@@ -31,6 +28,7 @@ import {
   listYear as AllStudentYear,
   listCurriculumAndYear as AllStudentCurriculumAndYear,
 } from '../../../../function/student';
+import { currentUser } from '../../../../function/auth';
 
 import axios from 'axios';
 
@@ -174,11 +172,24 @@ const Select = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
-  const [extraSelect, setExtraSelect] = useState([]);
-  const [loadAllCurriculum, setLoadAllCurriculum] = useState([]);
   const [selectedCurriculum, setSelectedCurriculum] = useState('');
   const [loadAllStudentYear, setLoadAllStudentYear] = useState([]);
   const [selectedStudentYear, setSelectedStudentYear] = useState('');
+
+  const token = localStorage.getItem('token');
+
+  const checkUser = async () => {
+    try {
+      const res = await currentUser(token);
+      setSelectedCurriculum(res.data.curriculum);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+  }, []);
 
   const fetchData = async (curriculum, year) => {
     try {
@@ -206,11 +217,9 @@ const Select = () => {
     if (event.target.checked) {
       const newSelecteds = rows.map((n) => n._id);
       setSelected(newSelecteds);
-      setExtraSelect(newSelecteds);
       return;
     }
     setSelected([]);
-    setExtraSelect([]);
   };
 
   const handleClick = (event, id) => {
@@ -231,7 +240,6 @@ const Select = () => {
     }
 
     setSelected(newSelected);
-    setExtraSelect(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -245,38 +253,7 @@ const Select = () => {
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const handleSubmit = (event) => {
-    if (extraSelect.length !== 0) {
-      dispatch(
-        setTestTransfer({
-          curriculum: selectedCurriculum,
-          extraSubject: extraSelect,
-        }),
-      );
-      navigate('/student/check');
-    } else {
-      Swal.fire({
-        icon: 'warning',
-        title: 'กรุณาเลือกรายวิชา',
-      });
-    }
-  };
-
   useEffect(() => {
-    const loadDataAllCurriculum = async () => {
-      try {
-        const res = await AllCurriculum();
-        setLoadAllCurriculum(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
     const loadDataAllStudentYear = async () => {
       try {
         const res = await AllStudentYear();
@@ -286,13 +263,8 @@ const Select = () => {
       }
     };
 
-    loadDataAllCurriculum();
     loadDataAllStudentYear();
   }, []);
-
-  const handleCurriculumSelected = (e) => {
-    setSelectedCurriculum(e.target.value);
-  };
 
   const handleStudentYearSelected = (e) => {
     setSelectedStudentYear(e.target.value);
@@ -337,13 +309,13 @@ const Select = () => {
       const url = window.URL.createObjectURL(blob);
       window.open(url, '_blank');
 
-      // const fileName = 'ส่วนที่ 2 ใบคำร้องขอเทียบโอนผลการเรียน.pdf';
+      const fileName = 'ส่วนที่ 2 ใบคำร้องขอเทียบโอนผลการเรียน.pdf';
 
-      // const anchor = document.createElement('a');
-      // anchor.href = url;
-      // anchor.download = fileName;
-      // anchor.click();
-      // window.URL.revokeObjectURL(url);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = fileName;
+      anchor.click();
+      window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error(err.message);
     } finally {
@@ -359,26 +331,9 @@ const Select = () => {
           justifyContent="center"
           alignItems="center"
         >
-          <Typography variant="h6">หลักสูตร</Typography>
-          <CustomSelect
-            style={{ width: '50%' }}
-            labelId="curriculum"
-            id="curriculum"
-            name="curriculum"
-            value={selectedCurriculum}
-            onChange={handleCurriculumSelected}
-            required
-          >
-            {loadAllCurriculum.map((item) => (
-              <MenuItem key={item._id} value={item._id}>
-                {item._id} | {item.name}
-              </MenuItem>
-            ))}
-          </CustomSelect>
-
           <Typography variant="h6">รุ่น</Typography>
           <CustomSelect
-            style={{ width: '50%' }}
+            style={{ width: '100%' }}
             labelId="student"
             id="student"
             name="student"
@@ -398,7 +353,6 @@ const Select = () => {
         <EnhancedTableToolbar
           numSelected={selected.length}
           setSelected={setSelected}
-          setExtraSelect={setExtraSelect}
           selected={selected}
         />
         <TableContainer>
@@ -440,11 +394,6 @@ const Select = () => {
                     </TableRow>
                   );
                 })}
-              {/* {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )} */}
             </TableBody>
           </Table>
         </TableContainer>

@@ -26,30 +26,33 @@ import {
 import CustomSelect from '../../../../components/forms/theme-elements/CustomSelect';
 import Swal from 'sweetalert2';
 
-import { list as AllCurriculum } from '../../../../function/curriculum';
 import {
   listYear as AllStudentYear,
   listCurriculumAndYear as AllStudentCurriculumAndYear,
   remove as removeStudent,
   importExcel,
 } from '../../../../function/student';
+import { currentUser } from '../../../../function/auth';
 
 import * as XLSX from 'xlsx';
 
 const ListStudent = () => {
-  const [loadAllCurriculum, setLoadAllCurriculum] = useState([]);
+  const token = localStorage.getItem('token');
 
-  const loadDataAllCurriculum = async () => {
-    AllCurriculum()
-      .then((res) => setLoadAllCurriculum(res.data))
-      .catch((err) => console.log(err));
+  const checkUser = async () => {
+    try {
+      const res = await currentUser(token);
+      setSelectedCurriculum(res.data.curriculum);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  useEffect(() => {
+    checkUser();
+  }, []);
 
   const [selectedCurriculum, setSelectedCurriculum] = useState('');
-
-  const handleCurriculumSelected = (e) => {
-    setSelectedCurriculum(e.target.value);
-  };
 
   const [loadAllStudentYear, setLoadAllStudentYear] = useState([]);
 
@@ -85,7 +88,6 @@ const ListStudent = () => {
 
   useEffect(() => {
     loadDataAllStudentYear();
-    loadDataAllCurriculum();
     loadDataAllStudentCurriculumAndYear(selectedCurriculum, selectedStudentYear);
   }, [selectedCurriculum, selectedStudentYear]);
 
@@ -125,7 +127,6 @@ const ListStudent = () => {
         removeStudent(_id).then((res) => {
           console.log(res);
           loadDataAllStudentYear();
-          loadDataAllCurriculum();
           loadDataAllStudentCurriculumAndYear(selectedCurriculum, selectedStudentYear);
         });
       }
@@ -272,26 +273,9 @@ const ListStudent = () => {
           justifyContent="center"
           alignItems="center"
         >
-          <Typography variant="h6">หลักสูตร</Typography>
-          <CustomSelect
-            style={{ width: '50%' }}
-            labelId="curriculum"
-            id="curriculum"
-            name="curriculum"
-            value={selectedCurriculum}
-            onChange={handleCurriculumSelected}
-            required
-          >
-            {loadAllCurriculum.map((item) => (
-              <MenuItem key={item._id} value={item._id}>
-                {item._id} | {item.name}
-              </MenuItem>
-            ))}
-          </CustomSelect>
-
           <Typography variant="h6">รุ่น</Typography>
           <CustomSelect
-            style={{ width: '50%' }}
+            style={{ width: '100%' }}
             labelId="student"
             id="student"
             name="student"

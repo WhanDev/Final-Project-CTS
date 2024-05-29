@@ -696,7 +696,13 @@ const ApproveOrderTransfer = () => {
                                         <TableCell
                                           align="center"
                                           width={'50%'}
-                                          sx={{ paddingX: 0 }}
+                                          sx={{
+                                            paddingX: 0,
+                                            borderLeft:
+                                              successItem.note === 'เทียบโอนเพิ่มเติม'
+                                                ? '5px solid blue'
+                                                : undefined,
+                                          }}
                                         >
                                           {successItem.extraSubject.map((extra) => (
                                             <Stack
