@@ -51,13 +51,13 @@ const ChangePassStudent = () => {
       await changePassword(user._id,NewData);
       Swal.fire({
         icon: 'success',
-        title: 'บันทึกข้อมูลสำเร็จ',
+        title: 'เปลี่ยนรหัสผ่านสำเร็จ',
       });
       navigate(-1);
     } catch (error) {
       Swal.fire({
         icon: 'error',
-        title: 'บันทึกข้อมูลไม่สำเร็จ',
+        title: 'เปลี่ยนรหัสผ่านไม่สำเร็จ',
         text: error.response.data.message,
       });
       console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);

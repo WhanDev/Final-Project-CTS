@@ -39,6 +39,15 @@ const HeaderStudent = () => {
             color="inherit"
             sx={{ color: (theme) => theme.palette.text.primary }}
             variant="text"
+            to="/student/index"
+            component={Link}
+          >
+            หน้าแรก
+          </Button>
+          <Button
+            color="inherit"
+            sx={{ color: (theme) => theme.palette.text.primary }}
+            variant="text"
             to="/student/curriculum"
             component={Link}
           >

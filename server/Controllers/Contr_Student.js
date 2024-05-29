@@ -275,22 +275,26 @@ exports.changePassword = async (req, res) => {
     var studentUser = await Student.findOne({ _id: id });
     if (studentUser) {
       const isMatch = await bcrypt.compare(oldPassword, studentUser.password);
-      if(isMatch){
-        if(newPassword === confirmPassword){
+      if (isMatch) {
+        if (newPassword === confirmPassword) {
           const hashNewPass = await bcrypt.hash(newPassword, 10);
           const updatedStudent = await Student.findOneAndUpdate(
             { _id: id },
             { password: hashNewPass },
             { new: true }
           ).exec();
-          return res.status(200).json({ message: "ง้าบ", data: hashNewPass });
-        }else{
-          return res.status(400).json({ message: "รหัสผ่านใหม่ไม่ตรงกันไอ้โง่ ไม่เคยจะฉลาดเลยไอ้เหี้ยนี่" });
+          return res
+            .status(200)
+            .json({ message: "เปลี่ยนรหัสผ่านสำเร็จ", data: hashNewPass });
+        } else {
+          return res
+            .status(400)
+            .json({ message: "รหัสผ่านใหม่ไม่ตรงกัน โปรดตรวจสอบ" });
         }
-      }else{
-        return res.status(400).json({ message: "รหัสผ่านเดิมไม่ถูกต้องไอ้โง่" });
+      } else {
+        return res.status(400).json({ message: "รหัสผ่านเดิมไม่ถูกต้อง" });
       }
-    }else{
+    } else {
       return res.status(400).json({ message: "ไม่พบข้อมูลนักศึกษา" });
     }
   } catch (err) {
@@ -299,4 +303,4 @@ exports.changePassword = async (req, res) => {
       .status(500)
       .json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
   }
-}
+};

@@ -82,6 +82,7 @@ const Mached = () => {
 
   const [allSubject, setAllSubject] = useState([]);
 
+
   const loadAllSubject = async (id) => {
     AllSubject(id)
       .then((res) => setAllSubject(res.data))

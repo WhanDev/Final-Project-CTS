@@ -9,7 +9,6 @@ import icon4 from '../../../assets/images/svgs/icon-mailbox.svg';
 import icon5 from '../../../assets/images/svgs/icon-favorites.svg';
 import icon6 from '../../../assets/images/svgs/icon-speech-bubble.svg';
 
-
 const topcards = [
   {
     href: '/user-profile',

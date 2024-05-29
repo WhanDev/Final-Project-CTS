@@ -1,17 +1,52 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { Box, Typography } from '@mui/material';
+
+import { Grid, Box, CardContent, Typography, Stack } from '@mui/material';
+
+import icon3 from '../../../assets/images/svgs/icon-briefcase.svg';
+import icon5 from '../../../assets/images/svgs/icon-favorites.svg';
+import icon6 from '../../../assets/images/svgs/icon-speech-bubble.svg';
+
 import PageContainer from 'src/components/container/PageContainer';
 import WelcomeCard from 'src/components/dashboards/ecommerce/WelcomeCard';
+
 import { currentUser } from '../../../function/auth';
+
 import { login } from '../../../store/userSlice';
+
+const topcards = [
+  {
+    icon: icon3,
+    title: 'รอการยืนยันการเทียบโอนเบื้องต้น',
+    list: '11',
+    bgcolor: 'warning',
+  },
+
+  {
+    icon: icon5,
+    title: (
+      <>
+        รอการยืนยันการเทียบโอน
+        <br />
+        โดยอาจารย์ประจำหลักสูตร
+      </>
+    ),
+    list: '5',
+    bgcolor: 'error',
+  },
+  {
+    icon: icon6,
+    title: 'ยืนยันการเทียบโอนถูกต้อง',
+    list: '6',
+    bgcolor: 'success',
+  },
+];
 
 const IndexAdmin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const idToken = localStorage.getItem('token');
-  console.log('token', idToken);
 
   const CheckTokenUser = async () => {
     try {
@@ -57,7 +92,37 @@ const IndexAdmin = () => {
   return (
     <>
       <PageContainer title="หน้าหลัก" description="หน้าหลัก">
-          <WelcomeCard />
+        <WelcomeCard />
+        <Box marginY={2} />
+        <Grid container spacing={3}>
+          {topcards.map((topcard, i) => (
+            <Grid item xs={12} sm={4} lg={4} key={i} style={{ display: 'flex' }}>
+              <Box
+                bgcolor={`${topcard.bgcolor}.light`}
+                textAlign="center"
+                style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}
+              >
+                <CardContent
+                  style={{
+                    flex: '1 0 auto',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <img src={topcard.icon} alt={topcard.icon} width="50" />
+                  <Typography color={`${topcard.bgcolor}.main`} mt={1} variant="h5">
+                    {topcard.title}
+                  </Typography>
+                  <Typography mt={1} variant="h5">
+                    {topcard.list} รายการ
+                  </Typography>
+                </CardContent>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
       </PageContainer>
     </>
   );
