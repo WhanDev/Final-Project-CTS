@@ -1,4 +1,5 @@
 const Admin = require("../Models/Model_Admin");
+const Student = require("../Models/Model_Student");
 const bcrypt = require("bcryptjs");
 
 //เพิ่มข้อมูลผู้ดูแล
@@ -95,6 +96,44 @@ exports.remove = async (req, res) => {
       _id: id,
     }).exec();
     res.json({ message: "ลบผู้ใช้งานระบบสำร็จ!", data: removedAdmin });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
+  }
+};
+
+exports.dataDashboard = async (req, res) => {
+  try {
+    const statusTransfer = [
+      "ยังไม่ดำเนินการเทียบโอนเบื้องต้น",
+      "รอการยืนยันการเทียบโอนเบื้องต้น",
+      "รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร",
+      "ยืนยันการเทียบโอนถูกต้อง",
+    ];
+
+    let statusCounts = [];
+
+    for (const status of statusTransfer) {
+      const Counts = await Student.aggregate([
+        {
+          $match: { status: status }
+        },
+        {
+          $count: "count"
+        }
+      ]).exec();
+
+      const count = (Counts.length > 0) ? Counts[0].count : 0;
+
+      statusCounts.push({
+        status: status,
+        count: count
+      });
+    }
+
+    res.json({ message: "กูเจอละไอ้ควาย", data: statusCounts });
   } catch (err) {
     console.error(err);
     res

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -12,7 +12,7 @@ import PageContainer from 'src/components/container/PageContainer';
 import WelcomeCard from 'src/components/dashboards/ecommerce/WelcomeCard';
 
 import { currentUser } from '../../../function/auth';
-
+import { dataDashboard } from '../../../function/admin';
 import { login } from '../../../store/userSlice';
 
 const topcards = [
@@ -25,7 +25,7 @@ const topcards = [
 
   {
     icon: icon5,
-    title: (
+    title: 'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร'||(
       <>
         รอการยืนยันการเทียบโอน
         <br />
@@ -48,6 +48,21 @@ const IndexAdmin = () => {
   const navigate = useNavigate();
   const idToken = localStorage.getItem('token');
 
+  const [dashboardData, setDashboardData] = useState([]);
+  const loadDashboardData = async () => {
+    try {
+      const dashboard = await dataDashboard();
+      setDashboardData(dashboard.data.data);
+      console.log(dashboard.data.data);
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+  
   const CheckTokenUser = async () => {
     try {
       const res = await currentUser(idToken);
@@ -115,9 +130,11 @@ const IndexAdmin = () => {
                   <Typography color={`${topcard.bgcolor}.main`} mt={1} variant="h5">
                     {topcard.title}
                   </Typography>
-                  <Typography mt={1} variant="h5">
-                    {topcard.list} รายการ
-                  </Typography>
+                  {dashboardData.map((item) => {
+                    if (topcard.title === item.status) {
+                      return <Typography variant="h5">{item.count} รายการ</Typography>;
+                    }
+                  })}
                 </CardContent>
               </Box>
             </Grid>

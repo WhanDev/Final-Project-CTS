@@ -17,3 +17,7 @@ export const update = async (id, data) => {
 
 export const remove = async (id) =>
   await axios.delete(process.env.REACT_APP_API + '/admin/' + id);
+
+export const dataDashboard = async () => {
+  return await axios.get(process.env.REACT_APP_API + '/admin/dashboard/data');
+}
