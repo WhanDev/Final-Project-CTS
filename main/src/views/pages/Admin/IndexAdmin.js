@@ -4,9 +4,9 @@ import { useDispatch } from 'react-redux';
 
 import { Grid, Box, CardContent, Typography } from '@mui/material';
 
-import icon3 from '../../../assets/images/svgs/icon-briefcase.svg';
-import icon5 from '../../../assets/images/svgs/icon-favorites.svg';
-import icon6 from '../../../assets/images/svgs/icon-speech-bubble.svg';
+import icon3 from '../../../assets/images/svgs/clock-check.svg';
+import icon5 from '../../../assets/images/svgs/user-check.svg';
+import icon6 from '../../../assets/images/svgs/file-check.svg';
 
 import PageContainer from 'src/components/container/PageContainer';
 import WelcomeCard from 'src/components/dashboards/ecommerce/WelcomeCard';
@@ -19,7 +19,6 @@ const topcards = [
   {
     icon: icon3,
     title: 'รอการยืนยันการเทียบโอนเบื้องต้น',
-    list: '11',
     bgcolor: 'warning',
   },
 
@@ -32,13 +31,11 @@ const topcards = [
         โดยอาจารย์ประจำหลักสูตร
       </>
     ),
-    list: '5',
     bgcolor: 'error',
   },
   {
     icon: icon6,
     title: 'ยืนยันการเทียบโอนถูกต้อง',
-    list: '6',
     bgcolor: 'success',
   },
 ];

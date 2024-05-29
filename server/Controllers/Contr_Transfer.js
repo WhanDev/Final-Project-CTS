@@ -444,26 +444,20 @@ const {
 exports.Transfer = async (req, res) => {
   try {
     const { student_id } = req.body;
-
     if (!student_id) {
       return res.status(400).send("กรุณากรอกข้อมูลให้ครบ!");
     }
-
     const order_id = "TS-" + student_id;
-
     const createTransferOrder = await TransferOrder.findOne({ _id: order_id });
     if (createTransferOrder) {
       return res.status(400).send("นักศึกษาเคยทำการเทียบโอนไปแล้ว!");
     }
-
     const newTransferOrder = new TransferOrder({
       _id: order_id,
       student_id,
     });
     await newTransferOrder.save();
-
     const { success, unsuccess } = req.body;
-
     const newTransferList = new TransferList({
       transferOrder_id: order_id,
       success: success.map((item) => ({
@@ -481,9 +475,7 @@ exports.Transfer = async (req, res) => {
         note: item.note,
       })),
     });
-
     await newTransferList.save();
-
     const student = await Student.findOne({ _id: student_id });
     if (student) {
       await Student.updateOne(
@@ -491,18 +483,14 @@ exports.Transfer = async (req, res) => {
         { $set: { status: "รอการยืนยันการเทียบโอนเบื้องต้น" } }
       );
     }
-
     const date = new Date();
-
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
     const hours = date.getHours().toString().padStart(2, "0");
     const minutes = date.getMinutes().toString().padStart(2, "0");
     const seconds = date.getSeconds().toString().padStart(2, "0");
-
     const formattedDateTime = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-
     const newTransfer = new Transfer({
       _id: student_id,
       checkBy: "",
@@ -511,7 +499,6 @@ exports.Transfer = async (req, res) => {
       date: formattedDateTime,
     });
     await newTransfer.save();
-
     res.status(201).json({
       message: "เพิ่มข้อมูลสำเร็จ!",
       newTransferOrder,
@@ -685,7 +672,6 @@ exports.TransferConfirmPath1 = async (req, res) => {
   try {
     const student_id = req.params._id;
     const checkBy_id = req.body.checkBy;
-
     const updatedStatusTransfer = await Transfer.findOneAndUpdate(
       { _id: student_id },
       {
@@ -694,21 +680,18 @@ exports.TransferConfirmPath1 = async (req, res) => {
           status: "รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร",
         },
       },
-      { new: true } // This option returns the updated document
+      { new: true }
     );
-
     const updatedStatusStudent = await Student.findOneAndUpdate(
       { _id: student_id },
       {
         $set: { status: "รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร" },
       },
-      { new: true } // This option returns the updated document
+      { new: true }
     );
-
     if (!updatedStatusTransfer || !updatedStatusStudent) {
       return res.status(404).json({ message: "ไม่พบข้อมูลนักศึกษา" });
     }
-
     res.json({
       message: "อัปโหลดสถานะสำเร็จ",
       updatedStatusTransfer,

@@ -13,7 +13,6 @@ exports.create = async (req, res) => {
       theory_credits,
       practical_credits,
     } = req.body;
-
     if (
       !structure_id ||
       !group_id ||
@@ -25,26 +24,19 @@ exports.create = async (req, res) => {
     ) {
       return res.status(400).send("กรุณากรอกข้อมูลให้ครบ");
     }
-
-    // Check if subject_id is duplicated
     const existingSubjectId = await Subject.findOne({ subject_id: subject_id });
     if (existingSubjectId) {
       return res.status(409).send("รหัสรายวิชาซ้ำ");
     }
-
-    // Check if the combination of subject_id, structure_id, and group_id is unique
     const existingSubject = await Subject.findOne({
       subject_id,
       structure_id,
       group_id,
     });
-
     if (existingSubject) {
       return res.status(409).send("รหัสกลุ่มวิชาและรหัสวิชาซ้ำกัน");
     }
-
     const total_credits = theory_credits + practical_credits;
-
     const createSubject = await Subject({
       structure_id,
       group_id,
@@ -56,7 +48,6 @@ exports.create = async (req, res) => {
       practical_credits,
       total_credits,
     }).save();
-
     res
       .status(201)
       .json({ message: "เพิ่มข้อมูลสำเร็จ!", data: createSubject });
@@ -184,7 +175,7 @@ exports.remove = async (req, res) => {
 
     if (relatedMachSubjectList.length > 0 || relatedMachSubject.length > 0) {
       return res.status(403).json({
-        message: "ไม่สามารถลบข้อมูลที่มีความสัมพันธ์กับข้อมูลอื่นได้",
+        message: "ไม่สามารถลบรายวิชานี้ได้ เนื่องจากรายวิชาอยู่ในคู่เทียบโอน",
         relatedMachSubject,
         relatedMachSubjectList,
       });
@@ -195,7 +186,7 @@ exports.remove = async (req, res) => {
     }).exec();
 
     res.json({
-      message: "ลบข้อมูลสำเร็จ!",
+      message: "ลบข้อมูลรายวิชาสำเร็จ!",
       removedSubject,
       relatedMachSubject,
       relatedMachSubjectList,

@@ -14,7 +14,7 @@ exports.loginStudent = async (req, res) => {
       const isMatch = await bcrypt.compare(password, user.password);
 
       if (!isMatch) {
-        return res.status(400).send("รหัสผ่านไม่ถูกต้อง!");
+        return res.status(400).send("รหัสนักศึกษาหรือรหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง!");
       }
 
       var payload = {
@@ -30,7 +30,7 @@ exports.loginStudent = async (req, res) => {
         res.json({ token, payload });
       });
     } else {
-      return res.status(400).send("ไม่มีรหัสนักศึกษานี้อยู่ในระบบ!");
+      return res.status(400).send("ไม่มีนักศึกษานี้อยู่ในระบบ!");
     }
   } catch (err) {
     console.log(err);
@@ -47,7 +47,7 @@ exports.loginAdmin = async (req, res) => {
       const isMatch = await bcrypt.compare(password, user.password);
 
       if (!isMatch) {
-        return res.status(400).send("รหัสผ่านไม่ถูกต้อง!");
+        return res.status(400).send("รหัสประจำตัวหรือรหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง!");
       }
 
       var payload = {
@@ -63,7 +63,7 @@ exports.loginAdmin = async (req, res) => {
         res.json({ token, payload });
       });
     } else {
-      return res.status(400).send("ไม่มีรหัสผู้ใช้งานนี้อยู่ในระบบ!");
+      return res.status(400).send("ไม่มีผู้ใช้งานนี้อยู่ในระบบ!");
     }
   } catch (err) {
     console.log(err);
