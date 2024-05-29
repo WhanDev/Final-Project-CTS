@@ -37,3 +37,7 @@ export const importExcel = async (data) =>
 
 export const changePassword = async (id,data) =>
   await axios.post(process.env.REACT_APP_API + '/student/'+ id + '/changePassword/',data)
+
+export const dataDashboard = async (id) =>
+  await axios.get(process.env.REACT_APP_API + '/student/data/dashboard/'+ id);
+

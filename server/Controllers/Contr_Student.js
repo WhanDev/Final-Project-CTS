@@ -1,4 +1,12 @@
 const Student = require("../Models/Model_Student");
+const Subject =require("../Models/Model_Subject");
+const Structure = require("../Models/Model_Structure");
+const {
+  Transfer,
+  TransferOrder,
+  TransferList,
+} = require("../Models/Model_Transfer");
+
 const bcrypt = require("bcryptjs");
 
 //เพิ่มข้อมูลนักศึกษา
@@ -296,6 +304,57 @@ exports.changePassword = async (req, res) => {
       }
     } else {
       return res.status(400).json({ message: "ไม่พบข้อมูลนักศึกษา" });
+    }
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
+  }
+};
+
+exports.dataDashboard = async (req, res) => {
+  try {
+    const id = req.params._id;
+
+    const readStudent = await Student.findOne({ _id: id }).exec();
+    const curriculum_id = readStudent.curriculum;
+
+    const readTransfer = await TransferOrder.findOne({ student_id: id }).exec();
+    if (!readTransfer) {
+      return res.status(400).json({ message: "ไอ้ หน้า หี" });
+    } else {
+      var readTransferlist = await TransferList.findOne({
+        transferOrder_id: readTransfer._id,
+      })
+        .select("success subject_id")
+        .exec();
+
+      const subjectIds = readTransferlist.success.map(
+        (entry) => entry.subject_id
+      );
+      console.log(subjectIds);
+
+      let credit = 0
+
+      for(const subjectId of subjectIds) {
+        const readSubject = await Subject.findOne({ subject_id: subjectId }).exec();
+        credit += readSubject.total_credits
+      }
+
+      const listStructure = await Structure.find({
+        curriculum: curriculum_id,
+      }).exec();
+
+      const totalCredits = listStructure.reduce(
+        (sum, structure) => sum + structure.credit,
+        0
+      );
+
+      let LearnMore = totalCredits - credit
+      return res
+        .status(200)
+        .json({ message: "อืมๆๆ", readTransferlist, totalCredits,credit, LearnMore });
     }
   } catch (err) {
     console.error(err);
