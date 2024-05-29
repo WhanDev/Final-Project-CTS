@@ -41,7 +41,6 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
 
   const params = useParams();
   const structure_id = 'CS-' + student.curriculum;
-  // const [transferList, setTransferList] = useState([]);
 
   const AllSuccess = Array.isArray(transferList)
     ? transferList.flatMap((list) => list.success)
@@ -131,7 +130,6 @@ const DialogAdd = ({ onAddSuccess, transferList }) => {
     const listExtra = filteredMatchSubjectList.flatMap((item) => item.extraSubject_id);
 
     const success = {
-      curriculum_id: student.curriculum,
       mach_id: 'MS' + student.curriculum + '-' + selectedSubject,
       subject_id: selectedSubject,
       machlist_id: selectedValue,

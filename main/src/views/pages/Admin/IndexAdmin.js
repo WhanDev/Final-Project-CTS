@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import { Grid, Box, CardContent, Typography, Stack } from '@mui/material';
+import { Grid, Box, CardContent, Typography } from '@mui/material';
 
 import icon3 from '../../../assets/images/svgs/icon-briefcase.svg';
 import icon5 from '../../../assets/images/svgs/icon-favorites.svg';

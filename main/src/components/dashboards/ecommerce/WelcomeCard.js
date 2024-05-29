@@ -66,7 +66,7 @@ const WelcomeCard = () => {
                 {user.curriculum === '0000000'
                   ? 'ไม่สังกัดหลักสูตร'
                   : user.curriculum
-                  ? 'หลักสูตร' +
+                  ? 'หลักสูตร ' +
                     curriculum.name +
                     ' (' +
                     curriculum.year +

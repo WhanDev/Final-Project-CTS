@@ -5,7 +5,6 @@ import Banner from '../../../components/landingpage/banner/Banner';
 
 const IndexPage = () => {
 
-
   return (
     <PageContainer
       title="ระบบดิจิทัลสำหรับการเทียบโอนผลการเรียน"
