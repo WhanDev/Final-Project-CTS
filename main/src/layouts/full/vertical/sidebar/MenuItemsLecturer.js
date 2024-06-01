@@ -13,7 +13,7 @@ import { uniqueId } from 'lodash';
 const MenuItemsLecturer = [
   {
     id: uniqueId(),
-    title: 'แดชบอร์ด',
+    title: 'หน้าแรก',
     icon: IconLayoutDashboard,
     href: '/lecturer/index',
     chipColor: 'secondary',

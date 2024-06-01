@@ -9,7 +9,7 @@ import CustomTextField from '../../../components/forms/theme-elements/CustomText
 import CustomFormLabel from '../../../components/forms/theme-elements/CustomFormLabel';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import { Stack } from '@mui/system';
-import { changePassword as changePassword} from '../../../../src/function/student';
+import { changePassword } from '../../../../src/function/student';
 import { currentUser } from '../../../function/auth';
 
 const ChangePassStudent = () => {

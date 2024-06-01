@@ -15,10 +15,7 @@ import {
 } from '@mui/material';
 import { Stack } from '@mui/system';
 import {
-  IconTrash,
-  IconEdit,
   IconCirclePlus,
-  IconSquarePlus,
   IconEditCircle,
   IconCircleMinus,
   IconArrowBackUp,
@@ -34,7 +31,6 @@ import { listByCurriculm } from '../../../../function/structure';
 import { listByStructure } from '../../../../function/subject';
 import {
   listByCurriculum as AllMachsubject,
-  remove as RemoveMachSubject,
 } from '../../../../function/machsubject';
 import {
   list as AllMachsubjectList,
@@ -106,24 +102,30 @@ const ListMachSubject = () => {
   };
 
   const handleRemoveMachSubjectList = async (_id) => {
-    Swal.fire({
-      title: 'ต้องการลบข้อมูลนี้ใช่หรือไม่?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'ยืนยัน',
-      cancelButtonText: 'ยกเลิก',
-    }).then((result) => {
+    try {
+      const result = await Swal.fire({
+        title: 'ต้องการลบข้อมูลนี้ใช่หรือไม่?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+      });
+  
       if (result.isConfirmed) {
+        await RemoveMachSubjectList(_id);
         Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-        RemoveMachSubjectList(_id).then((res) => {
-          console.log(res);
-          loadDataAllMachsubjectList();
-          loadDataAllExtraSubject();
-        });
+        loadDataAllMachsubjectList();
+        loadDataAllExtraSubject();
       }
-    });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: error.response?.data?.message || 'เกิดข้อผิดพลาดในการลบข้อมูล',
+      });
+    }
   };
 
   useEffect(

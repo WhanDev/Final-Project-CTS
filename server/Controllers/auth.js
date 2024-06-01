@@ -45,11 +45,9 @@ exports.loginAdmin = async (req, res) => {
     var user = await Admin.findOneAndUpdate({ _id }, { new: true });
     if (user) {
       const isMatch = await bcrypt.compare(password, user.password);
-
       if (!isMatch) {
         return res.status(400).send("รหัสประจำตัวหรือรหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง!");
       }
-
       var payload = {
         user: {
           _id: user._id,
@@ -57,7 +55,6 @@ exports.loginAdmin = async (req, res) => {
           role: user.role,
         },
       };
-
       jwt.sign(payload, "jwtsecret", { expiresIn: "1d" }, (err, token) => {
         if (err) throw err;
         res.json({ token, payload });

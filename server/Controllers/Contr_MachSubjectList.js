@@ -114,7 +114,7 @@ exports.remove = async (req, res) => {
 
     if (relatedTransferList.length > 0) {
       return res.status(403).json({
-        message: "ไม่สามารถลบข้อมูลที่มีความสัมพันธ์กับข้อมูลอื่นได้",
+        message: "ไม่สามารถลบได้ เนื่องจากคู่เทียบโอนอยู่ในการเทียบโอนแล้ว",
         relatedTransferList,
       });
     }

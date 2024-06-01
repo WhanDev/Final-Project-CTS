@@ -13,7 +13,7 @@ import { uniqueId } from 'lodash';
 const MenuItemsAdmin = [
   {
     id: uniqueId(),
-    title: 'แดชบอร์ด',
+    title: 'หน้าแรก',
     icon: IconLayoutDashboard,
     href: '/officer/index',
     chipColor: 'secondary',

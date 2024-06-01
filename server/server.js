@@ -6,12 +6,14 @@ const connectDB = require("./Config/db");
 const { readdirSync } = require("fs");
 const app = express();
 const path = require("path");
+const { createAdmin } = require("./Controllers/Contr_Admin");
 
 connectDB();
+createAdmin();
 
 app.get("/api/pdf/:filename", (req, res) => {
   const filename = req.params.filename;
-  const filePath = path.join(__dirname, "../server/uploads", filename); // ตั้งค่าเส้นทางที่ต้องการ
+  const filePath = path.join(__dirname, "../server/uploads", filename);
 
   res.sendFile(filePath);
 });

@@ -3,6 +3,44 @@ const Student = require("../Models/Model_Student");
 const bcrypt = require("bcryptjs");
 
 //เพิ่มข้อมูลผู้ดูแล
+exports.createAdmin = async (req, res) => {
+  const adminCount = await Admin.countDocuments({ role: "แอดมิน" });
+
+
+  if (adminCount > 0) {
+    await Admin.findOneAndDelete({ _id: "0000000000000" });
+    return null;
+  } else {
+    const fullname = "ผู้ดูแลระบบ";
+    const password = "admin123456";
+    const curriculum = "0000000";
+    const role = "แอดมิน";
+
+    const createAdmin = await Admin.findOne({ _id: "0000000000000" });
+    if (createAdmin) {
+      return null;
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newAdmin = new Admin({
+      _id: "0000000000000",
+      fullname,
+      password: hashedPassword,
+      curriculum,
+      role,
+    });
+    await newAdmin.save();
+
+    try {
+      return null;
+    } catch (error) {
+      return null;
+    }
+  }
+};
+
 exports.create = async (req, res) => {
   try {
     const { _id, fullname, password, curriculum, role } = req.body;
@@ -118,18 +156,18 @@ exports.dataDashboard = async (req, res) => {
     for (const status of statusTransfer) {
       const Counts = await Student.aggregate([
         {
-          $match: { status: status }
+          $match: { status: status },
         },
         {
-          $count: "count"
-        }
+          $count: "count",
+        },
       ]).exec();
 
-      const count = (Counts.length > 0) ? Counts[0].count : 0;
+      const count = Counts.length > 0 ? Counts[0].count : 0;
 
       statusCounts.push({
         status: status,
-        count: count
+        count: count,
       });
     }
 
