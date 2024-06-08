@@ -19,7 +19,7 @@ const ManageCurriculum = () => {
             <Button
               variant="outlined"
               color="primary"
-              startIcon={<IconAlbum width={18} />}
+              startIcon={<IconAlbum width={25} />}
               component={Link}
               to={'/admin/manage/curriculum/add'}
             >

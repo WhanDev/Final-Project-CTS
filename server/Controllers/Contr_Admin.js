@@ -6,7 +6,6 @@ const bcrypt = require("bcryptjs");
 exports.createAdmin = async (req, res) => {
   const adminCount = await Admin.countDocuments({ role: "แอดมิน" });
 
-
   if (adminCount > 0) {
     await Admin.findOneAndDelete({ _id: "0000000000000" });
     return null;
@@ -125,11 +124,25 @@ exports.update = async (req, res) => {
   }
 };
 
+const {
+  Transfer,
+} = require("../Models/Model_Transfer");
+
 //ลบข้อมูลผู้ดูแล
 exports.remove = async (req, res) => {
   try {
     // code
     const id = req.params._id;
+
+    const relatedCheckBy = await Transfer.find({ checkBy: id }).exec();
+    const relatedApproveBy = await Transfer.find({ approveBy: id }).exec();
+
+    if (relatedCheckBy.length > 0 || relatedApproveBy.length > 0) {
+      return res.status(403).json({
+        message:
+          "ไม่สามารถลบผู้ใช้งานนี้ได้ เนื่องจากมีข้อมูลอยู่ในการตรวจสอบเทียบโอนแล้ว",
+      });
+    }
     const removedAdmin = await Admin.findOneAndDelete({
       _id: id,
     }).exec();
@@ -171,7 +184,7 @@ exports.dataDashboard = async (req, res) => {
       });
     }
 
-    res.json({ message: "กูเจอละไอ้ควาย", data: statusCounts });
+    res.json({ message: "พบข้อมูล", data: statusCounts });
   } catch (err) {
     console.error(err);
     res

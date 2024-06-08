@@ -15,10 +15,7 @@ import {
 } from '@mui/material';
 import { Stack } from '@mui/system';
 import {
-  IconTrash,
-  IconEdit,
   IconCirclePlus,
-  IconSquarePlus,
   IconEditCircle,
   IconCircleMinus,
   IconArrowBackUp,
@@ -32,10 +29,7 @@ import ChildCard from '../../../../components/shared/ChildCard';
 import DialogSubject from '../Subject/DialogSubject';
 import { listByCurriculm } from '../../../../function/structure';
 import { listByStructure } from '../../../../function/subject';
-import {
-  listByCurriculum as AllMachsubject,
-  remove as RemoveMachSubject,
-} from '../../../../function/machsubject';
+import { listByCurriculum as AllMachsubject } from '../../../../function/machsubject';
 import {
   list as AllMachsubjectList,
   remove as RemoveMachSubjectList,
@@ -116,7 +110,7 @@ const ListMachSubject = () => {
         confirmButtonText: 'ยืนยัน',
         cancelButtonText: 'ยกเลิก',
       });
-  
+
       if (result.isConfirmed) {
         await RemoveMachSubjectList(_id);
         Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
@@ -131,7 +125,6 @@ const ListMachSubject = () => {
       });
     }
   };
-  
 
   useEffect(
     () => {
@@ -193,7 +186,7 @@ const ListMachSubject = () => {
                                 <Typography
                                   variant="body1"
                                   color="textSecondary"
-                                  fontSize={18}
+                                  fontSize={20}
                                   marginTop={1}
                                 >
                                   {item.group_id} {item.group_name} {item.credit} หน่วยกิต
@@ -326,7 +319,7 @@ const ListMachSubject = () => {
                                                         >
                                                           <TableCell align="center" width={'5%'}>
                                                             <IconButton color="info">
-                                                              <IconArrowRightCircle size="23" />
+                                                              <IconArrowRightCircle size="25" />
                                                             </IconButton>
                                                           </TableCell>
                                                           <TableCell align="center" width={'85%'}>
@@ -408,7 +401,7 @@ const ListMachSubject = () => {
                                                                 '/edit'
                                                               }
                                                             >
-                                                              <IconEditCircle size="23" />
+                                                              <IconEditCircle size="25" />
                                                             </IconButton>
                                                             <IconButton
                                                               color="error"
@@ -418,7 +411,7 @@ const ListMachSubject = () => {
                                                                 )
                                                               }
                                                             >
-                                                              <IconCircleMinus size="23" />
+                                                              <IconCircleMinus size="25" />
                                                             </IconButton>
                                                           </TableCell>
                                                         </Stack>
@@ -450,7 +443,7 @@ const ListMachSubject = () => {
                                                           '/add'
                                                         }
                                                       >
-                                                        <IconCirclePlus size="23" />
+                                                        <IconCirclePlus size="25" />
                                                       </IconButton>
                                                     </TableCell>
                                                   </TableRow>
@@ -488,7 +481,7 @@ const ListMachSubject = () => {
                                                         '/add'
                                                       }
                                                     >
-                                                      <IconCirclePlus size="23" />
+                                                      <IconCirclePlus size="25" />
                                                     </IconButton>
                                                   </TableCell>
                                                 </TableRow>

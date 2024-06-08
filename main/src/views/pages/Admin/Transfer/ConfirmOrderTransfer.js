@@ -22,7 +22,7 @@ import CustomFormLabel from '../../../../components/forms/theme-elements/CustomF
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../../components/shared/ParentCard';
 
-import { TransferRead, TransferRevert,CutStructure } from '../../../../function/transfer';
+import { TransferRead, TransferRevert, CutStructure } from '../../../../function/transfer';
 import { read as readStudent } from '../../../../function/student';
 import { list as ListCurriculum } from '../../../../function/curriculum';
 import { listByStructure as AllSubject } from '../../../../function/subject';
@@ -134,7 +134,7 @@ const ConfirmOrderTransfer = () => {
     if (student.curriculum) {
       loadAllSubject(structure_id);
     }
-    loadCutStructure(student.curriculum)
+    loadCutStructure(student.curriculum);
   }, [student.curriculum]);
 
   const pdfURL = 'http://localhost:5000/api/pdf/' + transferOrder.file; // URL ของไฟล์ PDF
@@ -174,7 +174,7 @@ const ConfirmOrderTransfer = () => {
       const url = window.URL.createObjectURL(blob);
       window.open(url, '_blank');
 
-      const fileName = student._id +' ส่วนที่ 2 ใบคำร้องขอเทียบโอนผลการเรียน.pdf';
+      const fileName = student._id + ' ส่วนที่ 2 ใบคำร้องขอเทียบโอนผลการเรียน.pdf';
 
       const anchor = document.createElement('a');
       anchor.href = url;
@@ -195,7 +195,8 @@ const ConfirmOrderTransfer = () => {
 
   const handleRevert = () => {
     Swal.fire({
-      title: 'ยกเลิกยืนยันการเทียบโอน รายการจะอยู่ในสถานะรอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร?',
+      title:
+        'ยกเลิกยืนยันการเทียบโอน รายการจะอยู่ในสถานะรอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร?',
       icon: 'warning',
       width: 'auto',
       showCancelButton: true,
@@ -227,7 +228,13 @@ const ConfirmOrderTransfer = () => {
   return (
     <PageContainer title="ข้อมูลเทียบโอนเบื้องต้น" description="ข้อมูลเทียบโอนเบื้องต้น">
       <Breadcrumb title="ข้อมูลเทียบโอนเบื้องต้น" />
-      <ParentCard title="ข้อมูลนักศึกษา">
+      <ParentCard
+        title={
+          <Stack direction="row" alignItems="center">
+            <Typography variant="h5">ข้อมูลนักศึกษา</Typography>
+          </Stack>
+        }
+      >
         <Grid container>
           <Grid item xs={12} lg={6}>
             <CustomFormLabel>รหัสนักศึกษา</CustomFormLabel>

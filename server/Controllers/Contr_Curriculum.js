@@ -106,11 +106,10 @@ exports.remove = async (req, res) => {
 
     if (relatedAdmin.length > 0 || relatedStudent.length > 0 || relatedStructure.length > 0) {
       return res.status(403).json({
-        message: "ไม่สามารถลบข้อมูลที่มีความสัมพันธ์กับ Collection อื่นได้",
+        message: "ไม่สามารถลบข้อมูลหลักสูตรนี้ได้ เนื่องจากมีผู้ใช้ระบบและรายวิชาในหลักสูตร",
       });
     }
 
-    // ลบข้อมูล
     const removedCurriculum = await Curriculum.findOneAndDelete({
       _id: id,
     }).exec();

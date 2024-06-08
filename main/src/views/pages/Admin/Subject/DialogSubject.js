@@ -61,7 +61,7 @@ const DialogSubject = ({ _id }) => {
   return (
     <>
       <IconButton onClick={handleClickOpen('paper')}>
-        <IconFileDescription size="18" />
+        <IconFileDescription size="25" />
       </IconButton>
       <Dialog
         open={open}

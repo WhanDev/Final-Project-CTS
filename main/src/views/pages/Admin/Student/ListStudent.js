@@ -62,8 +62,9 @@ const ListStudent = () => {
   const addCurrentYearToStudentYears = () => {
     const currentYear = new Date().getFullYear();
     const nextYear = currentYear + 544;
-    if (!loadAllStudentYear.includes(nextYear)) {
-      setLoadAllStudentYear([...loadAllStudentYear, nextYear]);
+    const nextYearStr = nextYear.toString();
+    if (!loadAllStudentYear.includes(nextYearStr)) {
+      setLoadAllStudentYear([...loadAllStudentYear, nextYearStr]);
     }
   };
 
@@ -121,13 +122,21 @@ const ListStudent = () => {
       cancelButtonText: 'ยกเลิก',
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-        removeStudent(_id).then((res) => {
-          console.log(res);
-          loadDataAllStudentYear();
-          loadDataAllCurriculum();
-          loadDataAllStudentCurriculumAndYear(selectedCurriculum, selectedStudentYear);
-        });
+        removeStudent(_id)
+          .then((res) => {
+            Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
+
+            loadDataAllStudentYear();
+            loadDataAllCurriculum();
+            loadDataAllStudentCurriculumAndYear(selectedCurriculum, selectedStudentYear);
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: 'error',
+              title: 'ลบข้อมูลไม่สำเร็จ',
+              text: error.response.data.message,
+            });
+          });
       }
     });
   };
@@ -234,7 +243,7 @@ const ListStudent = () => {
             variant="outlined"
             color="primary"
             onClick={handledownloadTemplate}
-            startIcon={<IconFileSpreadsheet width={18} />}
+            startIcon={<IconFileSpreadsheet width={25} />}
           >
             template
           </Button>
@@ -242,7 +251,7 @@ const ListStudent = () => {
             <Button
               variant="outlined"
               color="success"
-              startIcon={<IconTableImport width={18} />}
+              startIcon={<IconTableImport width={25} />}
               onClick={handleFileUpload}
             >
               Import
@@ -261,7 +270,7 @@ const ListStudent = () => {
             color="primary"
             component={Link}
             to={'/admin/manage/student/add'}
-            startIcon={<IconCirclePlus width={18} />}
+            startIcon={<IconCirclePlus width={25} />}
           >
             เพิ่มข้อมูลนักศึกษา
           </Button>
@@ -284,7 +293,7 @@ const ListStudent = () => {
           >
             {loadAllCurriculum.map((item) => (
               <MenuItem key={item._id} value={item._id}>
-                {item._id} | {item.name}
+                หลักสูตร {item.name} ปี พ.ศ {item.year} ({item.level} {item.time} ปี)
               </MenuItem>
             ))}
           </CustomSelect>
@@ -357,10 +366,10 @@ const ListStudent = () => {
                         to={'/admin/manage/student/edit/' + item._id}
                         color="warning"
                       >
-                        <IconEditCircle size="18" />
+                        <IconEditCircle size="25" />
                       </IconButton>
                       <IconButton color="error">
-                        <IconCircleMinus size="18" onClick={() => handleRemove(item._id)} />
+                        <IconCircleMinus size="25" onClick={() => handleRemove(item._id)} />
                       </IconButton>
                     </TableCell>
                   </TableRow>

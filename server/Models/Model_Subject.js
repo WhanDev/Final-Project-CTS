@@ -12,9 +12,4 @@ const SubjectSchema = mongoose.Schema({
   group_id: { type: String, ref: "Structure" },
 });
 
-SubjectSchema.index(
-  { structure_id: 1, group_id: 1, subject_id: 1 },
-  { unique: true }
-);
-
 module.exports = mongoose.model("Subject", SubjectSchema);

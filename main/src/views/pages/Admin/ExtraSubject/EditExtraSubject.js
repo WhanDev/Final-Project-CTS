@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Grid, Button } from '@mui/material';
+import { Grid, Button, Typography } from '@mui/material';
 import Swal from 'sweetalert2';
 
 import Breadcrumb from '../../../../layouts/full/shared/breadcrumb/Breadcrumb';
@@ -10,7 +10,10 @@ import CustomFormLabel from '../../../../components/forms/theme-elements/CustomF
 import ParentCard from '../../../../components/shared/ParentCard';
 import { Stack } from '@mui/system';
 
-import { read as readExtraSubject, update as updateExtraSubject } from '../../../../function/extar-subject';
+import {
+  read as readExtraSubject,
+  update as updateExtraSubject,
+} from '../../../../function/extar-subject';
 
 const ExtraSubject = () => {
   const params = useParams();
@@ -82,19 +85,21 @@ const ExtraSubject = () => {
       title="จัดการข้อมูลรายวิชานอกหลักสูตร"
       description="จัดการข้อมูลรายวิชานอกหลักสูตร"
     >
-      <Breadcrumb title={'จัดการข้อมูลรายวิชานอกหลักสูตร '} />
-
-      <ParentCard
+      <Breadcrumb
         title={
           <>
-            แก้ไขรายวิชานอกหลักสูตร | {extraSubject.extraSubject_id} {extraSubject.extraSubject_nameTh}
+            จัดการข้อมูลรายวิชานอกหลักสูตร
+            <Typography variant="h6" fontWeight={400} mt={1}>
+              {extraSubject.extraSubject_id} {extraSubject.extraSubject_nameTh}
+            </Typography>
           </>
         }
-      >
+      />
+
+      <ParentCard title={<>แก้ไขรายวิชานอกหลักสูตร</>}>
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} lg={12}>
-
               <CustomFormLabel>ชื่อวิชาภาษาไทย (TH)</CustomFormLabel>
               <CustomTextField
                 id="extraSubject_nameTh"
@@ -158,12 +163,8 @@ const ExtraSubject = () => {
                   <Button type="submit" variant="contained" color="success">
                     บันทึก
                   </Button>
-                  <Button
-                    variant="outlined"
-                    color="warning"
-                    onClick={handleBack}
-                  >
-                    ยกเลิก
+                  <Button variant="outlined" color="warning" onClick={handleBack}>
+                    ย้อนกลับ
                   </Button>
                 </Stack>
               </Stack>

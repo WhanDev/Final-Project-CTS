@@ -130,7 +130,7 @@ const EditCurriculum = () => {
                     บันทึก
                   </Button>
                   <Button variant="outlined" color="warning" onClick={handleBank}>
-                    ยกเลิก
+                    ย้อนกลับ
                   </Button>
                 </Stack>
               </Stack>

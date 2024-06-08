@@ -141,7 +141,7 @@ const ListStructure = () => {
                 <Button
                   variant="outlined"
                   color="error"
-                  startIcon={<IconArrowBackUp width={18} />}
+                  startIcon={<IconArrowBackUp width={25} />}
                   onClick={handleBack}
                 >
                   ย้อนกลับ
@@ -149,7 +149,7 @@ const ListStructure = () => {
                 <Button
                   variant="outlined"
                   color="primary"
-                  startIcon={<IconSquarePlus width={18} />}
+                  startIcon={<IconSquarePlus width={25} />}
                   component={Link}
                   to={
                     '/admin/manage/curriculum/' +
@@ -187,7 +187,7 @@ const ListStructure = () => {
                                 <Typography
                                   variant="body1"
                                   color="textSecondary"
-                                  fontSize={18}
+                                  fontSize={20}
                                   marginTop={1}
                                 >
                                   {item.group_id} {item.group_name} {item.credit} หน่วยกิต
@@ -205,10 +205,10 @@ const ListStructure = () => {
                                     item._id
                                   }
                                 >
-                                  <IconEdit size="18" />
+                                  <IconEdit size="25" />
                                 </IconButton>
                                 <IconButton onClick={() => handleRemoveByCurriculum(item._id)}>
-                                  <IconTrash size="18" />
+                                  <IconTrash size="25" />
                                 </IconButton>
                               </Box>
                             </Stack>
@@ -244,7 +244,7 @@ const ListStructure = () => {
                                     }
                                     color="info"
                                   >
-                                    <IconCirclePlus size="18" />
+                                    <IconCirclePlus size="25" />
                                     <Typography marginLeft={1}>เพิ่มรายวิชา</Typography>
                                   </IconButton>
                                 </TableCell>
@@ -289,13 +289,13 @@ const ListStructure = () => {
                                           }
                                           color="warning"
                                         >
-                                          <IconEditCircle size="18" />
+                                          <IconEditCircle size="25" />
                                         </IconButton>
                                         <IconButton
                                           onClick={() => handleRemoveByStructure(subjectItem._id)}
                                           color="error"
                                         >
-                                          <IconCircleMinus size="18" />
+                                          <IconCircleMinus size="25" />
                                         </IconButton>
                                       </TableCell>
                                     </TableBody>

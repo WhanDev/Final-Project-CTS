@@ -111,7 +111,7 @@ const IndexStudent = () => {
                   {topcard.title}
                 </Typography>
                 <Typography variant="h5">
-                  {topcard.list.length > 0 ? `${topcard.list} หน่วยกิต` : '0 หน่วยกิต'}
+                  {topcard.list > 0 ? `${topcard.list} หน่วยกิต` : '0 หน่วยกิต'}
                 </Typography>
               </CardContent>
             </Box>

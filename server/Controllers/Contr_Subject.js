@@ -24,18 +24,7 @@ exports.create = async (req, res) => {
     ) {
       return res.status(400).send("กรุณากรอกข้อมูลให้ครบ");
     }
-    const existingSubjectId = await Subject.findOne({ subject_id: subject_id });
-    if (existingSubjectId) {
-      return res.status(409).send("รหัสรายวิชาซ้ำ");
-    }
-    const existingSubject = await Subject.findOne({
-      subject_id,
-      structure_id,
-      group_id,
-    });
-    if (existingSubject) {
-      return res.status(409).send("รหัสกลุ่มวิชาและรหัสวิชาซ้ำกัน");
-    }
+
     const total_credits = theory_credits + practical_credits;
     const createSubject = await Subject({
       structure_id,
@@ -162,12 +151,13 @@ exports.remove = async (req, res) => {
       return res.status(404).json({ message: "ไม่พบข้อมูลที่ต้องการลบ" });
     }
 
-    const relatedMachSubject = await MachSubject.find({
-      subject_id: subject.subject_id,
-    }).exec();
-
     const strcurriculum = subject.structure_id;
     const curriculum = strcurriculum.replace("CS-", "");
+
+    const relatedMachSubject = await MachSubject.find({
+      subject_id: subject.subject_id,
+      curriculum: curriculum,
+    }).exec();
 
     const relatedMachSubjectList = await MachSubjectList.find({
       machSubject_id: "MS" + curriculum + "-" + subject.subject_id,

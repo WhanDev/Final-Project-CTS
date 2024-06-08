@@ -19,7 +19,7 @@ const ManageExtraSubject = () => {
             <Button
               variant="outlined"
               color="primary"
-              startIcon={<IconCirclePlus width={18} />}
+              startIcon={<IconCirclePlus width={25} />}
               component={Link}
               to={'/admin/manage/extrasubject/add'}
             >

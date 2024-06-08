@@ -19,7 +19,7 @@ const ManageAdmin = () => {
             <Button
               variant="outlined"
               color="primary"
-              startIcon={<IconUserPlus width={18} />}
+              startIcon={<IconUserPlus width={25} />}
               component={Link}
               to={'/admin/manage/user/add'}
             >

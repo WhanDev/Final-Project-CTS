@@ -196,7 +196,7 @@ const AddAdmin = () => {
                     บันทึก
                   </Button>
                   <Button variant="outlined" color="warning" onClick={handleBack}>
-                    ยกเลิก
+                    ย้อนกลับ
                   </Button>
                 </Stack>
               </Stack>

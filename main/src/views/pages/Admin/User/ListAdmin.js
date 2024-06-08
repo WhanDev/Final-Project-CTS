@@ -63,10 +63,18 @@ const ListAdmin = () => {
       cancelButtonText: 'ยกเลิก',
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-        removeAdmin(_id).then((res) => {
-          loadDataAdmin();
-        });
+        removeAdmin(_id)
+          .then((res) => {
+            Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
+            loadDataAdmin();
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: 'error',
+              title: 'ลบข้อมูลไม่สำเร็จ',
+              text: error.response.data.message,
+            });
+          });
       }
     });
   };

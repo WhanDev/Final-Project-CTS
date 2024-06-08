@@ -185,7 +185,7 @@ const EditMachSubjectList = () => {
                         color="error"
                         onClick={() => handleRemoveAutocomplete(extraSubject.id)}
                       >
-                        <IconCircleMinus size="18" />
+                        <IconCircleMinus size="25" />
                       </IconButton>
                     </Stack>
                   </React.Fragment>
@@ -214,7 +214,7 @@ const EditMachSubjectList = () => {
                     color="warning"
                     onClick={handleBack}
                   >
-                    ยกเลิก
+                    ย้อนกลับ
                   </Button>
                 </Stack>
               </Stack>

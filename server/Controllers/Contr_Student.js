@@ -1,5 +1,5 @@
 const Student = require("../Models/Model_Student");
-const Subject =require("../Models/Model_Subject");
+const Subject = require("../Models/Model_Subject");
 const Structure = require("../Models/Model_Structure");
 const {
   Transfer,
@@ -177,6 +177,27 @@ exports.remove = async (req, res) => {
   try {
     // code
     const id = req.params._id;
+    const order_id = "TS-" + id;
+
+    const relatedTransfer = await Transfer.find({ _id: id }).exec();
+    const relatedTransferOrder = await TransferOrder.find({
+      order_id: id,
+    }).exec();
+    const relatedTransferList = await TransferList.find({
+      transferOrder_id: order_id,
+    }).exec();
+
+    if (
+      relatedTransfer.length > 0 ||
+      relatedTransferOrder.length > 0 ||
+      relatedTransferList.length > 0
+    ) {
+      return res.status(403).json({
+        message:
+          "ไม่สามารถลบข้อมูลนักศึกษานี้ได้ เนื่องจากมีข้อมูลอยู่ในข้อมูลการเทียบโอนแล้ว",
+      });
+    }
+
     const removedStudent = await Student.findOneAndDelete({
       _id: id,
     }).exec();
@@ -335,11 +356,13 @@ exports.dataDashboard = async (req, res) => {
       );
       console.log(subjectIds);
 
-      let credit = 0
+      let credit = 0;
 
-      for(const subjectId of subjectIds) {
-        const readSubject = await Subject.findOne({ subject_id: subjectId }).exec();
-        credit += readSubject.total_credits
+      for (const subjectId of subjectIds) {
+        const readSubject = await Subject.findOne({
+          subject_id: subjectId,
+        }).exec();
+        credit += readSubject.total_credits;
       }
 
       const listStructure = await Structure.find({
@@ -351,10 +374,14 @@ exports.dataDashboard = async (req, res) => {
         0
       );
 
-      let LearnMore = totalCredits - credit
-      return res
-        .status(200)
-        .json({ message: "อืมๆๆ", readTransferlist, totalCredits,credit, LearnMore });
+      let LearnMore = totalCredits - credit;
+      return res.status(200).json({
+        message: "พบข้อมูล",
+        readTransferlist,
+        totalCredits,
+        credit,
+        LearnMore,
+      });
     }
   } catch (err) {
     console.error(err);

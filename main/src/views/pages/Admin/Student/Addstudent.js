@@ -88,7 +88,7 @@ const AddStudent = () => {
       title="เพิ่มข้อมูลนักศึกษา | จัดการข้อมูลนักศึกษา"
       description="this is Add Admin"
     >
-      <Breadcrumb title={<>หลักสูตร ปี รุ่นปี</>} />
+      <Breadcrumb title="จัดการข้อมูลนักศึกษา" />
       <ParentCard title="เพิ่มข้อมูลนักศึกษา">
         <form encType="multipart/form-data" onSubmit={handleSubmit}>
           <Grid container spacing={3}>
@@ -190,7 +190,7 @@ const AddStudent = () => {
                       handleBack();
                     }}
                   >
-                    ยกเลิก
+                    ย้อนกลับ
                   </Button>
                 </Stack>
               </Stack>

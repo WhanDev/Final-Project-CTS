@@ -256,10 +256,10 @@ const ListExtraSubject = () => {
                           to={`/admin/manage/extrasubject/edit/${row._id}`}
                           color="warning"
                         >
-                          <IconEditCircle size="18" />
+                          <IconEditCircle size="25" />
                         </IconButton>
                         <IconButton onClick={() => handleRemove(row._id)} color="error">
-                          <IconCircleMinus size="18" />
+                          <IconCircleMinus size="25" />
                         </IconButton>
                       </TableCell>
                     </TableRow>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Grid, Button } from '@mui/material';
+import { Grid, Button,Typography } from '@mui/material';
 import Swal from 'sweetalert2';
 
 import Breadcrumb from '../../../../layouts/full/shared/breadcrumb/Breadcrumb';
@@ -111,6 +111,9 @@ const EditSubject = () => {
         title={
           <>
             วิชา {data.subject_id} {data.subject_nameTh}
+            <Typography variant='h6' fontWeight={400} mt={1}>
+            {dataByGroup.sort} {dataByGroup.group_id} {dataByGroup.group_name} ({dataByGroup.credit} หน่วยกิต)
+            </Typography>
           </>
         }
       />
@@ -118,24 +121,13 @@ const EditSubject = () => {
       <ParentCard
         title={
           <>
-            {dataByGroup.sort} <br /> {dataByGroup.group_id} {dataByGroup.group_name} (
-            {dataByGroup.credit} หน่วยกิต)
-            <br />
+            แก้ไขข้อมูลรายวิชา
           </>
         }
       >
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} lg={12}>
-              {/* <CustomFormLabel>รหัสวิชา</CustomFormLabel>
-              <CustomTextField
-                id="subject_id"
-                name="subject_id"
-                value={data.subject_id}
-                variant="outlined"
-                onChange={handleDataChange}
-                fullWidth
-              /> */}
 
               <CustomFormLabel>ชื่อวิชาภาษาไทย (TH)</CustomFormLabel>
               <CustomTextField
@@ -207,7 +199,7 @@ const EditSubject = () => {
                       handleBack();
                     }}
                   >
-                    ยกเลิก
+                    ย้อนกลับ
                   </Button>
                 </Stack>
               </Stack>

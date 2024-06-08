@@ -37,9 +37,9 @@ const ManageTransfer = () => {
     try {
       const res = await AllStudent();
       setAllStudent(res.data);
-
-      const years = Array.from(new Set(res.data.map(student => student.year)));
-      setAllYear(years.map(year => ({ label: year, value: year })));
+      const years = Array.from(new Set(res.data.map((student) => student.year)));
+      const sortedYears = years.sort((a, b) => a - b); // เรียงลำดับรุ่นปีจากน้อยไปมาก
+      setAllYear(sortedYears.map((year) => ({ label: year, value: year })));
     } catch (err) {
       console.log(err);
     }
@@ -76,16 +76,19 @@ const ManageTransfer = () => {
 
   const Status = [
     { label: 'รอการยืนยันการเทียบโอนเบื้องต้น', value: 'รอการยืนยันการเทียบโอนเบื้องต้น' },
-    { label: 'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร', value: 'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร' },
+    {
+      label: 'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร',
+      value: 'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร',
+    },
     { label: 'ยืนยันการเทียบโอนถูกต้อง', value: 'ยืนยันการเทียบโอนถูกต้อง' },
   ];
 
-  const filteredTransfer = allStudent.filter(item => 
-    item.curriculum === selectedCurriculum?.value &&
-    item.year === selectedYear?.value &&
-    item.status === selectedStatus?.value
+  const filteredTransfer = allStudent.filter(
+    (item) =>
+      item.curriculum === selectedCurriculum?.value &&
+      item.year === selectedYear?.value &&
+      item.status === selectedStatus?.value,
   );
-
 
   return (
     <PageContainer title="จัดการข้อมูลเทียบโอน" description="จัดการข้อมูลเทียบโอน">
@@ -143,7 +146,12 @@ const ManageTransfer = () => {
                 disableClearable
                 options={Status}
                 renderInput={(params) => (
-                  <TextField {...params} placeholder="เลือกสถานะเทียบโอน" variant="outlined" fullWidth />
+                  <TextField
+                    {...params}
+                    placeholder="เลือกสถานะเทียบโอน"
+                    variant="outlined"
+                    fullWidth
+                  />
                 )}
                 onChange={handleStatusChange}
                 value={selectedStatus}
@@ -155,7 +163,7 @@ const ManageTransfer = () => {
         </Grid>
       </Grid>
 
-      <Box mt={3}/>
+      <Box mt={3} />
 
       <ParentCard title="ข้อมูลนักศึกษาที่ทำการเทียบโอนเบื้องต้นแล้ว">
         <ChildCard>
@@ -191,18 +199,31 @@ const ManageTransfer = () => {
                         <TableCell align="center">{item.branch}</TableCell>
                         <TableCell align="center">
                           {selectedStatus.value === 'รอการยืนยันการเทียบโอนเบื้องต้น' && (
-                            <IconButton component={Link} to={`/admin/manage/transfer/check/${item._id}`} color="warning">
-                              <IconFileDescription size="18" />
+                            <IconButton
+                              component={Link}
+                              to={`/admin/manage/transfer/check/${item._id}`}
+                              color="warning"
+                            >
+                              <IconFileDescription size="25" />
                             </IconButton>
                           )}
-                          {selectedStatus.value === 'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร' && (
-                            <IconButton component={Link} to={`/admin/manage/transfer/approve/${item._id}`} color="primary">
-                              <IconFileDescription size="18" />
+                          {selectedStatus.value ===
+                            'รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร' && (
+                            <IconButton
+                              component={Link}
+                              to={`/admin/manage/transfer/approve/${item._id}`}
+                              color="primary"
+                            >
+                              <IconFileDescription size="25" />
                             </IconButton>
                           )}
                           {selectedStatus.value === 'ยืนยันการเทียบโอนถูกต้อง' && (
-                            <IconButton component={Link} to={`/admin/manage/transfer/confirm/${item._id}`} color="success">
-                              <IconFileDescription size="18" />
+                            <IconButton
+                              component={Link}
+                              to={`/admin/manage/transfer/confirm/${item._id}`}
+                              color="success"
+                            >
+                              <IconFileDescription size="25" />
                             </IconButton>
                           )}
                         </TableCell>
