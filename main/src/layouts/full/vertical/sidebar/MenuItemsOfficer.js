@@ -5,7 +5,9 @@ import {
   IconLayoutDashboard,
   IconUsers,
   IconLayersIntersect,
-  IconClipboardText
+  IconClipboardText,
+  IconAddressBook,
+  IconSquareAsterisk
 } from '@tabler/icons';
 
 import { uniqueId } from 'lodash';
@@ -57,6 +59,22 @@ const MenuItemsAdmin = [
     title: 'รายงาน',
     icon: IconClipboardText,
     href: '/officer/manage/report',
+  },
+  {
+    navlabel: true,
+    subheader: 'ข้อมูลผู้ใช้ระบบ',
+  },
+  {
+    id: uniqueId(),
+    title: 'ข้อมูลส่วนตัว',
+    icon: IconAddressBook,
+    href: '/officer/profile',
+  },
+  {
+    id: uniqueId(),
+    title: 'เปลี่ยนรหัสผ่าน',
+    icon: IconSquareAsterisk,
+    href: '/officer/changePassword',
   },
 ];
 
