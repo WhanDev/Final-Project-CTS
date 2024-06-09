@@ -2,13 +2,12 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  createAdmin,
   read,
   list,
   create,
   update,
   remove,
-  dataDashboard
+  dataDashboard,updatedById,changePassword
 } = require("../Controllers/Contr_Admin");
 // middleware
 
@@ -18,5 +17,7 @@ router.get("/admin", list);
 router.get("/admin/:_id", read);
 router.put("/admin/:_id", update);
 router.delete("/admin/:_id", remove);
+router.post("/admin/updated/", updatedById);
+router.post("/admin/changePassword/:_id", changePassword);
 router.get("/admin/dashboard/data", dataDashboard);
 module.exports = router;

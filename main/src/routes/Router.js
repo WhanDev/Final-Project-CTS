@@ -1,5 +1,4 @@
 import React, { lazy } from 'react';
-import { Navigate } from 'react-router-dom';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
 
@@ -74,6 +73,10 @@ const ConfirmOrderTransfer = Loadable(
 );
 
 const ManageReport = Loadable(lazy(() => import('../views/pages/Admin/Report/ManageReport')));
+
+const AdminProfile = Loadable(lazy(() => import('../views/pages/Admin/AdminProfile')));
+const AdminProfileEdit = Loadable(lazy(() => import('../views/pages/Admin/AdminProfileEdit')));
+const AdminChangePassword = Loadable(lazy(() => import('../views/pages/Admin/ChangePassAdmin')));
 
 //Officer
 const IndexOfficer = Loadable(lazy(() => import('../views/pages/Officer/IndexOfficer')));
@@ -309,6 +312,19 @@ const Router = [
       {
         path: '/admin/manage/report',
         element: <ManageReport />,
+      },
+      //ข้อมูลส่วนตัว
+      {
+        path: '/admin/profile',
+        element: <AdminProfile />,
+      },
+      {
+        path: '/admin/profile/edit',
+        element: <AdminProfileEdit />,
+      },
+      {
+        path: '/admin/changePassword',
+        element: <AdminChangePassword />,
       },
     ],
   },

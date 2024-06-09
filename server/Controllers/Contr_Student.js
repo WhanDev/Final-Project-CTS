@@ -9,7 +9,6 @@ const {
 
 const bcrypt = require("bcryptjs");
 
-//เพิ่มข้อมูลนักศึกษา
 exports.create = async (req, res) => {
   try {
     const { _id, fullname, password, curriculum, year, institution, branch } =
@@ -57,7 +56,6 @@ exports.create = async (req, res) => {
   }
 };
 
-//ดูข้อมูลนักศึกษาทั้งหมด
 exports.list = async (req, res) => {
   try {
     const listStudent = await Student.find({})
@@ -111,7 +109,6 @@ exports.listCurriculumAndYear = async (req, res) => {
   }
 };
 
-//ดูข้อมูลนักศึกษาตาม _id
 exports.read = async (req, res) => {
   try {
     const id = req.params._id;
@@ -125,7 +122,6 @@ exports.read = async (req, res) => {
   }
 };
 
-//แก้ไขข้อมูลนักศึกษา
 exports.update = async (req, res) => {
   try {
     const _id = req.params._id;
@@ -150,7 +146,6 @@ exports.update = async (req, res) => {
   }
 };
 
-//แก้ไขข้อมูลนักศึกษา
 exports.updatedStudent = async (req, res) => {
   try {
     const _id = req.body._id;
@@ -172,7 +167,6 @@ exports.updatedStudent = async (req, res) => {
   }
 };
 
-//ลบข้อมูลนักศึกษา
 exports.remove = async (req, res) => {
   try {
     // code

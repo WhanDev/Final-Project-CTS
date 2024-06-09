@@ -2,7 +2,6 @@ const Admin = require("../Models/Model_Admin");
 const Student = require("../Models/Model_Student");
 const bcrypt = require("bcryptjs");
 
-//เพิ่มข้อมูลผู้ดูแล
 exports.createAdmin = async (req, res) => {
   const adminCount = await Admin.countDocuments({ role: "แอดมิน" });
 
@@ -76,7 +75,6 @@ exports.create = async (req, res) => {
   }
 };
 
-//ดูข้อมูลผู้ดูแลทั้งหมด
 exports.list = async (req, res) => {
   try {
     const listAdmin = await Admin.find({}).select("-password").exec();
@@ -89,7 +87,6 @@ exports.list = async (req, res) => {
   }
 };
 
-//ดูข้อมูลผู้ดูแลตาม _id
 exports.read = async (req, res) => {
   try {
     const id = req.params._id;
@@ -103,7 +100,6 @@ exports.read = async (req, res) => {
   }
 };
 
-//แก้ไขข้อมูลผู้ดูแล
 exports.update = async (req, res) => {
   try {
     const _id = req.params._id;
@@ -124,11 +120,67 @@ exports.update = async (req, res) => {
   }
 };
 
-const {
-  Transfer,
-} = require("../Models/Model_Transfer");
+exports.updatedById = async (req, res) => {
+  try {
+    const { _id, fullname } = req.body;
 
-//ลบข้อมูลผู้ดูแล
+    const updatedAdmin = await Admin.findOneAndUpdate(
+      { _id: _id },
+      { fullname: fullname },
+      { new: true }
+    ).exec();
+
+    if (!updatedAdmin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    res.json({ message: "แก้ไขข้อมูลสำเร็จ!", data: updatedAdmin });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
+  }
+};
+
+
+exports.changePassword = async (req, res) => {
+  try {
+    const id = req.params._id;
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+    var AdminUser = await Admin.findOne({ _id: id });
+    if (AdminUser) {
+      const isMatch = await bcrypt.compare(oldPassword, AdminUser.password);
+      if (isMatch) {
+        if (newPassword === confirmPassword) {
+          const hashNewPass = await bcrypt.hash(newPassword, 10);
+          const updatedAdmin = await Admin.findOneAndUpdate(
+            { _id: id },
+            { password: hashNewPass },
+            { new: true }
+          ).exec();
+          return res
+            .status(200)
+            .json({ message: "เปลี่ยนรหัสผ่านสำเร็จ", data: hashNewPass });
+        } else {
+          return res
+            .status(400)
+            .json({ message: "รหัสผ่านใหม่ไม่ตรงกัน โปรดตรวจสอบ" });
+        }
+      } else {
+        return res.status(400).json({ message: "รหัสผ่านเดิมไม่ถูกต้อง" });
+      }
+    } else {
+      return res.status(400).json({ message: "ไม่พบข้อมูลนักศึกษา" });
+    }
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
+  }
+};
+
+const { Transfer } = require("../Models/Model_Transfer");
+
 exports.remove = async (req, res) => {
   try {
     // code

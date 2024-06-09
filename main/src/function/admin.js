@@ -21,3 +21,9 @@ export const remove = async (id) =>
 export const dataDashboard = async () => {
   return await axios.get(process.env.REACT_APP_API + '/admin/dashboard/data');
 }
+
+export const updatedById = async (data) =>
+  await axios.post(process.env.REACT_APP_API + '/admin/updated/', data);
+
+export const changePassword = async (id,data) =>
+  await axios.post(process.env.REACT_APP_API + '/admin/changePassword/'+ id, data);

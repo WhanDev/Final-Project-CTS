@@ -7,6 +7,8 @@ import {
   IconRoute,
   IconLayersIntersect,
   IconClipboardText,
+  IconAddressBook,
+  IconSquareAsterisk
 } from '@tabler/icons';
 
 import { uniqueId } from 'lodash';
@@ -17,7 +19,6 @@ const MenuItemsAdmin = [
     title: 'หน้าแรก',
     icon: IconLayoutDashboard,
     href: '/admin/index',
-    chipColor: 'secondary',
   },
   {
     navlabel: true,
@@ -64,6 +65,22 @@ const MenuItemsAdmin = [
     title: 'รายงาน',
     icon: IconClipboardText,
     href: '/admin/manage/report',
+  },
+  {
+    navlabel: true,
+    subheader: 'ข้อมูลผู้ใช้ระบบ',
+  },
+  {
+    id: uniqueId(),
+    title: 'ข้อมูลส่วนตัว',
+    icon: IconAddressBook,
+    href: '/admin/profile',
+  },
+  {
+    id: uniqueId(),
+    title: 'เปลี่ยนรหัสผ่าน',
+    icon: IconSquareAsterisk,
+    href: '/admin/changePassword',
   },
 ];
 
