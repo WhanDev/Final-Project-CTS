@@ -102,14 +102,16 @@ const AddStructure = () => {
       title="เพิ่มข้อมูลกลุ่มวิชา | จัดการข้อมูลโครงสร้างหลักสูตร"
       description="แก้ไขข้อมูลกลุ่มวิชา"
     >
-      <Breadcrumb title={<>เพิ่มกลุ่มวิชา</>} />
+      <Breadcrumb
+      title={
+        <>
+          หลักสูตร {curriculum.name} ({curriculum.year}) {curriculum.level} {curriculum.time} ปี
+        </>
+      }
+        />
 
       <ParentCard
-        title={
-          <>
-            หลักสูตร {curriculum.name} ({curriculum.year}) {curriculum.level} {curriculum.time} ปี
-          </>
-        }
+        title={<>เพิ่มกลุ่มวิชา</>}
       >
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           <Grid container spacing={3}>
@@ -177,7 +179,7 @@ const AddStructure = () => {
                     color="warning"
                     onClick={handleBack}
                   >
-                    ยกเลิก
+                    ย้อนกลับ
                   </Button>
                 </Stack>
               </Stack>

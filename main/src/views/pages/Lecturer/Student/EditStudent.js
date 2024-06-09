@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Grid, MenuItem, Button } from '@mui/material';
+import { Grid, MenuItem, Button, Typography } from '@mui/material';
 import Swal from 'sweetalert2';
 
 import Breadcrumb from '../../../../layouts/full/shared/breadcrumb/Breadcrumb';
@@ -129,11 +129,14 @@ const EditStudent = () => {
           <>
             หลักสูตร {dataCurriculum.name} ({dataCurriculum.year}) {dataCurriculum.level}{' '}
             {dataCurriculum.time} ปี รุ่นปี {dataCurriculum.year}
+            <Typography variant='h5' fontWeight={400} mt={1}>
+            {dataStudent.fullname} (รุ่น {dataStudent.year})
+            </Typography>
           </>
         }
       />
 
-      <ParentCard title={<>แก้ไขข้อมูลนักศึกษา |</>}>
+      <ParentCard title={<>แก้ไขข้อมูลนักศึกษา </>}>
         <form encType="multipart/form-data" onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} lg={12}>
@@ -220,7 +223,7 @@ const EditStudent = () => {
                     color="warning"
                     onClick={handleBack}
                   >
-                    ยกเลิก
+                    ย้อนกลับ
                   </Button>
                 </Stack>
               </Stack>

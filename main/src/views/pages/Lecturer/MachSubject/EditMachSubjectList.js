@@ -123,7 +123,7 @@ const EditMachSubjectList = () => {
   return (
     <PageContainer title="จัดการคู่เทียบโอนรายวิชา" description="จัดการคู่เทียบโอนรายวิชา">
       <Breadcrumb title={'จัดการคู่เทียบโอนรายวิชา'} />
-      <ParentCard title="เพิ่มคู่เทียบโอนรายวิชา">
+      <ParentCard title="แก้ไขคู่เทียบโอนรายวิชา">
         <form encType="multipart/form-data" onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} lg={12}>

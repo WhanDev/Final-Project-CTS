@@ -198,6 +198,9 @@ const ConfirmOrderTransferLecturer = Loadable(
   lazy(() => import('../views/pages/Lecturer/Transfer/ConfirmOrderTransfer')),
 );
 const ManageReportLecturer = Loadable(lazy(() => import('../views/pages/Lecturer/Report/ManageReport')));
+const LecturerProfile = Loadable(lazy(() => import('../views/pages/Lecturer/LecturerProfile')));
+const LecturerProfileEdit = Loadable(lazy(() => import('../views/pages/Lecturer/LecturerProfileEdit')));
+const LecturerChangePassword = Loadable(lazy(() => import('../views/pages/Lecturer/ChangePassLecturer')));
 
 //Student
 const IndexStudent = Loadable(lazy(() => import('../views/pages/Student/IndexStudent')));
@@ -475,6 +478,19 @@ const Router = [
       {
         path: '/lecturer/manage/report',
         element: <ManageReportLecturer />,
+      },
+      //ข้อมูลส่วนตัว
+      {
+        path: '/lecturer/profile',
+        element: <LecturerProfile />,
+      },
+      {
+        path: '/lecturer/profile/edit',
+        element: <LecturerProfileEdit />,
+      },
+      {
+        path: '/lecturer/changePassword',
+        element: <LecturerChangePassword />,
       },
     ],
   },

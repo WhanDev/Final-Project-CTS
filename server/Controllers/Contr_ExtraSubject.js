@@ -124,7 +124,7 @@ exports.remove = async (req, res) => {
 
     if (relatedMachSubjectList.length > 0) {
       return res.status(403).json({
-        message: "ไม่สามารถลบข้อมูลที่มีความสัมพันธ์กับข้อมูลอื่นได้",
+        message: "ไม่สามารถลบรายวิชานี้ได้ เนื่องจากรายวิชาอยู่ในคู่เทียบโอน",
         data: relatedMachSubjectList,
       });
     }

@@ -65,8 +65,9 @@ const ListStudent = () => {
   const addCurrentYearToStudentYears = () => {
     const currentYear = new Date().getFullYear();
     const nextYear = currentYear + 544;
-    if (!loadAllStudentYear.includes(nextYear)) {
-      setLoadAllStudentYear([...loadAllStudentYear, nextYear]);
+    const nextYearStr = nextYear.toString();
+    if (!loadAllStudentYear.includes(nextYearStr)) {
+      setLoadAllStudentYear([...loadAllStudentYear, nextYearStr]);
     }
   };
 
@@ -123,12 +124,19 @@ const ListStudent = () => {
       cancelButtonText: 'ยกเลิก',
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-        removeStudent(_id).then((res) => {
-          console.log(res);
-          loadDataAllStudentYear();
-          loadDataAllStudentCurriculumAndYear(selectedCurriculum, selectedStudentYear);
-        });
+        removeStudent(_id)
+          .then((res) => {
+            Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
+            loadDataAllStudentYear();
+            loadDataAllStudentCurriculumAndYear(selectedCurriculum, selectedStudentYear);
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: 'error',
+              title: 'ลบข้อมูลไม่สำเร็จ',
+              text: error.response.data.message,
+            });
+          });
       }
     });
   };
@@ -235,7 +243,7 @@ const ListStudent = () => {
             variant="outlined"
             color="primary"
             onClick={handledownloadTemplate}
-            startIcon={<IconFileSpreadsheet width={18} />}
+            startIcon={<IconFileSpreadsheet width={25} />}
           >
             template
           </Button>
@@ -243,7 +251,7 @@ const ListStudent = () => {
             <Button
               variant="outlined"
               color="success"
-              startIcon={<IconTableImport width={18} />}
+              startIcon={<IconTableImport width={25} />}
               onClick={handleFileUpload}
             >
               Import
@@ -262,7 +270,7 @@ const ListStudent = () => {
             color="primary"
             component={Link}
             to={'/lecturer/manage/student/add'}
-            startIcon={<IconCirclePlus width={18} />}
+            startIcon={<IconCirclePlus width={25} />}
           >
             เพิ่มข้อมูลนักศึกษา
           </Button>
@@ -299,7 +307,7 @@ const ListStudent = () => {
                 <TableCell width={'15%'} align="center">
                   <Typography variant="h6">รหัสนักศึกษา</Typography>
                 </TableCell>
-                <TableCell width={'35%'} align="left">
+                <TableCell width={'30%'} align="left">
                   <Typography variant="h6">ชื่อ-สกุล</Typography>
                 </TableCell>
                 <TableCell width={'20%'} align="center">
@@ -308,7 +316,7 @@ const ListStudent = () => {
                 <TableCell width={'20%'} align="center">
                   <Typography variant="h6">สาขาวิชา</Typography>
                 </TableCell>
-                <TableCell width={'10%'} align="center">
+                <TableCell width={'15%'} align="center">
                   <Typography variant="h6">จัดการข้อมูล</Typography>
                 </TableCell>
               </TableRow>
@@ -326,7 +334,7 @@ const ListStudent = () => {
                     <TableCell width={'15%'} align="center">
                       <Typography>{item._id}</Typography>
                     </TableCell>
-                    <TableCell width={'35%'} align="left">
+                    <TableCell width={'30%'} align="left">
                       <Typography>{item.fullname}</Typography>
                     </TableCell>
                     <TableCell width={'20%'} align="center">
@@ -335,16 +343,16 @@ const ListStudent = () => {
                     <TableCell width={'20%'} align="center">
                       <Typography>{item.branch}</Typography>
                     </TableCell>
-                    <TableCell width={'10%'} align="center">
+                    <TableCell width={'15%'} align="center">
                       <IconButton
                         component={Link}
                         to={'/lecturer/manage/student/edit/' + item._id}
                         color="warning"
                       >
-                        <IconEditCircle size="18" />
+                        <IconEditCircle size="25" />
                       </IconButton>
                       <IconButton color="error">
-                        <IconCircleMinus size="18" onClick={() => handleRemove(item._id)} />
+                        <IconCircleMinus size="25" onClick={() => handleRemove(item._id)} />
                       </IconButton>
                     </TableCell>
                   </TableRow>

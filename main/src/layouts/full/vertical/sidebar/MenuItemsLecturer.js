@@ -5,7 +5,9 @@ import {
   IconUsers,
   IconRoute,
   IconLayersIntersect,
-  IconClipboardText
+  IconClipboardText,
+  IconAddressBook,
+  IconSquareAsterisk
 } from '@tabler/icons';
 
 import { uniqueId } from 'lodash';
@@ -57,6 +59,22 @@ const MenuItemsLecturer = [
     title: 'รายงาน',
     icon: IconClipboardText,
     href: '/lecturer/manage/report',
+  },
+  {
+    navlabel: true,
+    subheader: 'ข้อมูลผู้ใช้ระบบ',
+  },
+  {
+    id: uniqueId(),
+    title: 'ข้อมูลส่วนตัว',
+    icon: IconAddressBook,
+    href: '/lecturer/profile',
+  },
+  {
+    id: uniqueId(),
+    title: 'เปลี่ยนรหัสผ่าน',
+    icon: IconSquareAsterisk,
+    href: '/lecturer/changePassword',
   },
 ];
 

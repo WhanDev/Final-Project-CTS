@@ -187,6 +187,11 @@ const ListExtraSubject = () => {
         }
       }
     } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: error.response.data.message,
+      });
       console.error(error);
     }
   };
@@ -250,10 +255,10 @@ const ListExtraSubject = () => {
                           to={`/lecturer/manage/extrasubject/edit/${row._id}`}
                           color="warning"
                         >
-                          <IconEditCircle size="18" />
+                          <IconEditCircle size="25" />
                         </IconButton>
                         <IconButton onClick={() => handleRemove(row._id)} color="error">
-                          <IconCircleMinus size="18" />
+                          <IconCircleMinus size="25" />
                         </IconButton>
                       </TableCell>
                     </TableRow>

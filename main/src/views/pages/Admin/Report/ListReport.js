@@ -467,7 +467,11 @@ const Select = () => {
               onClick={handleGeneratePdfPath1}
               disabled={!selected.length > 0}
             >
-              <Typography fontSize={20} fontWeight={400} color={!selected.length > 0 ? 'error' : null}>
+              <Typography
+                fontSize={20}
+                fontWeight={400}
+                color={!selected.length > 0 ? 'error' : null}
+              >
                 ใบคำร้องขอเทียบโอนผลการเรียน ส่วนที่ 1
               </Typography>
             </Button>
@@ -477,7 +481,11 @@ const Select = () => {
               onClick={handleGeneratePdfPath2}
               disabled={!selected.length > 0}
             >
-              <Typography fontSize={20} fontWeight={400} color={!selected.length > 0 ? 'error' : null}>
+              <Typography
+                fontSize={20}
+                fontWeight={400}
+                color={!selected.length > 0 ? 'error' : null}
+              >
                 ใบคำร้องขอเทียบโอนผลการเรียน ส่วนที่ 2
               </Typography>
             </Button>

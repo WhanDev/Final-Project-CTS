@@ -176,7 +176,7 @@ const ListMachSubject = () => {
                                 <Typography
                                   variant="body1"
                                   color="textSecondary"
-                                  fontSize={18}
+                                  fontSize={20}
                                   marginTop={1}
                                 >
                                   {item.group_id} {item.group_name} {item.credit} หน่วยกิต
@@ -391,7 +391,7 @@ const ListMachSubject = () => {
                                                                 '/edit'
                                                               }
                                                             >
-                                                              <IconEditCircle size="23" />
+                                                              <IconEditCircle size="25" />
                                                             </IconButton>
                                                             <IconButton
                                                               color="error"
@@ -401,7 +401,7 @@ const ListMachSubject = () => {
                                                                 )
                                                               }
                                                             >
-                                                              <IconCircleMinus size="23" />
+                                                              <IconCircleMinus size="25" />
                                                             </IconButton>
                                                           </TableCell>
                                                         </Stack>
@@ -433,7 +433,7 @@ const ListMachSubject = () => {
                                                           '/add'
                                                         }
                                                       >
-                                                        <IconCirclePlus size="23" />
+                                                        <IconCirclePlus size="25" />
                                                       </IconButton>
                                                     </TableCell>
                                                   </TableRow>
@@ -471,7 +471,7 @@ const ListMachSubject = () => {
                                                         '/add'
                                                       }
                                                     >
-                                                      <IconCirclePlus size="23" />
+                                                      <IconCirclePlus size="25" />
                                                     </IconButton>
                                                   </TableCell>
                                                 </TableRow>
