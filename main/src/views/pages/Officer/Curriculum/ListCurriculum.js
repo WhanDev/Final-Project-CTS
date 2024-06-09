@@ -42,7 +42,6 @@ const ListCurriculum = () => {
         removeCurriculum(_id)
           .then((res) => {
             Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-            console.log(res);
             loadDataCurriculum();
           })
           .catch((error) => {
@@ -98,17 +97,17 @@ const ListCurriculum = () => {
                       to={'/officer/manage/curriculum/' + item._id + '/structure/CS-' + item._id}
                       color="info"
                     >
-                      <IconListSearch size="18" />
+                      <IconListSearch size="25" />
                     </IconButton>
                     <IconButton
                       component={Link}
                       to={'/officer/manage/curriculum/' + item._id + '/structure/edit/CS-' + item._id}
                       color="warning"
                     >
-                      <IconEdit size="18" />
+                      <IconEdit size="25" />
                     </IconButton>
                     <IconButton onClick={() => handleRemove(item._id)} color="error">
-                      <IconTrash size="18" />
+                      <IconTrash size="25" />
                     </IconButton>
                   </TableCell>
                 </TableRow>

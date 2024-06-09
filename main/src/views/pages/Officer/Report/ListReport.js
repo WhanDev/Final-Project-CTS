@@ -337,13 +337,13 @@ const Select = () => {
       const url = window.URL.createObjectURL(blob);
       window.open(url, '_blank');
 
-      const fileName = 'ส่วนที่ 2 ใบคำร้องขอเทียบโอนผลการเรียน.pdf';
+      // const fileName = 'ส่วนที่ 2 ใบคำร้องขอเทียบโอนผลการเรียน.pdf';
 
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = fileName;
-      anchor.click();
-      window.URL.revokeObjectURL(url);
+      // const anchor = document.createElement('a');
+      // anchor.href = url;
+      // anchor.download = fileName;
+      // anchor.click();
+      // window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error(err.message);
     } finally {
@@ -461,11 +461,33 @@ const Select = () => {
       <Grid item xs={12} sm={12} lg={12}>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="end" m={2}>
           <Stack spacing={1} direction="row">
-            <Button variant="contained" color="primary" onClick={handleGeneratePdfPath1}>
-              ใบคำร้องขอเทียบโอนผลการเรียน ส่วนที่ 1
+            <Button
+              variant={!selected.length > 0 ? 'outlined' : 'contained'}
+              color={!selected.length > 0 ? 'error' : 'primary'}
+              onClick={handleGeneratePdfPath1}
+              disabled={!selected.length > 0}
+            >
+              <Typography
+                fontSize={20}
+                fontWeight={400}
+                color={!selected.length > 0 ? 'error' : null}
+              >
+                ใบคำร้องขอเทียบโอนผลการเรียน ส่วนที่ 1
+              </Typography>
             </Button>
-            <Button variant="contained" color="primary" onClick={handleGeneratePdfPath2}>
-              ใบคำร้องขอเทียบโอนผลการเรียน ส่วนที่ 2
+            <Button
+              variant={!selected.length > 0 ? 'outlined' : 'contained'}
+              color={!selected.length > 0 ? 'error' : 'primary'}
+              onClick={handleGeneratePdfPath2}
+              disabled={!selected.length > 0}
+            >
+              <Typography
+                fontSize={20}
+                fontWeight={400}
+                color={!selected.length > 0 ? 'error' : null}
+              >
+                ใบคำร้องขอเทียบโอนผลการเรียน ส่วนที่ 2
+              </Typography>
             </Button>
           </Stack>
         </Stack>

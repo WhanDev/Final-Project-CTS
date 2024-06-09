@@ -119,7 +119,7 @@ const AddCurriculum = () => {
                     color="warning"
                     onClick={handleBank}
                   >
-                    ยกเลิก
+                    ย้อนกลับ
                   </Button>
                 </Stack>
               </Stack>

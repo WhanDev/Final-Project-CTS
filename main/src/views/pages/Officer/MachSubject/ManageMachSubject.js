@@ -82,7 +82,7 @@ const ManageMachSubject = () => {
                           }
                           color="info"
                         >
-                          <IconListSearch size="18" />
+                          <IconListSearch size="25" />
                         </IconButton>
                       </TableCell>
                     </TableRow>

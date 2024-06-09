@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Grid, Button } from '@mui/material';
+import { Grid, Button, Typography } from '@mui/material';
 import Swal from 'sweetalert2';
 
 import Breadcrumb from '../../../../layouts/full/shared/breadcrumb/Breadcrumb';
@@ -83,14 +83,17 @@ const AddSubject = () => {
       title="เพิ่มข้อมูลรายวิชา | จัดการข้อมูลรายวิชา"
       description="จัดการข้อมูลรายวิชา"
     >
-      <Breadcrumb title={'เพิ่มข้อมูลรายวิชา'} />
-      <ParentCard
-        title={
+      <Breadcrumb title={
           <>
-            {dataByGroup.sort} <br /> {dataByGroup.group_id} {dataByGroup.group_name} (
-            {dataByGroup.credit} หน่วยกิต)
+            {dataByGroup.sort}
+            <Typography variant='h6' fontWeight={400} mt={1}>
+            {dataByGroup.group_id} {dataByGroup.group_name} ({dataByGroup.credit} หน่วยกิต)
+            </Typography>
           </>
-        }
+        } />
+      <ParentCard
+      title='เพิ่มข้อมูลรายวิชา'
+        
       >
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           <Grid container spacing={3}>
@@ -172,7 +175,7 @@ const AddSubject = () => {
                     color="warning"
                     onClick={handleBack}
                   >
-                    ยกเลิก
+                    ย้อนกลับ
                   </Button>
                 </Stack>
               </Stack>

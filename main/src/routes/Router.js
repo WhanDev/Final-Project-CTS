@@ -140,6 +140,9 @@ const ApproveOrderTransferOfficer = Loadable(
   lazy(() => import('../views/pages/Officer/Transfer/ApproveOrderTransfer')),
 );
 const ManageReportOfficer = Loadable(lazy(() => import('../views/pages/Officer/Report/ManageReport')));
+const OfficerProfile = Loadable(lazy(() => import('../views/pages/Officer/OfficerProfile')));
+const OfficerProfileEdit = Loadable(lazy(() => import('../views/pages/Officer/OfficerProfileEdit')));
+const OfficerChangePassword = Loadable(lazy(() => import('../views/pages/Officer/ChangePassOfficer')));
 
 //Lecturer
 const IndexLecturer = Loadable(lazy(() => import('../views/pages/Lecturer/IndexLecturer')));
@@ -406,6 +409,19 @@ const Router = [
       {
         path: '/officer/manage/report',
         element: <ManageReportOfficer />,
+      },
+      //ข้อมูลส่วนตัว
+      {
+        path: '/officer/profile',
+        element: <OfficerProfile />,
+      },
+      {
+        path: '/officer/profile/edit',
+        element: <OfficerProfileEdit />,
+      },
+      {
+        path: '/officer/changePassword',
+        element: <OfficerChangePassword />,
       },
     ],
   },

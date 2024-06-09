@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Grid, Button } from '@mui/material';
+import { Grid, Button, Typography } from '@mui/material';
 import Swal from 'sweetalert2';
 
 import Breadcrumb from '../../../../layouts/full/shared/breadcrumb/Breadcrumb';
@@ -101,19 +101,19 @@ const EditStructure = () => {
       title="แก้ไขข้อมูลกลุ่มวิชา | จัดการข้อมูลโครงสร้างหลักสูตร"
       description="แก้ไขข้อมูลกลุ่มวิชา"
     >
-      <Breadcrumb title={<>แก้ไขข้อมูลกลุ่มวิชา</>} />
-
-      <ParentCard
+      <Breadcrumb
         title={
           <>
             หลักสูตร {curriculum.name} ({curriculum.year}) {curriculum.level} {curriculum.time} ปี
-            <br />
-            {structure.sort}
-            <br />
-            {structure.group_id} {structure.group_name} ({structure.credit} หน่วยกิต)
+            <Typography variant='h6' fontWeight={400} mt={1}>
+              {structure.sort} {structure.group_id} {structure.group_name} ({structure.credit}{' '}
+              หน่วยกิต)
+            </Typography>
           </>
         }
-      >
+      />
+
+      <ParentCard title={<>แก้ไขข้อมูลกลุ่มวิชา</>}>
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} lg={12}>
@@ -148,12 +148,8 @@ const EditStructure = () => {
                   <Button type="submit" variant="contained" color="success">
                     บันทึก
                   </Button>
-                  <Button
-                    variant="outlined"
-                    color="warning"
-                    onClick={handleBack}
-                  >
-                    ยกเลิก
+                  <Button variant="outlined" color="warning" onClick={handleBack}>
+                    ย้อนกลับ
                   </Button>
                 </Stack>
               </Stack>
