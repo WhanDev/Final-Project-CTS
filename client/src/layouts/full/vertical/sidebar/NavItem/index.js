@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
-// mui imports
 import {
   ListItemIcon,
   ListItem,
@@ -30,7 +29,7 @@ const NavItem = ({ item, level, pathDirect, onClick, hideMenu }) => {
     borderRadius: `${customizer.borderRadius}px`,
     backgroundColor: level > 1 ? 'transparent !important' : 'inherit',
     color:
-      level > 1 && pathDirect === item.href
+      level > 1 && pathDirect.startsWith(item.href)
         ? `${theme.palette.primary.main}!important`
         : theme.palette.text.secondary,
     paddingLeft: hideMenu ? '10px' : level > 2 ? `${level * 15}px` : '10px',
@@ -56,7 +55,7 @@ const NavItem = ({ item, level, pathDirect, onClick, hideMenu }) => {
         to={item.href}
         href={item.external ? item.href : ''}
         disabled={item.disabled}
-        selected={pathDirect === item.href}
+        selected={pathDirect.startsWith(item.href)}
         target={item.external ? '_blank' : ''}
         onClick={onClick}
       >
@@ -65,7 +64,7 @@ const NavItem = ({ item, level, pathDirect, onClick, hideMenu }) => {
             minWidth: '36px',
             p: '3px 0',
             color:
-              level > 1 && pathDirect === item.href
+              level > 1 && pathDirect.startsWith(item.href)
                 ? `${theme.palette.primary.main}!important`
                 : 'inherit',
           }}
@@ -81,7 +80,6 @@ const NavItem = ({ item, level, pathDirect, onClick, hideMenu }) => {
             ''
           )}
         </ListItemText>
-
         {!item.chip || hideMenu ? null : (
           <Chip
             color={item.chipColor}

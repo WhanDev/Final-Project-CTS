@@ -9,9 +9,9 @@ import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 
 const ManageCurriculum = () => {
   return (
-    <PageContainer title="ข้อมูลหลักสูตร" description="ข้อมูลหลักสูตร">
+    <PageContainer title="ข้อมูลหลักสูตรทั้งหมด" description="ข้อมูลหลักสูตรทั้งหมด">
       <Container maxWidth="lg">
-        <Breadcrumb title="ข้อมูลหลักสูตร" />
+        <Breadcrumb title="ข้อมูลหลักสูตรทั้งหมด" />
         <ChildCard>
           <ListCurriculum />
         </ChildCard>

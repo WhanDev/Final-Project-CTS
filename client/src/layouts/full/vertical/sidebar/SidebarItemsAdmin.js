@@ -1,5 +1,4 @@
 import React from 'react';
-import MenuItemsAdmin from './MenuItemsAdmin';
 import { useLocation } from 'react-router';
 import { Box, List, useMediaQuery } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
@@ -7,6 +6,7 @@ import { toggleMobileSidebar } from 'src/store/customizer/CustomizerSlice';
 import NavItem from './NavItem';
 import NavCollapse from './NavCollapse';
 import NavGroup from './NavGroup/NavGroup';
+import MenuItemsAdmin from './MenuItemsAdmin';
 
 const SidebarItemsAdmin = () => {
   const { pathname } = useLocation();
@@ -21,12 +21,8 @@ const SidebarItemsAdmin = () => {
     <Box sx={{ px: 3 }}>
       <List sx={{ pt: 0 }} className="sidebarNav">
         {MenuItemsAdmin.map((item, index) => {
-          // {/********SubHeader**********/}
           if (item.subheader) {
             return <NavGroup item={item} hideMenu={hideMenu} key={item.subheader} />;
-
-            // {/********If Sub Menu**********/}
-            /* eslint no-else-return: "off" */
           } else if (item.children) {
             return (
               <NavCollapse
@@ -39,8 +35,6 @@ const SidebarItemsAdmin = () => {
                 onClick={() => dispatch(toggleMobileSidebar())}
               />
             );
-
-            // {/********If Sub No Menu**********/}
           } else {
             return (
               <NavItem
@@ -57,4 +51,5 @@ const SidebarItemsAdmin = () => {
     </Box>
   );
 };
+
 export default SidebarItemsAdmin;

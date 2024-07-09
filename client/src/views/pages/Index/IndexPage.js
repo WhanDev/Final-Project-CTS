@@ -7,8 +7,8 @@ const IndexPage = () => {
 
   return (
     <PageContainer
-      title="ระบบดิจิทัลสำหรับการเทียบโอนผลการเรียน"
-      description="ระบบดิจิทัลสำหรับการเทียบโอนผลการเรียน"
+      title="ระบบดิจิทัลสำหรับการเทียบโอนผลการเรียน คณะบริหารธุรกิจและเทคโนโลยีสารสนเทศ มทร. ขอนแก่น"
+      description="Credit Transfer System of Faculty Business Administration and Information Technolog"
     >
       <Banner />
     </PageContainer>

@@ -73,7 +73,7 @@ const ListCurriculum = () => {
                       to={'/curriculum/' + item._id + '/structure/CS-' + item._id}
                       color="info"
                     >
-                      <IconListSearch size="18" />
+                      <IconListSearch size="25" />
                     </IconButton>
                   </TableCell>
                 </TableRow>

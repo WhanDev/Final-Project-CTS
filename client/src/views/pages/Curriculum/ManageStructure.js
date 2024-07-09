@@ -31,8 +31,8 @@ const ManageStructure = () => {
 
   return (
     <PageContainer
-      title="จัดการข้อมูลโครงสร้างหลักสูตร"
-      description="จัดการข้อมูลจัดการข้อมูลโครงสร้างหลักสูตรหลักสูตร"
+      title="ข้อมูลโครงสร้างหลักสูตร"
+      description="ข้อมูลโครงสร้างหลักสูตร"
     >
       <Container maxWidth="lg">
       <Breadcrumb

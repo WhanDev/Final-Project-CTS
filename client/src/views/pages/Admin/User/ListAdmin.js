@@ -20,6 +20,8 @@ import { currentUser } from '../../../../function/auth';
 const ListAdmin = () => {
   const token = localStorage.getItem('token');
   const [user, setUser] = useState([]);
+  const [admin, setDataAdmin] = useState([]);
+  const [curriculum, setDataCurriculum] = useState({});
 
   const CheckUser = async () => {
     try {
@@ -30,23 +32,23 @@ const ListAdmin = () => {
     }
   };
 
-  const [admin, setDataAdmin] = useState([]);
-
   const loadDataAdmin = async () => {
-    listAdmin()
-      .then((res) => setDataAdmin(res.data))
-      .catch((err) => console.log(err));
-  };
-
-  const [curriculum, setDataCurriculum] = useState({});
-
-  const loadDataCurriculum = async (_id) => {
     try {
-      const res = await readCurriculum(_id);
-      setDataCurriculum((prevData) => ({
-        ...prevData,
-        [_id]: res.data,
-      }));
+      const res = await listAdmin();
+      setDataAdmin(res.data);
+
+      // Load curriculum data for each admin
+      res.data.forEach(async (item) => {
+        try {
+          const curriculumRes = await readCurriculum(item.curriculum);
+          setDataCurriculum((prevData) => ({
+            ...prevData,
+            [item.curriculum]: curriculumRes.data,
+          }));
+        } catch (err) {
+          console.log(err);
+        }
+      });
     } catch (err) {
       console.log(err);
     }
@@ -79,17 +81,10 @@ const ListAdmin = () => {
     });
   };
 
-  useEffect(
-    () => {
-      loadDataAdmin();
-      CheckUser();
-      admin.forEach((item) => {
-        loadDataCurriculum(item.curriculum);
-      });
-    },
-    [admin.length],
-    [],
-  );
+  useEffect(() => {
+    loadDataAdmin();
+    CheckUser();
+  }, []);
 
   return (
     <Box mt={2}>
@@ -115,7 +110,7 @@ const ListAdmin = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {admin.length > 0 ? (
+            {admin.length > 1 || (admin.length === 1 && user._id !== admin[0]._id) ? (
               admin.map(
                 (item, index) =>
                   user._id !== item._id && (
@@ -123,7 +118,9 @@ const ListAdmin = () => {
                       <TableCell align="center">{item._id}</TableCell>
                       <TableCell align="center">{item.fullname}</TableCell>
                       <TableCell align="center">{item.role}</TableCell>
-                      <TableCell align="center">{curriculum[item.curriculum]?.name}</TableCell>
+                      <TableCell align="center">
+                        {curriculum[item.curriculum]?.name || 'Loading...'}
+                      </TableCell>
                       <TableCell align="center">
                         <IconButton
                           component={Link}
