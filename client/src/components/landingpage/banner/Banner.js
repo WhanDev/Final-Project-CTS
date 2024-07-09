@@ -36,11 +36,11 @@ const Banner = () => {
     <Box mb={10} sx={{ overflow: 'hidden' }}>
       <Container maxWidth="lg">
         <Grid container spacing={3} alignItems="center">
-          <Grid item xs={12} lg={6} md={8}>
+          <Grid item xs={12} lg={6}>
             <BannerContent />
           </Grid>
           {lgUp ? (
-            <Grid item xs={12} lg={6} md={8}>
+            <Grid item xs={6} lg={6}>
               <Box
                 p={3.2}
                 sx={{
