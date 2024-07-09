@@ -808,7 +808,12 @@ exports.TransferRevert = async (req, res) => {
 
     const updatedStatusTransfer = await Transfer.findOneAndUpdate(
       { _id: student_id },
-      { $set: { approveBy: approve_id, status: "รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร" } },
+      {
+        $set: {
+          approveBy: approve_id,
+          status: "รอการยืนยันการเทียบโอน โดยอาจารย์ประจำหลักสูตร",
+        },
+      },
       { new: true } // This option returns the updated document
     );
 

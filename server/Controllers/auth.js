@@ -38,7 +38,7 @@ exports.loginStudent = async (req, res) => {
   }
 };
 
-//กลุ่มผู้ดูแลเข้าสู่ระบบ
+//กลุ่มผู้ดูแลเข้าสู่ระบบ ผู้ดูแลระบบ เจ้าหน้าที่ อาจารย์
 exports.loginAdmin = async (req, res) => {
   try {
     const { _id, password } = req.body;

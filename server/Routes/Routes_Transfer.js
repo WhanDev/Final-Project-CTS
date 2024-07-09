@@ -15,8 +15,10 @@ const {
   TransferDelete,
 } = require("../Controllers/Contr_Transfer");
 const { upload } = require("../Middleware/upload");
+const { TestTransferNew } = require("../Controllers/Contr_TransferNew");
 
 //http://localhost:5000/api/transfer
+router.post("/transfer/test-new", TestTransferNew);
 router.post("/transfer/test", TestTransfer);
 router.get("/transfer/curriculum/:curriculum", CutStructure);
 router.post("/transfer", Transfer);

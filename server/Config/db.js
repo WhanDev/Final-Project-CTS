@@ -3,11 +3,16 @@ const mongoose = require("mongoose");
 const connectDB = async () => {
   try {
     await mongoose.connect(
-      "mongodb+srv://Whanjaii:Miss0967454821@fianl-cit-bis.uiuctsl.mongodb.net/db_ctb"
+      "mongodb+srv://Whanjaii:Miss0967454821@fianl-cit-bis.uiuctsl.mongodb.net/db_ctb",
+      { useNewUrlParser: true, useUnifiedTopology: true } // These options are often necessary
     );
-    console.log("DB Connected");
+    // Dynamically import chalk
+    const chalk = await import('chalk');
+    console.log(chalk.default.bgGreen("DB Connected"));
   } catch (err) {
-    console.log(err);
+    // Dynamically import chalk in case of an error
+    const chalk = await import('chalk');
+    console.log(chalk.default.bgRed(err.message));
   }
 };
 
