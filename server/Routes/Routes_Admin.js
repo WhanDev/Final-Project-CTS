@@ -5,15 +5,18 @@ const {
   read,
   list,
   create,
+  createAdmin,
   update,
   remove,
-  dataDashboard,updatedById,changePassword
+  dataDashboard,
+  updatedById,
+  changePassword,
 } = require("../Controllers/Contr_Admin");
 // middleware
 
 //http://localhost:5000/api/admin
 router.post("/admin", create);
-router.get("/admin", list);
+router.get("/admin", list,createAdmin);
 router.get("/admin/:_id", read);
 router.put("/admin/:_id", update);
 router.delete("/admin/:_id", remove);

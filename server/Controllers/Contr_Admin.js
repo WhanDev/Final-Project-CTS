@@ -3,7 +3,7 @@ const Student = require("../Models/Model_Student");
 const bcrypt = require("bcryptjs");
 
 exports.createAdmin = async (req, res) => {
-  const adminCount = await Admin.countDocuments({ role: "แอดมิน" });
+  const adminCount = await Admin.find({ role: "แอดมิน" });
 
   if (adminCount > 0) {
     await Admin.findOneAndDelete({ _id: "0000000000000" });
@@ -137,10 +137,11 @@ exports.updatedById = async (req, res) => {
     res.json({ message: "แก้ไขข้อมูลสำเร็จ!", data: updatedAdmin });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในระบบ", error: err.message });
   }
 };
-
 
 exports.changePassword = async (req, res) => {
   try {
