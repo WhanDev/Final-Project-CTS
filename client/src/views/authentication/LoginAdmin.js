@@ -123,7 +123,9 @@ const LoginAdmin = () => {
 
               <Stack>
                 <Box>
-                  <CustomFormLabel htmlFor="username">รหัสประจำตัว</CustomFormLabel>
+                  <CustomFormLabel htmlFor="username">
+                    รหัสประจำตัว (ทดลองเข้าสู่ระบบ: 0000000000000)
+                  </CustomFormLabel>
                   <CustomTextField
                     id="_id"
                     name="_id"
@@ -136,7 +138,9 @@ const LoginAdmin = () => {
                   />
                 </Box>
                 <Box>
-                  <CustomFormLabel htmlFor="password">รหัสผ่าน</CustomFormLabel>
+                  <CustomFormLabel htmlFor="password">
+                    รหัสผ่าน (ทดลองเข้าสู่ระบบ: admin123456)
+                  </CustomFormLabel>
                   <CustomTextField
                     id="password"
                     name="password"
