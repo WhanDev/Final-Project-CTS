@@ -114,7 +114,7 @@ const LoginStudent = () => {
 
               <Stack>
                 <Box>
-                  <CustomFormLabel htmlFor="username">รหัสนักศึกษา</CustomFormLabel>
+                  <CustomFormLabel htmlFor="username">รหัสนักศึกษา (ทดลองเข้าสู่ระบบ: 6700000000001)</CustomFormLabel>
                   <CustomTextField
                     id="_id"
                     name="_id"
@@ -127,7 +127,7 @@ const LoginStudent = () => {
                   />
                 </Box>
                 <Box>
-                  <CustomFormLabel htmlFor="password">รหัสผ่าน</CustomFormLabel>
+                  <CustomFormLabel htmlFor="password">รหัสผ่าน (ทดลองเข้าสู่ระบบ: 123456)</CustomFormLabel>
                   <CustomTextField
                     id="password"
                     name="password"

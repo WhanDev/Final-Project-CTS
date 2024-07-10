@@ -23,13 +23,13 @@ const MobileSidebar = () => {
           </Button>
           <Button
             color="inherit"
-            to="/machsubject"
+            to="/curriculum"
             component={Link}
             sx={{
               justifyContent: 'start',
             }}
           >
-            คู่เทียบโอน
+            โครงสร้างหลักสูตร
           </Button>
           <Button
             color="inherit"
@@ -39,7 +39,7 @@ const MobileSidebar = () => {
               justifyContent: 'start',
             }}
           >
-            เทียบโอน
+            ทดลองเทียบโอน
           </Button>
         </Stack>
       </Box>
